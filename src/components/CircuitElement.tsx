@@ -53,6 +53,7 @@ const CircuitElement: React.FC<CircuitElementProps> = ({ id, type }) => {
         height: `${height + 10}px`,
         opacity: isDragging ? 0.5 : 1,
         cursor: "move",
+        zIndex: position.y,
         transform: `scale(${1})`, // Elements are scaled uniformly
         ...getBackgroundImage(),
       }}
