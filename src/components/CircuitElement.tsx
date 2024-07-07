@@ -1,18 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDrag } from "react-dnd";
 import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
-
-interface CircuitElementProps {
-  id: string;
-  type: string;
-  size: number[];
-  sprite: string;
-  spriteSize: number[];
-  spriteOffset: number[];
-  backgroundSize: number[];
-  position: { x: number; y: number };
-}
+import { type CircuitElementProps } from "../store/circuitSlice";
 
 const CircuitElement: React.FC<CircuitElementProps> = ({ id, type }) => {
   const element = useSelector((state: RootState) => state.circuit.elements.find((element) => element.id === id));
@@ -29,17 +19,18 @@ const CircuitElement: React.FC<CircuitElementProps> = ({ id, type }) => {
     [position]
   );
 
+  const [isHovered, setIsHovered] = useState(false);
   if (!element || !position) return null;
+  // const gridPosition = element.gridPosition;
 
-  const size = element.size;
-  // const width = size[0] * 32;
-  const height = size[1] * 32;
+  // const size = element.size;
   const getBackgroundImage = () => {
     return {
       backgroundImage: `url("${element.sprite}")`,
       backgroundPosition: `${element.spriteOffset[0]}px ${element.spriteOffset[1]}px`,
       backgroundSize: `${element.spriteSize[0]}px ${element.spriteSize[1]}px`,
       width: `${element.backgroundSize[0]}px`,
+      height: `${element.backgroundSize[1] + 10}px`,
     };
   };
   return (
@@ -50,14 +41,24 @@ const CircuitElement: React.FC<CircuitElementProps> = ({ id, type }) => {
         position: "absolute",
         left: position.x,
         top: position.y - 8,
-        height: `${height + 10}px`,
         opacity: isDragging ? 0.5 : 1,
         cursor: "move",
         zIndex: position.y,
         transform: `scale(${1})`, // Elements are scaled uniformly
         ...getBackgroundImage(),
       }}
-    ></div>
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {isHovered && (
+        <div className="circuit-element-hover">
+          <div className="corner" style={{ position: "relative", left: -24, top: -16, backgroundPosition: "0 0" }} />
+          <div className="corner" style={{ position: "relative", left: element.size[0] * 32 - 42, top: -80, backgroundPosition: "64px 0px" }} />
+          <div className="corner" style={{ position: "relative", left: -24, top: element.size[1] * 32 - 162, backgroundPosition: "0px 64px" }} />
+          <div className="corner" style={{ position: "relative", left: element.size[0] * 32 - 42, top: element.size[1] * 32 - 226, backgroundPosition: "64px 64px" }} />
+        </div>
+      )}
+    </div>
   );
 };
 

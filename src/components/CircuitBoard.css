@@ -13,3 +13,19 @@
   height: 1em;
   /* box-shadow: 0 0 0.5em rgb(0, 255, 0); */
 }
+.circuit-element-hover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.circuit-element-hover .corner {
+  position: absolute;
+  width: 64px; /* Assuming each corner is 16x16px */
+  height: 64px;
+  scale: 0.5;
+  background-image: url("../../public/img/core/graphics/arrows/fake-selection-box-2x2.png");
+}

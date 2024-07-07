@@ -14,6 +14,7 @@ const Toolbox: React.FC = () => {
     const spriteSize = element.spriteSize as number[];
     const spriteOffset = element.spriteOffset as number[];
     const backgroundSize = element.backgroundSize as number[];
+
     const newElement = {
       id: uuidv4(),
       type,
@@ -38,7 +39,7 @@ const Toolbox: React.FC = () => {
             sprite: "./circuitorio/img/base/graphics/hr-arithmetic-combinator.png",
             spriteSize: [297, 64],
             spriteOffset: [-76, 0],
-            backgroundSize: [64, 42],
+            backgroundSize: [64, 32],
           })
         }
       >
@@ -53,7 +54,7 @@ const Toolbox: React.FC = () => {
             sprite: "./circuitorio/img/base/graphics/hr-decider-combinator.png",
             spriteSize: [297, 64],
             spriteOffset: [-76, 0],
-            backgroundSize: [64, 42],
+            backgroundSize: [64, 32],
           })
         }
       >
@@ -68,7 +69,7 @@ const Toolbox: React.FC = () => {
             sprite: "./circuitorio/img/base/graphics/hr-constant-combinator.png",
             spriteSize: [228, 54],
             spriteOffset: [-68, 2],
-            backgroundSize: [42, 42],
+            backgroundSize: [36, 36],
           })
         }
       >

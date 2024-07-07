@@ -1,7 +1,7 @@
 // src/store/circuitSlice.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-interface CircuitElement {
+interface CircuitElementProps {
   id: string;
   type: string;
   size: number[];
@@ -13,7 +13,7 @@ interface CircuitElement {
 }
 
 interface CircuitState {
-  elements: CircuitElement[];
+  elements: CircuitElementProps[];
 }
 
 const initialState: CircuitState = {
@@ -24,7 +24,7 @@ const circuitSlice = createSlice({
   name: "circuit",
   initialState,
   reducers: {
-    addElement: (state, action: PayloadAction<CircuitElement>) => {
+    addElement: (state, action: PayloadAction<CircuitElementProps>) => {
       state.elements.push(action.payload);
     },
     updateElementPosition: (state, action: PayloadAction<{ id: string; position: { x: number; y: number } }>) => {
@@ -37,4 +37,5 @@ const circuitSlice = createSlice({
 });
 
 export const { addElement, updateElementPosition } = circuitSlice.actions;
+export type { CircuitElementProps };
 export default circuitSlice.reducer;
