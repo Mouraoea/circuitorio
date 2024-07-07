@@ -7,12 +7,15 @@
 
 .circuit-element {
   position: absolute;
-  /* background-color: rgb(27, 27, 27); */
-  /* border: 1px solid rgb(0, 255, 0); */
   width: 1em;
   height: 1em;
-  /* box-shadow: 0 0 0.5em rgb(0, 255, 0); */
 }
+
+.circuit-element-debug {
+  border: 1px solid rgb(0, 255, 0);
+  box-shadow: 0 0 0.5em rgb(0, 255, 0);
+}
+
 .circuit-element-hover {
   position: absolute;
   top: 0;

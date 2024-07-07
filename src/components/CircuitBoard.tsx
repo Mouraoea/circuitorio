@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useDrop } from "react-dnd";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
-import { updateElementPosition } from "../store/circuitSlice";
+import { updateElementPosition, checkOverlap, CircuitElementProps } from "../store/circuitSlice";
 import CircuitElement from "./CircuitElement";
 import "./CircuitBoard.css";
 
@@ -21,15 +21,20 @@ const CircuitBoard: React.FC = () => {
 
   const [, drop] = useDrop(() => ({
     accept: "CIRCUIT_ELEMENT",
-    drop: (item: { id: string; type: string; position: { x: number; y: number } }, monitor) => {
+    drop: (item: CircuitElementProps, monitor) => {
       const delta = monitor.getDifferenceFromInitialOffset();
       const currentScale = scaleRef.current; // Use the ref to get the latest scale value
-      console.log(currentScale);
       const newPosition = {
         x: Math.round((item.position.x + (delta?.x || 0) / currentScale) / gridSize) * gridSize,
         y: Math.round((item.position.y + (delta?.y || 0) / currentScale) / gridSize) * gridSize,
       };
-      dispatch(updateElementPosition({ id: item.id, position: newPosition }));
+      item.newPosition = newPosition;
+      const overlap = dispatch(checkOverlap(item));
+      if (!overlap.payload.actionResult) {
+        dispatch(updateElementPosition({ id: item.id, position: newPosition }));
+      } else {
+        console.log("Position overlap detected. Element not moved.");
+      }
     },
   }));
 
