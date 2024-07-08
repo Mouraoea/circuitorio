@@ -1,18 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDrag } from "react-dnd";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../store/store";
-import { type CircuitElementProps } from "../store/circuitSlice";
+import { type CircuitElementProps, rotateElement } from "../store/circuitSlice";
 
 const CircuitElement: React.FC<CircuitElementProps> = ({ id, type }) => {
+  const dispatch = useDispatch();
   const element = useSelector((state: RootState) => state.circuit.elements.find((element) => element.id === id));
   const position = element?.position;
   const size = element?.size;
+  const rotation = element?.rotation;
+  const [hoveredElement, setHoveredElement] = useState<string | null>(null);
 
   const [{ isDragging }, drag] = useDrag(
     () => ({
       type: "CIRCUIT_ELEMENT",
-      item: { id, type, position, size },
+      item: { id, type, position, size, rotation },
       collect: (monitor) => ({
         isDragging: !!monitor.isDragging(),
       }),
@@ -21,10 +24,27 @@ const CircuitElement: React.FC<CircuitElementProps> = ({ id, type }) => {
   );
 
   const [isHovered, setIsHovered] = useState(false);
-  if (!element || !position) return null;
-  // const gridPosition = element.gridPosition;
 
-  // const size = element.size;
+  useEffect(() => {
+    if (hoveredElement) {
+    }
+  }, [hoveredElement]);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "r" && hoveredElement) {
+        dispatch(rotateElement({ id: hoveredElement }));
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [dispatch, hoveredElement]);
+
+  if (!element || !position) return null;
+
   const getBackgroundImage = () => {
     return {
       backgroundImage: `url("${element.sprite}")`,
@@ -48,8 +68,14 @@ const CircuitElement: React.FC<CircuitElementProps> = ({ id, type }) => {
         transform: `scale(${1})`, // Elements are scaled uniformly
         ...getBackgroundImage(),
       }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseEnter={() => {
+        setHoveredElement(element.id);
+        setIsHovered(true);
+      }}
+      onMouseLeave={() => {
+        setHoveredElement(null);
+        setIsHovered(false);
+      }}
     >
       {isHovered && (
         <div className="circuit-element-hover">

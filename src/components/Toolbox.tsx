@@ -13,8 +13,10 @@ const Toolbox: React.FC = () => {
     const size = element.size as number[];
     const sprite = element.sprite as string;
     const spriteSize = element.spriteSize as number[];
-    const spriteOffset = element.spriteOffset as number[];
-    const backgroundSize = element.backgroundSize as number[];
+    const spriteOffsetRef = element.spriteOffsetRef as number[];
+    const backgroundSizeRef = element.backgroundSizeRef as number[];
+    const spriteOffset = [element.spriteOffsetRef[0], element.spriteOffsetRef[1]] as number[];
+    const backgroundSize = [element.backgroundSizeRef[0], element.backgroundSizeRef[1]] as number[];
 
     const newElement = {
       id: uuidv4(),
@@ -24,7 +26,10 @@ const Toolbox: React.FC = () => {
       spriteSize,
       spriteOffset,
       backgroundSize,
+      spriteOffsetRef,
+      backgroundSizeRef,
       position: { x: 0, y: 0 },
+      rotation: 0,
     };
     dispatch(addElement(newElement));
   };
@@ -35,12 +40,12 @@ const Toolbox: React.FC = () => {
         onClick={() =>
           handleAddElement({
             name: "Arithmetic Combinator",
-            type: "combinator2-1",
+            type: "entity",
             size: [2, 1],
             sprite: "./circuitorio/img/base/graphics/hr-arithmetic-combinator.png",
             spriteSize: [297, 64],
-            spriteOffset: [-76, 0],
-            backgroundSize: [64, 32],
+            spriteOffsetRef: [-76, 0, -169, 15, -228, 0, -20, 12],
+            backgroundSizeRef: [64, 32, 36, 54, 64, 32, 36, 54],
           })
         }
       >
@@ -50,12 +55,12 @@ const Toolbox: React.FC = () => {
         onClick={() =>
           handleAddElement({
             name: "Decider Combinator",
-            type: "combinator2-1",
+            type: "entity",
             size: [2, 1],
             sprite: "./circuitorio/img/base/graphics/hr-decider-combinator.png",
             spriteSize: [312, 64],
-            spriteOffset: [-80, 0],
-            backgroundSize: [64, 32],
+            spriteOffsetRef: [-80, 0, -178, 11, -241, 0, -22, 12],
+            backgroundSizeRef: [64, 32, 36, 54, 64, 32, 36, 54],
           })
         }
       >
@@ -65,12 +70,12 @@ const Toolbox: React.FC = () => {
         onClick={() =>
           handleAddElement({
             name: "Constant Combinator",
-            type: "combinator1-1",
+            type: "entity",
             size: [1, 1],
             sprite: "./circuitorio/img/base/graphics/hr-constant-combinator.png",
             spriteSize: [228, 54],
-            spriteOffset: [-68, 2],
-            backgroundSize: [36, 36],
+            spriteOffsetRef: [-68, 2, -127, 2, -182, 2, -12, 2],
+            backgroundSizeRef: [36, 36, 36, 36, 40, 36, 36, 36],
           })
         }
       >
