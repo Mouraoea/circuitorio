@@ -53,8 +53,8 @@ const Toolbox: React.FC = () => {
             type: "combinator2-1",
             size: [2, 1],
             sprite: "./circuitorio/img/base/graphics/hr-decider-combinator.png",
-            spriteSize: [297, 64],
-            spriteOffset: [-76, 0],
+            spriteSize: [312, 64],
+            spriteOffset: [-80, 0],
             backgroundSize: [64, 32],
           })
         }
