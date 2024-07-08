@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useDrop } from "react-dnd";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
-import { updateElementPosition, checkOverlap, CircuitElementProps } from "../store/circuitSlice";
+import { updateElementPosition, CircuitElementProps } from "../store/circuitSlice";
 import CircuitElement from "./CircuitElement";
 import "./CircuitBoard.css";
 
@@ -28,13 +28,8 @@ const CircuitBoard: React.FC = () => {
         x: Math.round((item.position.x + (delta?.x || 0) / currentScale) / gridSize) * gridSize,
         y: Math.round((item.position.y + (delta?.y || 0) / currentScale) / gridSize) * gridSize,
       };
-      item.newPosition = newPosition;
-      const overlap = dispatch(checkOverlap(item));
-      if (!overlap.payload.actionResult) {
-        dispatch(updateElementPosition({ id: item.id, position: newPosition }));
-      } else {
-        console.log("Position overlap detected. Element not moved.");
-      }
+
+      dispatch(updateElementPosition({ id: item.id, position: newPosition }));
     },
   }));
 

@@ -7,13 +7,12 @@ import { type CircuitElementProps } from "../store/circuitSlice";
 const CircuitElement: React.FC<CircuitElementProps> = ({ id, type }) => {
   const element = useSelector((state: RootState) => state.circuit.elements.find((element) => element.id === id));
   const position = element?.position;
-  const actionResult = element?.actionResult;
   const size = element?.size;
 
   const [{ isDragging }, drag] = useDrag(
     () => ({
       type: "CIRCUIT_ELEMENT",
-      item: { id, type, position, size, actionResult },
+      item: { id, type, position, size },
       collect: (monitor) => ({
         isDragging: !!monitor.isDragging(),
       }),
