@@ -3,6 +3,7 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import { addElement } from "../store/circuitSlice";
 import { v4 as uuidv4 } from "uuid";
+// import zIndex from "@material-ui/core/styles/zIndex";
 
 const Toolbox: React.FC = () => {
   const dispatch = useDispatch();
@@ -29,7 +30,7 @@ const Toolbox: React.FC = () => {
   };
 
   return (
-    <div>
+    <div style={{ zIndex: 100 }}>
       <button
         onClick={() =>
           handleAddElement({

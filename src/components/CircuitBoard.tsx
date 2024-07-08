@@ -1,23 +1,24 @@
+// src/components/CircuitBoard.tsx
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useDrop } from "react-dnd";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import { updateElementPosition, CircuitElementProps } from "../store/circuitSlice";
 import CircuitElement from "./CircuitElement";
+import { clamp } from "../utils/clamp"; // Import the clamp function
 import "./CircuitBoard.css";
 
 const CircuitBoard: React.FC = () => {
   const dispatch = useDispatch();
   const elements = useSelector((state: RootState) => state.circuit.elements);
   const [scale, setScale] = useState(1);
-  const scaleRef = useRef(scale); // Ref to store the scale value
+  const scaleRef = useRef(scale);
   const [isPanning, setIsPanning] = useState(false);
   const [panPosition, setPanPosition] = useState({ x: 0, y: 0 });
   const [startPanPosition, setStartPanPosition] = useState({ x: 0, y: 0 });
   const [startMousePosition, setStartMousePosition] = useState({ x: 0, y: 0 });
+  const [gridSize] = useState(32);
   const boardRef = useRef<HTMLDivElement | null>(null);
-
-  const gridSize = 32;
 
   const [, drop] = useDrop(() => ({
     accept: "CIRCUIT_ELEMENT",
@@ -55,40 +56,50 @@ const CircuitBoard: React.FC = () => {
     [panPosition]
   );
 
+  const handleMouseUp = useCallback(() => {
+    setIsPanning(false);
+  }, []);
+
   const handleMouseMove = useCallback(
     (event: MouseEvent) => {
       if (isPanning) {
-        const deltaX = event.clientX - startMousePosition.x;
-        const deltaY = event.clientY - startMousePosition.y;
-        setPanPosition({
-          x: startPanPosition.x + deltaX,
-          y: startPanPosition.y + deltaY,
-        });
+        const currentScale = scaleRef.current;
+        const deltaX = (event.clientX - startMousePosition.x) / currentScale;
+        const deltaY = (event.clientY - startMousePosition.y) / currentScale;
+
+        const boardElement = boardRef.current;
+        if (boardElement) {
+          const boardRect = boardElement.getBoundingClientRect();
+          const parentRect = boardElement.parentElement?.getBoundingClientRect();
+          if (parentRect) {
+            const maxPanX = 0;
+            const maxPanY = 0;
+            const minPanX = parentRect.width - boardRect.width * currentScale;
+            const minPanY = parentRect.height - boardRect.height * currentScale;
+
+            setPanPosition({
+              x: clamp(startPanPosition.x + deltaX, minPanX, maxPanX),
+              y: clamp(startPanPosition.y + deltaY, minPanY, maxPanY),
+            });
+          }
+        }
       }
     },
     [isPanning, startMousePosition, startPanPosition]
   );
 
-  const handleMouseUp = useCallback(() => {
-    setIsPanning(false);
-  }, []);
-
   useEffect(() => {
     const boardElement = boardRef.current;
-    if (boardElement) {
-      boardElement.addEventListener("wheel", handleWheel, { passive: false });
-      boardElement.addEventListener("mousedown", handleMouseDown);
-      window.addEventListener("mousemove", handleMouseMove);
-      window.addEventListener("mouseup", handleMouseUp);
-    }
+    boardElement?.addEventListener("wheel", handleWheel, { passive: false });
+    boardElement?.addEventListener("mousedown", handleMouseDown);
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", handleMouseUp);
 
     return () => {
-      if (boardElement) {
-        boardElement.removeEventListener("wheel", handleWheel);
-        boardElement.removeEventListener("mousedown", handleMouseDown);
-        window.removeEventListener("mousemove", handleMouseMove);
-        window.removeEventListener("mouseup", handleMouseUp);
-      }
+      boardElement?.removeEventListener("wheel", handleWheel);
+      boardElement?.removeEventListener("mousedown", handleMouseDown);
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
     };
   }, [handleWheel, handleMouseDown, handleMouseMove, handleMouseUp]);
 
@@ -101,8 +112,8 @@ const CircuitBoard: React.FC = () => {
       className="circuit-board"
       style={{
         position: "relative",
-        width: "100%",
-        height: "100vh",
+        width: `${gridSize * 200}px`,
+        height: `${gridSize * 100}px`,
         border: "1px solid black",
         overflow: "hidden",
         transform: `scale(${scale}) translate(${panPosition.x}px, ${panPosition.y}px)`,

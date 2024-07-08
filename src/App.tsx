@@ -6,7 +6,7 @@ import "./App.css";
 
 function App() {
   return (
-    <div className="App" style={{ height: "100vh", display: "flex", flexDirection: "column" }}>
+    <div className="App" style={{ display: "flex", flexDirection: "column" }}>
       <Toolbox />
       <CircuitBoard />
     </div>
