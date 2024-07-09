@@ -5,6 +5,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import { updateElementPosition, CircuitElementProps } from "../store/circuitSlice";
 import CircuitElement from "./CircuitElement";
+import { gridSnap } from "../utils/gridSnap";
+import { setNewPosition } from "../utils/setNewPosition";
 import { clamp } from "../utils/clamp"; // Import the clamp function
 import "./CircuitBoard.css";
 
@@ -19,17 +21,64 @@ const CircuitBoard: React.FC = () => {
   const [startMousePosition, setStartMousePosition] = useState({ x: 0, y: 0 });
   const [gridSize] = useState(32);
   const boardRef = useRef<HTMLDivElement | null>(null);
+  const [keyState, setKeyState] = useState<{ [key: string]: boolean }>({
+    a: false,
+    s: false,
+    d: false,
+    w: false,
+    q: false,
+    e: false,
+    r: false,
+    f: false,
+    g: false,
+    z: false,
+    x: false,
+    c: false,
+    v: false,
+    b: false,
+    t: false,
+    y: false,
+    u: false,
+    i: false,
+    o: false,
+    p: false,
+    h: false,
+    j: false,
+    k: false,
+    l: false,
+    n: false,
+    m: false,
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": false,
+    "6": false,
+    "7": false,
+    "8": false,
+    "9": false,
+    "0": false,
+    "-": false,
+    "=": false,
+    "[": false,
+    "]": false,
+    "\\": false,
+    ";": false,
+    "'": false,
+    ",": false,
+    ".": false,
+    "/": false,
+    shift: false,
+    control: false,
+    alt: false,
+    meta: false,
+  });
 
   const [, drop] = useDrop(() => ({
     accept: "CIRCUIT_ELEMENT",
     drop: (item: CircuitElementProps, monitor) => {
       const delta = monitor.getDifferenceFromInitialOffset();
-      const currentScale = scaleRef.current; // Use the ref to get the latest scale value
-      const newPosition = {
-        x: Math.round((item.position.x + (delta?.x || 0) / currentScale) / gridSize) * gridSize,
-        y: Math.round((item.position.y + (delta?.y || 0) / currentScale) / gridSize) * gridSize,
-      };
-
+      const newPosition = gridSnap(setNewPosition(item.position, delta, scaleRef.current), gridSize);
       dispatch(updateElementPosition({ id: item.id, position: newPosition }));
     },
   }));
@@ -38,8 +87,8 @@ const CircuitBoard: React.FC = () => {
     event.preventDefault();
     const scaleChange = event.deltaY > 0 ? 0.9 : 1.1;
     setScale((prevScale) => {
-      const newScale = Math.min(Math.max(prevScale * scaleChange, 0.5), 2);
-      scaleRef.current = newScale; // Update the ref whenever scale changes
+      const newScale = Math.min(Math.max(prevScale * scaleChange, 0.5), 5);
+      scaleRef.current = newScale;
       return newScale;
     });
   }, []);
@@ -59,6 +108,64 @@ const CircuitBoard: React.FC = () => {
   const handleMouseUp = useCallback(() => {
     setIsPanning(false);
   }, []);
+
+  useEffect(() => {
+    const step = 10;
+
+    const updatePan = () => {
+      let deltaX = 0;
+      let deltaY = 0;
+
+      if (keyState.a) deltaX += step;
+      if (keyState.d) deltaX -= step;
+      if (keyState.w) deltaY += step;
+      if (keyState.s) deltaY -= step;
+
+      if (deltaX !== 0 || deltaY !== 0) {
+        const currentScale = scaleRef.current;
+        const boardElement = boardRef.current;
+        if (boardElement) {
+          const boardRect = boardElement.getBoundingClientRect();
+          const parentRect = boardElement.parentElement?.getBoundingClientRect();
+          if (parentRect) {
+            const maxPanX = 0;
+            const maxPanY = 0;
+            const minPanX = parentRect.width - boardRect.width * currentScale;
+            const minPanY = parentRect.height - boardRect.height * currentScale;
+
+            setPanPosition((prevPosition) => ({
+              x: clamp(prevPosition.x + deltaX, minPanX, maxPanX),
+              y: clamp(prevPosition.y + deltaY, minPanY, maxPanY),
+            }));
+          }
+        }
+      }
+    };
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (["a", "s", "d", "w"].includes(event.key) && !keyState[event.key]) {
+        setKeyState((prevKeyState) => ({ ...prevKeyState, [event.key]: true }));
+        updatePan();
+      }
+    };
+
+    const handleKeyUp = (event: KeyboardEvent) => {
+      if (["a", "s", "d", "w"].includes(event.key)) {
+        setKeyState((prevKeyState) => ({ ...prevKeyState, [event.key]: false }));
+      }
+    };
+
+    const panInterval = setInterval(updatePan, 50); // Adjust the interval for smoother or slower panning
+
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
+
+    return () => {
+      clearInterval(panInterval);
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
+    };
+  }, [keyState, setPanPosition]);
 
   const handleMouseMove = useCallback(
     (event: MouseEvent) => {
