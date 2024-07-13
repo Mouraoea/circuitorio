@@ -19,7 +19,6 @@ const CircuitBoard: React.FC = () => {
   const [panPosition, setPanPosition] = useState({ x: 0, y: 0 });
   const [startPanPosition, setStartPanPosition] = useState({ x: 0, y: 0 });
   const [startMousePosition, setStartMousePosition] = useState({ x: 0, y: 0 });
-  // const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
   const [gridSize] = useState(32);
   const [gridHeight] = useState(100);
   const [gridWidth] = useState(200);
