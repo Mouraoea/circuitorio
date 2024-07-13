@@ -21,6 +21,8 @@ const CircuitBoard: React.FC = () => {
   const [startMousePosition, setStartMousePosition] = useState({ x: 0, y: 0 });
   // const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
   const [gridSize] = useState(32);
+  const [gridHeight] = useState(100);
+  const [gridWidth] = useState(200);
   const boardRef = useRef<HTMLDivElement | null>(null);
   const [keyState, setKeyState] = useState<{ [key: string]: boolean }>({
     a: false,
@@ -89,27 +91,18 @@ const CircuitBoard: React.FC = () => {
       const boardElement = boardRef.current;
       if (boardElement) {
         const rect = boardElement.getBoundingClientRect();
-        const offsetX = (cursorX - rect.left) / scaleRef.current; // Pc
-        const offsetY = (cursorY - rect.top) / scaleRef.current; // Pc
+        const cursorOffsetX = (cursorX - rect.left) / scaleRef.current + panPosition.x;
+        const cursorOffsetY = (cursorY - rect.top) / scaleRef.current + panPosition.y;
 
-        const newScale = clamp(scaleRef.current + delta, 0.1, 5);
+        const newScale = clamp(scaleRef.current + delta, 0.5, 5);
         const deltaScale = newScale - scaleRef.current;
 
-        // Calculate the new pan positions
-        const newPanX = panPosition.x - (offsetX + panPosition.x) * deltaScale;
-        const newPanY = panPosition.y - (offsetY + panPosition.y) * deltaScale;
+        const offsetByCursorX = cursorOffsetX * deltaScale;
+        const offsetByCursorY = cursorOffsetY * deltaScale;
 
-        console.log("scale", scaleRef.current);
-        console.log("deltaScale", deltaScale);
-        console.log("panPosition.x", panPosition.x);
-        console.log("panPosition.y", panPosition.y);
-        console.log("1+deltaScale", 1 + deltaScale);
-        console.log("offsetX*deltaScale", offsetX * deltaScale);
-        console.log("offsetY*deltaScale", offsetY * deltaScale);
-        console.log("newPanX", newPanX);
-        console.log("newPanY", newPanY);
-        console.log("offsetX", offsetX);
-        console.log("offsetY", offsetY);
+        // Calculate the new pan positions
+        const newPanX = panPosition.x - offsetByCursorX / newScale;
+        const newPanY = panPosition.y - offsetByCursorY / newScale;
 
         // Clamp the new pan positions within the bounds
         const parentRect = boardElement.parentElement?.getBoundingClientRect();
@@ -137,7 +130,7 @@ const CircuitBoard: React.FC = () => {
       event.preventDefault();
       const scale = scaleRef.current;
 
-      const delta = event.deltaY > 0 ? -scale * 0.25 : scale * 0.25; // Adjust the zoom step as needed
+      const delta = event.deltaY > 0 ? -scale * 0.1 : scale * 0.101010101010101; // Adjust the zoom step as needed
       handleZoom(delta, event.clientX, event.clientY);
     },
     [handleZoom]
@@ -268,8 +261,8 @@ const CircuitBoard: React.FC = () => {
       className="circuit-board"
       style={{
         position: "relative",
-        width: `${gridSize * 200}px`,
-        height: `${gridSize * 100}px`,
+        width: `${gridSize * gridWidth}px`,
+        height: `${gridSize * gridHeight}px`,
         border: "1px solid black",
         overflow: "hidden",
         transform: `scale(${scale}) translate(${panPosition.x}px, ${panPosition.y}px)`,
