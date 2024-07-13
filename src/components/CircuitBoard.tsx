@@ -92,11 +92,19 @@ const CircuitBoard: React.FC = () => {
       if (boardElement) {
         const rect = boardElement.getBoundingClientRect();
         const parentRect = boardElement.parentElement?.getBoundingClientRect();
+        const viewPortSize = {
+          width: ((window.innerWidth - rect.left) / scaleRef.current + panPosition.x) / gridSize,
+          height: ((window.innerHeight - rect.top) / scaleRef.current + panPosition.y) / gridSize,
+        };
+        const panMinLimits = {
+          x: (viewPortSize.width - gridWidth) * gridSize,
+          y: (viewPortSize.height - gridHeight) * gridSize,
+        };
         if (parentRect) {
           const panLimits = {
-            minX: parentRect.width - rect.width * scaleRef.current,
+            minX: panMinLimits.x,
             maxX: 0,
-            minY: parentRect.height - rect.height * scaleRef.current,
+            minY: panMinLimits.y,
             maxY: 0,
           };
           setPanPosition({
@@ -106,7 +114,7 @@ const CircuitBoard: React.FC = () => {
         }
       }
     },
-    [setPanPosition]
+    [setPanPosition, panPosition, gridSize, gridWidth, gridHeight]
   );
 
   const handleZoom = useCallback(
@@ -134,7 +142,6 @@ const CircuitBoard: React.FC = () => {
 
         // Update the pan position
         movePan(newPan);
-
         // Update the scale
         scaleRef.current = newScale;
         setScale(newScale);
@@ -150,6 +157,7 @@ const CircuitBoard: React.FC = () => {
 
       const delta = event.deltaY > 0 ? -scale * 0.1 : scale * 0.101010101010101; // Adjust the zoom step as needed
       handleZoom(delta, event.clientX, event.clientY);
+      // Verify the new pan position
     },
     [handleZoom]
   );
@@ -161,8 +169,8 @@ const CircuitBoard: React.FC = () => {
         const boardElement = boardRef.current;
         if (boardElement) {
           const rect = boardElement.getBoundingClientRect();
-          const cursorX = Math.floor((event.clientX - rect.left - 4) / gridSize / scaleRef.current);
-          const cursorY = Math.floor((event.clientY - rect.top - 4) / gridSize / scaleRef.current);
+          const cursorX = Math.floor((event.clientX - rect.left - 4) / gridSize / scaleRef.current) + 1;
+          const cursorY = Math.floor((event.clientY - rect.top - 4) / gridSize / scaleRef.current) + 1;
           console.log(`Mouse position (gridCoordinates): x: ${cursorX}, y: ${cursorY}`);
         }
       }
