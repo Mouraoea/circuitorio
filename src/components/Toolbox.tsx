@@ -16,19 +16,21 @@ const Toolbox: React.FC = () => {
 
   useEffect(() => {
     const handleMouseUp = (event: MouseEvent) => {
-      if (isPlacing && elementToPlace) {
-        const newElement = {
-          ...elementToPlace,
-          position: { x: Math.round(event.clientX / gridSize) * gridSize, y: Math.round(event.clientY / gridSize) * gridSize },
-          rotation,
-          id: uuidv4(),
-        };
+      if (event.button === 0) {
+        if (isPlacing && elementToPlace) {
+          const newElement = {
+            ...elementToPlace,
+            position: { x: Math.round(event.clientX / gridSize) * gridSize, y: Math.round(event.clientY / gridSize) * gridSize },
+            rotation,
+            id: uuidv4(),
+          };
 
-        dispatch(addElement(newElement));
-        if (!shift) {
-          setIsPlacing(false);
-          setRotation(0);
-          setElementToPlace(null);
+          dispatch(addElement(newElement));
+          if (!shift) {
+            setIsPlacing(false);
+            setRotation(0);
+            setElementToPlace(null);
+          }
         }
       }
     };
