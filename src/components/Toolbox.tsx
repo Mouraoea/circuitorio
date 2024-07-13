@@ -179,12 +179,10 @@ const Toolbox: React.FC = () => {
             top: cursorPosition.y,
             opacity: 0.5,
             pointerEvents: "none",
-            transform: "translate(-50%, -50%)",
-            transformOrigin: "center",
+            transform: `translate(-50%, -50%) scale(${scale})`,
+            ...getBackgroundImage(),
           }}
-        >
-          <img src={elementToPlace.sprite} alt={elementToPlace.type} style={{ ...getBackgroundImage() }} />
-        </div>
+        ></div>
       )}
     </div>
   );
