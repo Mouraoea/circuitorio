@@ -28,8 +28,9 @@ interface CanvasContextProps {
   setScale: (value: number) => void;
   panPosition: { x: number; y: number };
   setPanPosition: (value: { x: number; y: number }) => void;
-  param3: boolean;
-  setParam3: (value: boolean) => void;
+  gridSize: number;
+  gridHeight: number;
+  gridWidth: number;
 }
 
 const CanvasContext = createContext<CanvasContextProps | undefined>(undefined);
@@ -37,9 +38,11 @@ const CanvasContext = createContext<CanvasContextProps | undefined>(undefined);
 export const CanvasProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [scale, setScale] = useState<number>(1);
   const [panPosition, setPanPosition] = useState({ x: 0, y: 0 });
-  const [param3, setParam3] = useState<boolean>(true);
+  const [gridSize] = useState(32);
+  const [gridHeight] = useState(100);
+  const [gridWidth] = useState(200);
 
-  return <CanvasContext.Provider value={{ scale, setScale, panPosition, setPanPosition, param3, setParam3 }}>{children}</CanvasContext.Provider>;
+  return <CanvasContext.Provider value={{ scale, setScale, panPosition, setPanPosition, gridSize, gridHeight, gridWidth }}>{children}</CanvasContext.Provider>;
 };
 
 export const useCanvasContext = () => {

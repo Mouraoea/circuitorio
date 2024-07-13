@@ -14,12 +14,10 @@ import { useCanvasContext } from "../context/CanvasContext";
 const CircuitBoard: React.FC = () => {
   const dispatch = useDispatch();
   const elements = useSelector((state: RootState) => state.circuit.elements);
-  const { scale, setScale, panPosition, setPanPosition } = useCanvasContext();
+  const { scale, setScale, panPosition, setPanPosition, gridSize, gridHeight } = useCanvasContext();
   const [isPanning, setIsPanning] = useState(false);
   const [startPanPosition, setStartPanPosition] = useState({ x: 0, y: 0 });
   const [startMousePosition, setStartMousePosition] = useState({ x: 0, y: 0 });
-  const [gridSize] = useState(32);
-  const [gridHeight] = useState(100);
   const [gridWidth] = useState(200);
   const boardRef = useRef<HTMLDivElement | null>(null);
   const [keyState, setKeyState] = useState<{ [key: string]: boolean }>({
