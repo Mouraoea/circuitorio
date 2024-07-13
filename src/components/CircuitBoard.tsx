@@ -14,9 +14,8 @@ import { useCanvasContext } from "../context/CanvasContext";
 const CircuitBoard: React.FC = () => {
   const dispatch = useDispatch();
   const elements = useSelector((state: RootState) => state.circuit.elements);
-  const { scale, setScale } = useCanvasContext();
+  const { scale, setScale, panPosition, setPanPosition } = useCanvasContext();
   const [isPanning, setIsPanning] = useState(false);
-  const [panPosition, setPanPosition] = useState({ x: 0, y: 0 });
   const [startPanPosition, setStartPanPosition] = useState({ x: 0, y: 0 });
   const [startMousePosition, setStartMousePosition] = useState({ x: 0, y: 0 });
   const [gridSize] = useState(32);
