@@ -31,6 +31,8 @@ interface CanvasContextProps {
   gridSize: number;
   gridHeight: number;
   gridWidth: number;
+  isPanning: boolean;
+  setIsPanning: (value: boolean) => void;
 }
 
 const CanvasContext = createContext<CanvasContextProps | undefined>(undefined);
@@ -41,8 +43,9 @@ export const CanvasProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   const [gridSize] = useState(32);
   const [gridHeight] = useState(100);
   const [gridWidth] = useState(200);
+  const [isPanning, setIsPanning] = useState(false);
 
-  return <CanvasContext.Provider value={{ scale, setScale, panPosition, setPanPosition, gridSize, gridHeight, gridWidth }}>{children}</CanvasContext.Provider>;
+  return <CanvasContext.Provider value={{ scale, setScale, panPosition, setPanPosition, gridSize, gridHeight, gridWidth, isPanning, setIsPanning }}>{children}</CanvasContext.Provider>;
 };
 
 export const useCanvasContext = () => {

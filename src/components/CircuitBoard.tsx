@@ -14,11 +14,9 @@ import { useCanvasContext } from "../context/CanvasContext";
 const CircuitBoard: React.FC = () => {
   const dispatch = useDispatch();
   const elements = useSelector((state: RootState) => state.circuit.elements);
-  const { scale, setScale, panPosition, setPanPosition, gridSize, gridHeight } = useCanvasContext();
-  const [isPanning, setIsPanning] = useState(false);
+  const { scale, setScale, panPosition, setPanPosition, gridSize, gridHeight, gridWidth, isPanning, setIsPanning } = useCanvasContext();
   const [startPanPosition, setStartPanPosition] = useState({ x: 0, y: 0 });
   const [startMousePosition, setStartMousePosition] = useState({ x: 0, y: 0 });
-  const [gridWidth] = useState(200);
   const boardRef = useRef<HTMLDivElement | null>(null);
   const [keyState, setKeyState] = useState<{ [key: string]: boolean }>({
     a: false,
@@ -175,7 +173,7 @@ const CircuitBoard: React.FC = () => {
         setStartMousePosition({ x: event.clientX, y: event.clientY });
       }
     },
-    [panPosition, gridSize, scale]
+    [panPosition, gridSize, scale, setIsPanning]
   );
 
   const handleMouseUp = useCallback(() => {
