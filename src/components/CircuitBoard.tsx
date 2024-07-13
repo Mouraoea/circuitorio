@@ -86,43 +86,61 @@ const CircuitBoard: React.FC = () => {
     },
   }));
 
+  const movePan = useCallback(
+    (position: { x: number; y: number }) => {
+      const boardElement = boardRef.current;
+      if (boardElement) {
+        const rect = boardElement.getBoundingClientRect();
+        const parentRect = boardElement.parentElement?.getBoundingClientRect();
+        if (parentRect) {
+          const panLimits = {
+            minX: parentRect.width - rect.width * scaleRef.current,
+            maxX: 0,
+            minY: parentRect.height - rect.height * scaleRef.current,
+            maxY: 0,
+          };
+          setPanPosition({
+            x: clamp(position.x, panLimits.minX, panLimits.maxX),
+            y: clamp(position.y, panLimits.minY, panLimits.maxY),
+          });
+        }
+      }
+    },
+    [setPanPosition]
+  );
+
   const handleZoom = useCallback(
     (delta: number, cursorX: number, cursorY: number) => {
       const boardElement = boardRef.current;
       if (boardElement) {
         const rect = boardElement.getBoundingClientRect();
-        const cursorOffsetX = (cursorX - rect.left) / scaleRef.current + panPosition.x;
-        const cursorOffsetY = (cursorY - rect.top) / scaleRef.current + panPosition.y;
-
         const newScale = clamp(scaleRef.current + delta, 0.5, 5);
         const deltaScale = newScale - scaleRef.current;
 
-        const offsetByCursorX = cursorOffsetX * deltaScale;
-        const offsetByCursorY = cursorOffsetY * deltaScale;
+        const cursorOffset = {
+          x: (cursorX - rect.left) / scaleRef.current + panPosition.x,
+          y: (cursorY - rect.top) / scaleRef.current + panPosition.y,
+        };
 
-        // Calculate the new pan positions
-        const newPanX = panPosition.x - offsetByCursorX / newScale;
-        const newPanY = panPosition.y - offsetByCursorY / newScale;
+        const offsetByCursor = {
+          x: cursorOffset.x * deltaScale,
+          y: cursorOffset.y * deltaScale,
+        };
 
-        // Clamp the new pan positions within the bounds
-        const parentRect = boardElement.parentElement?.getBoundingClientRect();
-        if (parentRect) {
-          const maxPanX = 0;
-          const maxPanY = 0;
-          const minPanX = parentRect.width - rect.width * newScale;
-          const minPanY = parentRect.height - rect.height * newScale;
-          setPanPosition({
-            x: clamp(newPanX, minPanX, maxPanX),
-            y: clamp(newPanY, minPanY, maxPanY),
-          });
-        }
+        const newPan = {
+          x: panPosition.x - offsetByCursor.x / newScale,
+          y: panPosition.y - offsetByCursor.y / newScale,
+        };
+
+        // Update the pan position
+        movePan(newPan);
 
         // Update the scale
         scaleRef.current = newScale;
         setScale(newScale);
       }
     },
-    [scaleRef, setScale, setPanPosition, panPosition]
+    [scaleRef, setScale, panPosition, movePan]
   );
 
   const handleWheel = useCallback(
@@ -165,23 +183,8 @@ const CircuitBoard: React.FC = () => {
       if (keyState.s) deltaY -= step;
 
       if (deltaX !== 0 || deltaY !== 0) {
-        const currentScale = scaleRef.current;
-        const boardElement = boardRef.current;
-        if (boardElement) {
-          const boardRect = boardElement.getBoundingClientRect();
-          const parentRect = boardElement.parentElement?.getBoundingClientRect();
-          if (parentRect) {
-            const maxPanX = 0;
-            const maxPanY = 0;
-            const minPanX = parentRect.width - boardRect.width * currentScale;
-            const minPanY = parentRect.height - boardRect.height * currentScale;
-
-            setPanPosition((prevPosition) => ({
-              x: clamp(prevPosition.x + deltaX, minPanX, maxPanX),
-              y: clamp(prevPosition.y + deltaY, minPanY, maxPanY),
-            }));
-          }
-        }
+        const newPan = { x: panPosition.x + deltaX, y: panPosition.y + deltaY };
+        movePan(newPan);
       }
     };
 
@@ -208,7 +211,7 @@ const CircuitBoard: React.FC = () => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
     };
-  }, [keyState, setPanPosition, panPosition]);
+  }, [keyState, setPanPosition, panPosition, movePan]);
 
   const handleMouseMove = useCallback(
     (event: MouseEvent) => {
@@ -216,25 +219,14 @@ const CircuitBoard: React.FC = () => {
         const currentScale = scaleRef.current;
         const deltaX = (event.clientX - startMousePosition.x) / currentScale;
         const deltaY = (event.clientY - startMousePosition.y) / currentScale;
-
-        const boardElement = boardRef.current;
-        if (boardElement) {
-          const boardRect = boardElement.getBoundingClientRect();
-          const parentRect = boardElement.parentElement?.getBoundingClientRect();
-          if (parentRect) {
-            const maxPanX = 0;
-            const maxPanY = 0;
-            const minPanX = parentRect.width - boardRect.width * currentScale;
-            const minPanY = parentRect.height - boardRect.height * currentScale;
-            setPanPosition({
-              x: clamp(startPanPosition.x + deltaX, minPanX, maxPanX),
-              y: clamp(startPanPosition.y + deltaY, minPanY, maxPanY),
-            });
-          }
-        }
+        const newPan = {
+          x: startPanPosition.x + deltaX,
+          y: startPanPosition.y + deltaY,
+        };
+        movePan(newPan);
       }
     },
-    [isPanning, startMousePosition, startPanPosition]
+    [isPanning, startMousePosition, startPanPosition, movePan]
   );
 
   useEffect(() => {
