@@ -9,12 +9,12 @@ import { gridSnap } from "../utils/gridSnap";
 import { setNewPosition } from "../utils/setNewPosition";
 import { clamp } from "../utils/clamp"; // Import the clamp function
 import "./CircuitBoard.css";
+import { useCanvasContext } from "../context/CanvasContext";
 
 const CircuitBoard: React.FC = () => {
   const dispatch = useDispatch();
   const elements = useSelector((state: RootState) => state.circuit.elements);
-  const [scale, setScale] = useState(1);
-  const scaleRef = useRef(scale);
+  const { scale, setScale } = useCanvasContext();
   const [isPanning, setIsPanning] = useState(false);
   const [panPosition, setPanPosition] = useState({ x: 0, y: 0 });
   const [startPanPosition, setStartPanPosition] = useState({ x: 0, y: 0 });
@@ -80,7 +80,7 @@ const CircuitBoard: React.FC = () => {
     accept: "CIRCUIT_ELEMENT",
     drop: (item: CircuitElementProps, monitor) => {
       const delta = monitor.getDifferenceFromInitialOffset();
-      const newPosition = gridSnap(setNewPosition(item.position, delta, scaleRef.current), gridSize);
+      const newPosition = gridSnap(setNewPosition(item.position, delta, scale), gridSize);
       dispatch(updateElementPosition({ id: item.id, position: newPosition }));
     },
   }));
@@ -92,8 +92,8 @@ const CircuitBoard: React.FC = () => {
         const rect = boardElement.getBoundingClientRect();
         const parentRect = boardElement.parentElement?.getBoundingClientRect();
         const viewPortSize = {
-          width: ((window.innerWidth - rect.left) / scaleRef.current + panPosition.x) / gridSize,
-          height: ((window.innerHeight - rect.top) / scaleRef.current + panPosition.y) / gridSize,
+          width: ((window.innerWidth - rect.left) / scale + panPosition.x) / gridSize,
+          height: ((window.innerHeight - rect.top) / scale + panPosition.y) / gridSize,
         };
         const panMinLimits = {
           x: (viewPortSize.width - gridWidth) * gridSize,
@@ -113,7 +113,7 @@ const CircuitBoard: React.FC = () => {
         }
       }
     },
-    [setPanPosition, panPosition, gridSize, gridWidth, gridHeight]
+    [setPanPosition, panPosition, gridSize, gridWidth, gridHeight, scale]
   );
 
   const handleZoom = useCallback(
@@ -121,12 +121,12 @@ const CircuitBoard: React.FC = () => {
       const boardElement = boardRef.current;
       if (boardElement) {
         const rect = boardElement.getBoundingClientRect();
-        const newScale = clamp(scaleRef.current + delta, 0.5, 5);
-        const deltaScale = newScale - scaleRef.current;
+        const newScale = clamp(scale + delta, 0.5, 5);
+        const deltaScale = newScale - scale;
 
         const cursorOffset = {
-          x: (cursorX - rect.left) / scaleRef.current + panPosition.x,
-          y: (cursorY - rect.top) / scaleRef.current + panPosition.y,
+          x: (cursorX - rect.left) / scale + panPosition.x,
+          y: (cursorY - rect.top) / scale + panPosition.y,
         };
 
         const offsetByCursor = {
@@ -142,23 +142,21 @@ const CircuitBoard: React.FC = () => {
         // Update the pan position
         movePan(newPan);
         // Update the scale
-        scaleRef.current = newScale;
         setScale(newScale);
       }
     },
-    [scaleRef, setScale, panPosition, movePan]
+    [scale, panPosition, movePan, setScale]
   );
 
   const handleWheel = useCallback(
     (event: WheelEvent) => {
       event.preventDefault();
-      const scale = scaleRef.current;
 
       const delta = event.deltaY > 0 ? -scale * 0.1 : scale * 0.101010101010101; // Adjust the zoom step as needed
       handleZoom(delta, event.clientX, event.clientY);
       // Verify the new pan position
     },
-    [handleZoom]
+    [handleZoom, scale]
   );
 
   const handleMouseDown = useCallback(
@@ -168,8 +166,8 @@ const CircuitBoard: React.FC = () => {
         const boardElement = boardRef.current;
         if (boardElement) {
           const rect = boardElement.getBoundingClientRect();
-          const cursorX = Math.floor((event.clientX - rect.left - 4) / gridSize / scaleRef.current) + 1;
-          const cursorY = Math.floor((event.clientY - rect.top - 4) / gridSize / scaleRef.current) + 1;
+          const cursorX = Math.floor((event.clientX - rect.left - 4) / gridSize / scale) + 1;
+          const cursorY = Math.floor((event.clientY - rect.top - 4) / gridSize / scale) + 1;
           console.log(`Mouse position (gridCoordinates): x: ${cursorX}, y: ${cursorY}`);
         }
       }
@@ -180,7 +178,7 @@ const CircuitBoard: React.FC = () => {
         setStartMousePosition({ x: event.clientX, y: event.clientY });
       }
     },
-    [panPosition, gridSize]
+    [panPosition, gridSize, scale]
   );
 
   const handleMouseUp = useCallback(() => {
@@ -233,7 +231,7 @@ const CircuitBoard: React.FC = () => {
   const handleMouseMove = useCallback(
     (event: MouseEvent) => {
       if (isPanning) {
-        const currentScale = scaleRef.current;
+        const currentScale = scale;
         const deltaX = (event.clientX - startMousePosition.x) / currentScale;
         const deltaY = (event.clientY - startMousePosition.y) / currentScale;
         const newPan = {
@@ -243,7 +241,7 @@ const CircuitBoard: React.FC = () => {
         movePan(newPan);
       }
     },
-    [isPanning, startMousePosition, startPanPosition, movePan]
+    [isPanning, startMousePosition, startPanPosition, movePan, scale]
   );
 
   useEffect(() => {

@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { addElement } from "../store/circuitSlice";
 import { v4 as uuidv4 } from "uuid";
 import { type CircuitElementProps } from "../store/circuitSlice";
+import { useCanvasContext } from "../context/CanvasContext";
 
 const Toolbox: React.FC = () => {
   const dispatch = useDispatch();
@@ -13,6 +14,7 @@ const Toolbox: React.FC = () => {
   const [rotation, setRotation] = useState(0);
   const [shift, setShift] = useState(false);
   const [gridSize] = useState(32);
+  const { scale } = useCanvasContext();
 
   useEffect(() => {
     const handleMouseUp = (event: MouseEvent) => {
@@ -81,7 +83,7 @@ const Toolbox: React.FC = () => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
     };
-  }, [isPlacing, elementToPlace, dispatch, rotation, gridSize, shift]);
+  }, [isPlacing, elementToPlace, dispatch, rotation, gridSize, shift, scale]);
 
   const handleAddElement = (element: { [key: string]: string | number[] }) => {
     const type = element.type as string;
@@ -126,6 +128,7 @@ const Toolbox: React.FC = () => {
 
   return (
     <div style={{ zIndex: 100 }}>
+      <p style={{ alignContent: "left", background: "white" }}>Current scale is {scale}</p>
       <button
         onClick={() =>
           handleAddElement({
