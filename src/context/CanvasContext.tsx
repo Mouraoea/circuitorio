@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode, useRef } from "react";
+import React, { createContext, useContext, useState, useRef, ReactNode } from "react";
 import { CircuitElementProps } from "../store/circuitSlice";
 
 interface CanvasContextProps {
@@ -12,7 +12,6 @@ interface CanvasContextProps {
   isPanning: boolean;
   setIsPanning: (value: boolean) => void;
   boardRef: React.RefObject<HTMLDivElement>;
-  setBoardRef: (value: React.RefObject<HTMLDivElement>) => void;
   keyState: KeyStateKeys;
   setKeyState: (value: Partial<KeyStateKeys>) => void;
   isLeftDrawerOpen: boolean;
@@ -23,6 +22,8 @@ interface CanvasContextProps {
   setDrawerFrom: (value: "left" | "right") => void;
   cursorPosition: { x: number; y: number };
   setCursorPosition: (value: { x: number; y: number }) => void;
+  cursorGridPosition: { x: number; y: number };
+  setCursorGridPosition: (value: { x: number; y: number }) => void;
   placingPosition: { x: number; y: number };
   setPlacingPosition: (value: { x: number; y: number }) => void;
   elementToPlace: CircuitElementProps | null;
@@ -42,12 +43,7 @@ export const CanvasProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   const [gridHeight] = useState(100);
   const [gridWidth] = useState(200);
   const [isPanning, setIsPanning] = useState(false);
-  let boardRef = useRef<HTMLDivElement>(null);
-  const setBoardRef = (value: React.RefObject<HTMLDivElement>) => {
-    if (value) {
-      boardRef = value;
-    }
-  };
+  const boardRef = useRef<HTMLDivElement>(null);
   const [keyState, setKeyState] = useState<KeyStateKeys>({
     a: false,
     b: false,
@@ -124,6 +120,7 @@ export const CanvasProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   const [isRightDrawerOpen, setIsRightDrawerOpen] = useState(false);
   const [drawerFrom, setDrawerFrom] = useState<"left" | "right">("left");
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
+  const [cursorGridPosition, setCursorGridPosition] = useState({ x: 0, y: 0 });
   const [placingPosition, setPlacingPosition] = useState({ x: 0, y: 0 });
   const [elementToPlace, setElementToPlace] = useState<CircuitElementProps | null>(null);
   const [isPlacing, setIsPlacing] = useState(false);
@@ -142,7 +139,6 @@ export const CanvasProvider: React.FC<{ children: ReactNode }> = ({ children }) 
         isPanning,
         setIsPanning,
         boardRef,
-        setBoardRef,
         keyState,
         setKeyState: updateKeyState,
         isLeftDrawerOpen,
@@ -153,6 +149,8 @@ export const CanvasProvider: React.FC<{ children: ReactNode }> = ({ children }) 
         setDrawerFrom,
         cursorPosition,
         setCursorPosition,
+        cursorGridPosition,
+        setCursorGridPosition,
         placingPosition,
         setPlacingPosition,
         elementToPlace,
