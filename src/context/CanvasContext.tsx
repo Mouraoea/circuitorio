@@ -1,59 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode, useRef } from "react";
 
-export interface KeyStateKeys {
-  a: boolean;
-  b: boolean;
-  c: boolean;
-  d: boolean;
-  e: boolean;
-  f: boolean;
-  g: boolean;
-  h: boolean;
-  i: boolean;
-  j: boolean;
-  k: boolean;
-  l: boolean;
-  m: boolean;
-  n: boolean;
-  o: boolean;
-  p: boolean;
-  q: boolean;
-  r: boolean;
-  s: boolean;
-  t: boolean;
-  u: boolean;
-  v: boolean;
-  w: boolean;
-  x: boolean;
-  y: boolean;
-  z: boolean;
-  "1": boolean;
-  "2": boolean;
-  "3": boolean;
-  "4": boolean;
-  "5": boolean;
-  "6": boolean;
-  "7": boolean;
-  "8": boolean;
-  "9": boolean;
-  "0": boolean;
-  "-": boolean;
-  "=": boolean;
-  "[": boolean;
-  "]": boolean;
-  "\\": boolean;
-  ";": boolean;
-  "'": boolean;
-  ",": boolean;
-  ".": boolean;
-  "/": boolean;
-  " ": boolean;
-  shift: boolean;
-  control: boolean;
-  alt: boolean;
-  meta: boolean;
-}
-
 interface CanvasContextProps {
   scale: number;
   setScale: (value: number) => void;
@@ -68,6 +14,10 @@ interface CanvasContextProps {
   setBoardRef: (value: React.RefObject<HTMLDivElement>) => void;
   keyState: KeyStateKeys;
   setKeyState: (value: Partial<KeyStateKeys>) => void;
+  isDrawerOpen: boolean;
+  setIsDrawerOpen: (value: boolean) => void;
+  drawerFrom: "left" | "right";
+  setDrawerFrom: (value: "left" | "right") => void;
 }
 
 const CanvasContext = createContext<CanvasContextProps | undefined>(undefined);
@@ -138,14 +88,33 @@ export const CanvasProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     alt: false,
     meta: false,
   });
-
   const updateKeyState = (value: Partial<KeyStateKeys>) => {
     setKeyState((prevState) => ({ ...prevState, ...value }));
   };
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [drawerFrom, setDrawerFrom] = useState<"left" | "right">("left");
 
   return (
     <CanvasContext.Provider
-      value={{ scale, setScale, panPosition, setPanPosition, gridSize, gridHeight, gridWidth, isPanning, setIsPanning, boardRef, setBoardRef, keyState, setKeyState: updateKeyState }}
+      value={{
+        scale,
+        setScale,
+        panPosition,
+        setPanPosition,
+        gridSize,
+        gridHeight,
+        gridWidth,
+        isPanning,
+        setIsPanning,
+        boardRef,
+        setBoardRef,
+        keyState,
+        setKeyState: updateKeyState,
+        isDrawerOpen,
+        setIsDrawerOpen,
+        drawerFrom,
+        setDrawerFrom,
+      }}
     >
       {children}
     </CanvasContext.Provider>
@@ -159,3 +128,57 @@ export const useCanvasContext = () => {
   }
   return context;
 };
+
+export interface KeyStateKeys {
+  a: boolean;
+  b: boolean;
+  c: boolean;
+  d: boolean;
+  e: boolean;
+  f: boolean;
+  g: boolean;
+  h: boolean;
+  i: boolean;
+  j: boolean;
+  k: boolean;
+  l: boolean;
+  m: boolean;
+  n: boolean;
+  o: boolean;
+  p: boolean;
+  q: boolean;
+  r: boolean;
+  s: boolean;
+  t: boolean;
+  u: boolean;
+  v: boolean;
+  w: boolean;
+  x: boolean;
+  y: boolean;
+  z: boolean;
+  "1": boolean;
+  "2": boolean;
+  "3": boolean;
+  "4": boolean;
+  "5": boolean;
+  "6": boolean;
+  "7": boolean;
+  "8": boolean;
+  "9": boolean;
+  "0": boolean;
+  "-": boolean;
+  "=": boolean;
+  "[": boolean;
+  "]": boolean;
+  "\\": boolean;
+  ";": boolean;
+  "'": boolean;
+  ",": boolean;
+  ".": boolean;
+  "/": boolean;
+  " ": boolean;
+  shift: boolean;
+  control: boolean;
+  alt: boolean;
+  meta: boolean;
+}
