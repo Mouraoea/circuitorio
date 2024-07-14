@@ -24,7 +24,6 @@ const Body: React.FC = () => {
     setCursorPosition,
     elementToPlace,
     isPlacing,
-    placingPosition,
     scale,
     setPlacingPosition,
     gridSize,
@@ -33,6 +32,9 @@ const Body: React.FC = () => {
     setElementToPlace,
     placingElementRotation,
     keyState,
+    boardRef,
+    panPosition,
+    setCursorGridPosition,
   } = useCanvasContext();
   const [leftDrawerContent, setLeftDrawerContent] = useState<React.ReactNode>(null);
   const [rightDrawerContent, setRightDrawerContent] = useState<React.ReactNode>(null);
@@ -118,33 +120,39 @@ const Body: React.FC = () => {
     };
   };
 
-  const handleMouseUp = useCallback(
-    (event: MouseEvent) => {
-      if (event.button === 0) {
-        if (isPlacing && elementToPlace) {
-          const newElement = {
-            ...elementToPlace,
-            position: { x: Math.round(event.clientX / gridSize) * gridSize, y: Math.round(event.clientY / gridSize) * gridSize },
-            placingElementRotation,
-            id: uuidv4(),
-          };
+  // const handleMouseUp = useCallback(
+  //   (event: MouseEvent) => {
+  //     if (event.button === 0) {
+  //       if (isPlacing && elementToPlace) {
+  //         const newElement = {
+  //           ...elementToPlace,
+  //           position: { x: Math.floor(event.clientX / gridSize) * gridSize, y: Math.floor(event.clientY / gridSize) * gridSize },
+  //           placingElementRotation,
+  //           id: uuidv4(),
+  //         };
 
-          dispatch(addElement(newElement));
-          if (!keyState["Shift" as keyof KeyStateKeys]) {
-            setIsPlacing(false);
-            setPlacingElementRotation(0);
-            setElementToPlace(null);
-          }
-        }
-      }
-    },
-    [isPlacing, elementToPlace, dispatch, placingElementRotation, gridSize, setElementToPlace, setIsPlacing, keyState, setPlacingElementRotation]
-  );
+  //         dispatch(addElement(newElement));
+  //         if (!keyState["Shift" as keyof KeyStateKeys]) {
+  //           setIsPlacing(false);
+  //           setPlacingElementRotation(0);
+  //           setElementToPlace(null);
+  //         }
+  //       }
+  //     }
+  //   },
+  //   [isPlacing, elementToPlace, dispatch, placingElementRotation, gridSize, setElementToPlace, setIsPlacing, keyState, setPlacingElementRotation]
+  // );
 
   useEffect(() => {
     const handleMouseMove = (event: MouseEvent) => {
       setCursorPosition({ x: event.clientX, y: event.clientY });
-      setPlacingPosition({ x: Math.round(event.clientX / gridSize) * gridSize, y: Math.round(event.clientY / gridSize) * gridSize });
+      // const boardElement = boardRef.current;
+      // if (!boardElement) return;
+      // const rect = boardElement.getBoundingClientRect();
+      // const cursorX = Math.floor((event.clientX - rect.left - panPosition.x * scale - 1 * scale) / gridSize / scale) + 1;
+      // const cursorY = Math.floor((event.clientY - rect.top - panPosition.y * scale - 1 * scale) / gridSize / scale) + 1;
+      // setPlacingPosition({ x: (cursorX - 1) * 32, y: (cursorY - 1) * 32 });
+      // setCursorGridPosition({ x: cursorX, y: cursorY });
     };
 
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -197,11 +205,11 @@ const Body: React.FC = () => {
     };
     window.addEventListener("keydown", handleKeyDown);
     window.addEventListener("mousemove", handleMouseMove);
-    window.addEventListener("mouseup", handleMouseUp);
+    // window.addEventListener("mouseup", handleMouseUp);
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("mouseup", handleMouseUp);
+      // window.removeEventListener("mouseup", handleMouseUp);
     };
   }, [
     toggleDrawer,
@@ -218,11 +226,15 @@ const Body: React.FC = () => {
     setElementToPlace,
     keyState,
     dispatch,
-    handleMouseUp,
+    // handleMouseUp,
+    scale,
+    panPosition,
+    boardRef,
+    setCursorGridPosition,
   ]);
 
   return (
-    <div>
+    <div ref={boardRef}>
       <LeftDrawer isOpen={isLeftDrawerOpen} onClose={closeLeftDrawer}>
         <DrawerContent content={leftDrawerContent} />
       </LeftDrawer>
@@ -234,8 +246,8 @@ const Body: React.FC = () => {
         <div
           style={{
             position: "fixed",
-            left: placingPosition.x,
-            top: placingPosition.y,
+            left: 0,
+            top: 0,
             opacity: 0.5,
             pointerEvents: "none",
             transform: `translate(-50%, -50%) scale(${scale})`,
