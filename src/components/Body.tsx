@@ -1,18 +1,39 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { useDispatch } from "react-redux";
 import "../App.css";
 // import logo from "./logo.svg";
 import CircuitBoard from "./CircuitBoard";
 import LeftDrawer from "./LeftDrawer";
 import RightDrawer from "./RightDrawer";
 import DrawerContent from "./DrawerContent";
-import { useCanvasContext } from "../context/CanvasContext";
+import { useCanvasContext, type KeyStateKeys } from "../context/CanvasContext";
 import Toolbox from "./Toolbox";
 import Debug from "./Debug";
 import Settings from "./Settings";
 import Help from "./Help";
+import { v4 as uuidv4 } from "uuid";
+import { addElement } from "../store/circuitSlice";
 
 const Body: React.FC = () => {
-  const { isLeftDrawerOpen, setIsLeftDrawerOpen, isRightDrawerOpen, setIsRightDrawerOpen, setCursorPosition, elementToPlace, isPlacing, placingPosition, scale } = useCanvasContext();
+  const dispatch = useDispatch();
+  const {
+    isLeftDrawerOpen,
+    setIsLeftDrawerOpen,
+    isRightDrawerOpen,
+    setIsRightDrawerOpen,
+    setCursorPosition,
+    elementToPlace,
+    isPlacing,
+    placingPosition,
+    scale,
+    setPlacingPosition,
+    gridSize,
+    setIsPlacing,
+    setPlacingElementRotation,
+    setElementToPlace,
+    placingElementRotation,
+    keyState,
+  } = useCanvasContext();
   const [leftDrawerContent, setLeftDrawerContent] = useState<React.ReactNode>(null);
   const [rightDrawerContent, setRightDrawerContent] = useState<React.ReactNode>(null);
   const [leftOpenDrawerId, setLeftOpenDrawerId] = useState<string | null>(null);
@@ -97,9 +118,33 @@ const Body: React.FC = () => {
     };
   };
 
+  const handleMouseUp = useCallback(
+    (event: MouseEvent) => {
+      if (event.button === 0) {
+        if (isPlacing && elementToPlace) {
+          const newElement = {
+            ...elementToPlace,
+            position: { x: Math.round(event.clientX / gridSize) * gridSize, y: Math.round(event.clientY / gridSize) * gridSize },
+            placingElementRotation,
+            id: uuidv4(),
+          };
+
+          dispatch(addElement(newElement));
+          if (!keyState["Shift" as keyof KeyStateKeys]) {
+            setIsPlacing(false);
+            setPlacingElementRotation(0);
+            setElementToPlace(null);
+          }
+        }
+      }
+    },
+    [isPlacing, elementToPlace, dispatch, placingElementRotation, gridSize, setElementToPlace, setIsPlacing, keyState, setPlacingElementRotation]
+  );
+
   useEffect(() => {
     const handleMouseMove = (event: MouseEvent) => {
       setCursorPosition({ x: event.clientX, y: event.clientY });
+      setPlacingPosition({ x: Math.round(event.clientX / gridSize) * gridSize, y: Math.round(event.clientY / gridSize) * gridSize });
     };
 
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -129,14 +174,52 @@ const Body: React.FC = () => {
         closeRightDrawer();
         return;
       }
+      if (["q"].includes(event.key)) {
+        setIsPlacing(false); // Stop placing when 'q' is pressed
+        setPlacingElementRotation(0); // Reset placingElementRotation after placing
+        setElementToPlace(null); // Clear the element to be placed
+      } else if (event.key === "r" && isPlacing && elementToPlace) {
+        const newRotation = (placingElementRotation + 1) % 4;
+        const newSize = [elementToPlace.size[1], elementToPlace.size[0]];
+        const newSpriteOffset = [elementToPlace.spriteOffsetRef[newRotation * 2], elementToPlace.spriteOffsetRef[newRotation * 2 + 1]];
+        const newBackgroundSize = [elementToPlace.backgroundSizeRef[newRotation * 2], elementToPlace.backgroundSizeRef[newRotation * 2 + 1]];
+
+        setElementToPlace({
+          ...elementToPlace,
+          rotation: newRotation,
+          size: newSize,
+          spriteOffset: newSpriteOffset,
+          backgroundSize: newBackgroundSize,
+        });
+        setPlacingElementRotation(newRotation);
+        return;
+      }
     };
     window.addEventListener("keydown", handleKeyDown);
     window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", handleMouseUp);
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
     };
-  }, [toggleDrawer, setCursorPosition, closeLeftDrawer, closeRightDrawer]);
+  }, [
+    toggleDrawer,
+    setCursorPosition,
+    closeLeftDrawer,
+    closeRightDrawer,
+    gridSize,
+    setPlacingPosition,
+    elementToPlace,
+    isPlacing,
+    setIsPlacing,
+    placingElementRotation,
+    setPlacingElementRotation,
+    setElementToPlace,
+    keyState,
+    dispatch,
+    handleMouseUp,
+  ]);
 
   return (
     <div>

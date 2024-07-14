@@ -1,75 +1,13 @@
 // src/components/Toolbox.tsx
-import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { addElement } from "../store/circuitSlice";
-import { v4 as uuidv4 } from "uuid";
-import { useCanvasContext, type KeyStateKeys } from "../context/CanvasContext";
+import React from "react";
+import { useCanvasContext } from "../context/CanvasContext";
 
 type ToolboxProps = {
   closeLeftDrawer: () => void;
 };
 
 const Toolbox: React.FC<ToolboxProps> = ({ closeLeftDrawer }) => {
-  const dispatch = useDispatch();
-  const { scale, placingPosition, setPlacingPosition, elementToPlace, setElementToPlace, isPlacing, setIsPlacing, gridSize, keyState, placingElementRotation, setPlacingElementRotation } =
-    useCanvasContext();
-
-  useEffect(() => {
-    const handleMouseUp = (event: MouseEvent) => {
-      if (event.button === 0) {
-        if (isPlacing && elementToPlace) {
-          const newElement = {
-            ...elementToPlace,
-            position: { x: Math.round(event.clientX / gridSize) * gridSize, y: Math.round(event.clientY / gridSize) * gridSize },
-            placingElementRotation,
-            id: uuidv4(),
-          };
-
-          dispatch(addElement(newElement));
-          if (!keyState["Shift" as keyof KeyStateKeys]) {
-            setIsPlacing(false);
-            setPlacingElementRotation(0);
-            setElementToPlace(null);
-          }
-        }
-      }
-    };
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "q") {
-        setIsPlacing(false); // Stop placing when 'q' is pressed
-        setPlacingElementRotation(0); // Reset placingElementRotation after placing
-        setElementToPlace(null); // Clear the element to be placed
-      } else if (event.key === "r" && isPlacing && elementToPlace) {
-        const newRotation = (placingElementRotation + 1) % 4;
-        const newSize = [elementToPlace.size[1], elementToPlace.size[0]];
-        const newSpriteOffset = [elementToPlace.spriteOffsetRef[newRotation * 2], elementToPlace.spriteOffsetRef[newRotation * 2 + 1]];
-        const newBackgroundSize = [elementToPlace.backgroundSizeRef[newRotation * 2], elementToPlace.backgroundSizeRef[newRotation * 2 + 1]];
-
-        setElementToPlace({
-          ...elementToPlace,
-          rotation: newRotation,
-          size: newSize,
-          spriteOffset: newSpriteOffset,
-          backgroundSize: newBackgroundSize,
-        });
-        setPlacingElementRotation(newRotation);
-      }
-    };
-
-    const handleMouseMove = (event: MouseEvent) => {
-      setPlacingPosition({ x: Math.round(event.clientX / gridSize) * gridSize, y: Math.round(event.clientY / gridSize) * gridSize });
-    };
-
-    window.addEventListener("mouseup", handleMouseUp);
-    window.addEventListener("mousemove", handleMouseMove);
-    window.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      window.removeEventListener("mouseup", handleMouseUp);
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [isPlacing, elementToPlace, dispatch, placingElementRotation, gridSize, scale, placingPosition, setPlacingPosition, setElementToPlace, setIsPlacing, keyState, setPlacingElementRotation]);
+  const { setElementToPlace, setIsPlacing } = useCanvasContext();
 
   const handleAddElement = (element: { [key: string]: string | number[] }) => {
     const type = element.type as string;

@@ -14,6 +14,10 @@ const Help: React.FC = () => {
         <br />
         o: Debug
         <br />
+        q: Cancel Placement
+        <br />
+        r: Rotate
+        <br />
         F1/h: Help
         <br />
         F2: Settings
