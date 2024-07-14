@@ -9,9 +9,10 @@ import { useCanvasContext } from "../context/CanvasContext";
 import Toolbox from "./Toolbox";
 import Debug from "./Debug";
 import Settings from "./Settings";
+import Help from "./Help";
 
 const Body: React.FC = () => {
-  const { isLeftDrawerOpen, setIsLeftDrawerOpen, isRightDrawerOpen, setIsRightDrawerOpen } = useCanvasContext();
+  const { isLeftDrawerOpen, setIsLeftDrawerOpen, isRightDrawerOpen, setIsRightDrawerOpen, setCursorPosition } = useCanvasContext();
   const [leftDrawerContent, setLeftDrawerContent] = useState<React.ReactNode>(null);
   const [rightDrawerContent, setRightDrawerContent] = useState<React.ReactNode>(null);
   const [leftOpenDrawerId, setLeftOpenDrawerId] = useState<string | null>(null);
@@ -80,13 +81,24 @@ const Body: React.FC = () => {
   }, [setIsRightDrawerOpen]);
 
   useEffect(() => {
+    const handleMouseMove = (event: MouseEvent) => {
+      setCursorPosition({ x: event.clientX, y: event.clientY });
+    };
+
     const handleKeyDown = (event: KeyboardEvent) => {
       if (["o"].includes(event.key)) {
+        event.preventDefault();
         toggleDrawer("right", <Debug />, "debug");
         return;
       }
       if (["e"].includes(event.key)) {
+        event.preventDefault();
         toggleDrawer("left", <Toolbox />, "toolbox");
+        return;
+      }
+      if (["F1"].includes(event.key)) {
+        event.preventDefault();
+        toggleDrawer("right", <Help />, "help");
         return;
       }
       if (["F2"].includes(event.key)) {
@@ -96,10 +108,12 @@ const Body: React.FC = () => {
       }
     };
     window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("mousemove", handleMouseMove);
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("mousemove", handleMouseMove);
     };
-  }, [toggleDrawer]);
+  }, [toggleDrawer, setCursorPosition]);
 
   return (
     <div className="App" style={{ display: "flex", flexDirection: "column" }}>
@@ -109,7 +123,6 @@ const Body: React.FC = () => {
       <RightDrawer isOpen={isRightDrawerOpen} onClose={closeRightDrawer}>
         <DrawerContent content={rightDrawerContent} />
       </RightDrawer>
-
       <CircuitBoard />
     </div>
   );

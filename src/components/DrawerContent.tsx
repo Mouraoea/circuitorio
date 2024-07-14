@@ -5,12 +5,7 @@ interface DrawerContentProps {
 }
 
 const DrawerContent: React.FC<DrawerContentProps> = ({ content }) => {
-  return (
-    <div>
-      <h1>Drawer Content</h1>
-      {content}
-    </div>
-  );
+  return <div>{content}</div>;
 };
 
 export default DrawerContent;

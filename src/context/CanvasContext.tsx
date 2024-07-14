@@ -20,6 +20,10 @@ interface CanvasContextProps {
   setIsRightDrawerOpen: (value: boolean) => void;
   drawerFrom: "left" | "right";
   setDrawerFrom: (value: "left" | "right") => void;
+  cursorPosition: { x: number; y: number };
+  setCursorPosition: (value: { x: number; y: number }) => void;
+  placingPosition: { x: number; y: number };
+  setPlacingPosition: (value: { x: number; y: number }) => void;
 }
 
 const CanvasContext = createContext<CanvasContextProps | undefined>(undefined);
@@ -112,6 +116,8 @@ export const CanvasProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   const [isLeftDrawerOpen, setIsLeftDrawerOpen] = useState(false);
   const [isRightDrawerOpen, setIsRightDrawerOpen] = useState(false);
   const [drawerFrom, setDrawerFrom] = useState<"left" | "right">("left");
+  const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
+  const [placingPosition, setPlacingPosition] = useState({ x: 0, y: 0 });
 
   return (
     <CanvasContext.Provider
@@ -135,6 +141,10 @@ export const CanvasProvider: React.FC<{ children: ReactNode }> = ({ children }) 
         setIsRightDrawerOpen,
         drawerFrom,
         setDrawerFrom,
+        cursorPosition,
+        setCursorPosition,
+        placingPosition,
+        setPlacingPosition,
       }}
     >
       {children}

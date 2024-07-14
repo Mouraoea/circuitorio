@@ -10,11 +10,10 @@ const Toolbox: React.FC = () => {
   const dispatch = useDispatch();
   const [elementToPlace, setElementToPlace] = useState<CircuitElementProps | null>(null);
   const [isPlacing, setIsPlacing] = useState(false);
-  const [cursorPosition, setCursorPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [rotation, setRotation] = useState(0);
   const [shift, setShift] = useState(false);
   const [gridSize] = useState(32);
-  const { scale } = useCanvasContext();
+  const { scale, placingPosition, setPlacingPosition } = useCanvasContext();
 
   useEffect(() => {
     const handleMouseUp = (event: MouseEvent) => {
@@ -69,7 +68,7 @@ const Toolbox: React.FC = () => {
     };
 
     const handleMouseMove = (event: MouseEvent) => {
-      setCursorPosition({ x: Math.round(event.clientX / gridSize) * gridSize, y: Math.round(event.clientY / gridSize) * gridSize });
+      setPlacingPosition({ x: Math.round(event.clientX / gridSize) * gridSize, y: Math.round(event.clientY / gridSize) * gridSize });
     };
 
     window.addEventListener("mouseup", handleMouseUp);
@@ -83,7 +82,7 @@ const Toolbox: React.FC = () => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
     };
-  }, [isPlacing, elementToPlace, dispatch, rotation, gridSize, shift, scale]);
+  }, [isPlacing, elementToPlace, dispatch, rotation, gridSize, shift, scale, placingPosition, setPlacingPosition]);
 
   const handleAddElement = (element: { [key: string]: string | number[] }) => {
     const type = element.type as string;
@@ -127,8 +126,7 @@ const Toolbox: React.FC = () => {
   };
 
   return (
-    <div style={{ zIndex: 100 }}>
-      <p style={{ alignContent: "left", background: "white" }}>Current scale is {scale}</p>
+    <div>
       <button
         onClick={() =>
           handleAddElement({
@@ -178,8 +176,8 @@ const Toolbox: React.FC = () => {
         <div
           style={{
             position: "fixed",
-            left: cursorPosition.x,
-            top: cursorPosition.y,
+            left: placingPosition.x,
+            top: placingPosition.y,
             opacity: 0.5,
             pointerEvents: "none",
             transform: `translate(-50%, -50%) scale(${scale})`,
