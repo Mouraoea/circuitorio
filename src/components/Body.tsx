@@ -12,7 +12,7 @@ import Settings from "./Settings";
 import Help from "./Help";
 
 const Body: React.FC = () => {
-  const { isLeftDrawerOpen, setIsLeftDrawerOpen, isRightDrawerOpen, setIsRightDrawerOpen, setCursorPosition } = useCanvasContext();
+  const { isLeftDrawerOpen, setIsLeftDrawerOpen, isRightDrawerOpen, setIsRightDrawerOpen, setCursorPosition, elementToPlace, isPlacing, placingPosition, scale } = useCanvasContext();
   const [leftDrawerContent, setLeftDrawerContent] = useState<React.ReactNode>(null);
   const [rightDrawerContent, setRightDrawerContent] = useState<React.ReactNode>(null);
   const [leftOpenDrawerId, setLeftOpenDrawerId] = useState<string | null>(null);
@@ -84,6 +84,19 @@ const Body: React.FC = () => {
     setRightOpenDrawerId(null);
   }, [setIsRightDrawerOpen]);
 
+  const getBackgroundImage = () => {
+    if (!elementToPlace) {
+      return {};
+    }
+    return {
+      backgroundImage: `url("${elementToPlace.sprite}")`,
+      backgroundPosition: `${elementToPlace.spriteOffset[0]}px ${elementToPlace.spriteOffset[1]}px`,
+      backgroundSize: `${elementToPlace.spriteSize[0]}px ${elementToPlace.spriteSize[1]}px`,
+      width: `${elementToPlace.backgroundSize[0]}px`,
+      height: `${elementToPlace.backgroundSize[1] + 10}px`,
+    };
+  };
+
   useEffect(() => {
     const handleMouseMove = (event: MouseEvent) => {
       setCursorPosition({ x: event.clientX, y: event.clientY });
@@ -97,7 +110,7 @@ const Body: React.FC = () => {
       }
       if (["e"].includes(event.key)) {
         event.preventDefault();
-        toggleDrawer("left", <Toolbox />, "toolbox");
+        toggleDrawer("left", <Toolbox closeLeftDrawer={closeLeftDrawer} />, "toolbox");
         return;
       }
       if (["F1", "h"].includes(event.key)) {
@@ -133,7 +146,20 @@ const Body: React.FC = () => {
       <RightDrawer isOpen={isRightDrawerOpen} onClose={closeRightDrawer}>
         <DrawerContent content={rightDrawerContent} />
       </RightDrawer>
-      <CircuitBoard />
+      <CircuitBoard />{" "}
+      {isPlacing && elementToPlace && (
+        <div
+          style={{
+            position: "fixed",
+            left: placingPosition.x,
+            top: placingPosition.y,
+            opacity: 0.5,
+            pointerEvents: "none",
+            transform: `translate(-50%, -50%) scale(${scale})`,
+            ...getBackgroundImage(),
+          }}
+        ></div>
+      )}
     </div>
   );
 };

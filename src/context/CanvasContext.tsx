@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode, useRef } from "react";
+import { CircuitElementProps } from "../store/circuitSlice";
 
 interface CanvasContextProps {
   scale: number;
@@ -24,6 +25,12 @@ interface CanvasContextProps {
   setCursorPosition: (value: { x: number; y: number }) => void;
   placingPosition: { x: number; y: number };
   setPlacingPosition: (value: { x: number; y: number }) => void;
+  elementToPlace: CircuitElementProps | null;
+  setElementToPlace: (value: CircuitElementProps | null) => void;
+  isPlacing: boolean;
+  setIsPlacing: (value: boolean) => void;
+  placingElementRotation: number;
+  setPlacingElementRotation: (value: number) => void;
 }
 
 const CanvasContext = createContext<CanvasContextProps | undefined>(undefined);
@@ -118,6 +125,9 @@ export const CanvasProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   const [drawerFrom, setDrawerFrom] = useState<"left" | "right">("left");
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
   const [placingPosition, setPlacingPosition] = useState({ x: 0, y: 0 });
+  const [elementToPlace, setElementToPlace] = useState<CircuitElementProps | null>(null);
+  const [isPlacing, setIsPlacing] = useState(false);
+  const [placingElementRotation, setPlacingElementRotation] = useState(0);
 
   return (
     <CanvasContext.Provider
@@ -145,6 +155,12 @@ export const CanvasProvider: React.FC<{ children: ReactNode }> = ({ children }) 
         setCursorPosition,
         placingPosition,
         setPlacingPosition,
+        elementToPlace,
+        setElementToPlace,
+        isPlacing,
+        setIsPlacing,
+        placingElementRotation,
+        setPlacingElementRotation,
       }}
     >
       {children}
