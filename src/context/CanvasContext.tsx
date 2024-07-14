@@ -93,10 +93,10 @@ export const CanvasProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     control: false,
     alt: false,
     meta: false,
-    "arrow-up": false,
-    "arrow-down": false,
-    "arrow-left": false,
-    "arrow-right": false,
+    ArrowUp: false,
+    ArrowDown: false,
+    ArrowLeft: false,
+    ArrowRight: false,
     F1: false,
     F2: false,
     F3: false,
@@ -212,10 +212,10 @@ export interface KeyStateKeys {
   control: boolean;
   alt: boolean;
   meta: boolean;
-  "arrow-up": boolean;
-  "arrow-down": boolean;
-  "arrow-left": boolean;
-  "arrow-right": boolean;
+  ArrowUp: boolean;
+  ArrowDown: boolean;
+  ArrowLeft: boolean;
+  ArrowRight: boolean;
   F1: boolean;
   F2: boolean;
   F3: boolean;

@@ -128,16 +128,16 @@ const CircuitBoard: React.FC = () => {
   }, [setIsPanning]);
 
   useEffect(() => {
-    const step = 15;
+    const step = 32 / scale; // Adjust the step for smoother or slower panning
 
     const updatePan = () => {
       let deltaX = 0;
       let deltaY = 0;
 
-      if (keyState.a) deltaX += step;
-      if (keyState.d) deltaX -= step;
-      if (keyState.w) deltaY += step;
-      if (keyState.s) deltaY -= step;
+      if (keyState.a || keyState["ArrowLeft"]) deltaX += step;
+      if (keyState.d || keyState["ArrowRight"]) deltaX -= step;
+      if (keyState.w || keyState["ArrowUp"]) deltaY += step;
+      if (keyState.s || keyState["ArrowDown"]) deltaY -= step;
 
       if (deltaX !== 0 || deltaY !== 0) {
         const newPan = { x: panPosition.x + deltaX, y: panPosition.y + deltaY };
@@ -148,7 +148,7 @@ const CircuitBoard: React.FC = () => {
     const handleKeyDown = (event: KeyboardEvent) => {
       const key = event.key as keyof KeyStateKeys;
       setKeyState({ [key]: true });
-      if (["a", "s", "d", "w"].includes(event.key)) {
+      if (["a", "s", "d", "w", "ArrowLeft", "ArrowDown", "ArrowRight", "ArrowUp"].includes(event.key)) {
         updatePan();
       }
     };
@@ -168,7 +168,7 @@ const CircuitBoard: React.FC = () => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
     };
-  }, [keyState, setPanPosition, panPosition, movePan, setKeyState]);
+  }, [keyState, setPanPosition, panPosition, movePan, setKeyState, scale]);
 
   const handleMouseMove = useCallback(
     (event: MouseEvent) => {

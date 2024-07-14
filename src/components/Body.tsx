@@ -100,7 +100,7 @@ const Body: React.FC = () => {
         toggleDrawer("left", <Toolbox />, "toolbox");
         return;
       }
-      if (["F1"].includes(event.key)) {
+      if (["F1", "h"].includes(event.key)) {
         event.preventDefault();
         toggleDrawer("right", <Help />, "help");
         return;
