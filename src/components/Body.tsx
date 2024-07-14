@@ -74,10 +74,14 @@ const Body: React.FC = () => {
 
   const closeLeftDrawer = useCallback(() => {
     setIsLeftDrawerOpen(false);
+    setLeftDrawerContent(null);
+    setLeftOpenDrawerId(null);
   }, [setIsLeftDrawerOpen]);
 
   const closeRightDrawer = useCallback(() => {
     setIsRightDrawerOpen(false);
+    setRightDrawerContent(null);
+    setRightOpenDrawerId(null);
   }, [setIsRightDrawerOpen]);
 
   useEffect(() => {
@@ -119,7 +123,7 @@ const Body: React.FC = () => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("mousemove", handleMouseMove);
     };
-  }, [toggleDrawer, setCursorPosition]);
+  }, [toggleDrawer, setCursorPosition, closeLeftDrawer, closeRightDrawer]);
 
   return (
     <div>
