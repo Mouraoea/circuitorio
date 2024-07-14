@@ -9,68 +9,15 @@ import { gridSnap } from "../utils/gridSnap";
 import { setNewPosition } from "../utils/setNewPosition";
 import { clamp } from "../utils/clamp"; // Import the clamp function
 import "./CircuitBoard.css";
-import { useCanvasContext } from "../context/CanvasContext";
+import { useCanvasContext, type KeyStateKeys } from "../context/CanvasContext";
 
 const CircuitBoard: React.FC = () => {
   const dispatch = useDispatch();
   const elements = useSelector((state: RootState) => state.circuit.elements);
-  const { scale, setScale, panPosition, setPanPosition, gridSize, gridHeight, gridWidth, isPanning, setIsPanning } = useCanvasContext();
+  const { scale, setScale, panPosition, setPanPosition, gridSize, gridHeight, gridWidth, isPanning, setIsPanning, keyState, setKeyState } = useCanvasContext();
   const [startPanPosition, setStartPanPosition] = useState({ x: 0, y: 0 });
   const [startMousePosition, setStartMousePosition] = useState({ x: 0, y: 0 });
   const boardRef = useRef<HTMLDivElement | null>(null);
-  const [keyState, setKeyState] = useState<{ [key: string]: boolean }>({
-    a: false,
-    s: false,
-    d: false,
-    w: false,
-    q: false,
-    e: false,
-    r: false,
-    f: false,
-    g: false,
-    z: false,
-    x: false,
-    c: false,
-    v: false,
-    b: false,
-    t: false,
-    y: false,
-    u: false,
-    i: false,
-    o: false,
-    p: false,
-    h: false,
-    j: false,
-    k: false,
-    l: false,
-    n: false,
-    m: false,
-    "1": false,
-    "2": false,
-    "3": false,
-    "4": false,
-    "5": false,
-    "6": false,
-    "7": false,
-    "8": false,
-    "9": false,
-    "0": false,
-    "-": false,
-    "=": false,
-    "[": false,
-    "]": false,
-    "\\": false,
-    ";": false,
-    "'": false,
-    ",": false,
-    ".": false,
-    "/": false,
-    shift: false,
-    control: false,
-    alt: false,
-    meta: false,
-  });
-
   const [, drop] = useDrop(() => ({
     accept: "CIRCUIT_ELEMENT",
     drop: (item: CircuitElementProps, monitor) => {
@@ -108,7 +55,7 @@ const CircuitBoard: React.FC = () => {
         }
       }
     },
-    [setPanPosition, panPosition, gridSize, gridWidth, gridHeight, scale]
+    [setPanPosition, panPosition, gridSize, gridWidth, gridHeight, scale, boardRef]
   );
 
   const handleZoom = useCallback(
@@ -140,7 +87,7 @@ const CircuitBoard: React.FC = () => {
         setScale(newScale);
       }
     },
-    [scale, panPosition, movePan, setScale]
+    [scale, panPosition, movePan, setScale, boardRef]
   );
 
   const handleWheel = useCallback(
@@ -173,15 +120,15 @@ const CircuitBoard: React.FC = () => {
         setStartMousePosition({ x: event.clientX, y: event.clientY });
       }
     },
-    [panPosition, gridSize, scale, setIsPanning]
+    [panPosition, gridSize, scale, setIsPanning, setStartPanPosition, setStartMousePosition, boardRef]
   );
 
   const handleMouseUp = useCallback(() => {
     setIsPanning(false);
-  }, []);
+  }, [setIsPanning]);
 
   useEffect(() => {
-    const step = 10;
+    const step = 15;
 
     const updatePan = () => {
       let deltaX = 0;
@@ -199,17 +146,17 @@ const CircuitBoard: React.FC = () => {
     };
 
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (["a", "s", "d", "w"].includes(event.key) && !keyState[event.key]) {
-        setKeyState((prevKeyState) => ({ ...prevKeyState, [event.key]: true }));
+      const key = event.key as keyof KeyStateKeys;
+      setKeyState({ [key]: true });
+      if (["a", "s", "d", "w"].includes(event.key)) {
         updatePan();
       }
     };
 
-    const handleKeyUp = (event: KeyboardEvent) => {
-      if (["a", "s", "d", "w"].includes(event.key)) {
-        setKeyState((prevKeyState) => ({ ...prevKeyState, [event.key]: false }));
-      }
-    };
+    function handleKeyUp(event: KeyboardEvent) {
+      const key = event.key as keyof KeyStateKeys;
+      setKeyState({ [key]: false });
+    }
 
     const panInterval = setInterval(updatePan, 50); // Adjust the interval for smoother or slower panning
 
@@ -221,7 +168,7 @@ const CircuitBoard: React.FC = () => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
     };
-  }, [keyState, setPanPosition, panPosition, movePan]);
+  }, [keyState, setPanPosition, panPosition, movePan, setKeyState]);
 
   const handleMouseMove = useCallback(
     (event: MouseEvent) => {
@@ -252,7 +199,7 @@ const CircuitBoard: React.FC = () => {
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseup", handleMouseUp);
     };
-  }, [handleWheel, handleMouseDown, handleMouseMove, handleMouseUp]);
+  }, [handleWheel, handleMouseDown, handleMouseMove, handleMouseUp, boardRef]);
 
   return (
     <div
