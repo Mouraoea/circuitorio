@@ -52,8 +52,6 @@ const Body: React.FC = () => {
 
   return (
     <div className="App" style={{ display: "flex", flexDirection: "column" }}>
-      <button onClick={() => toggleDrawer("left", <Toolbox />)}>Toolbox</button>
-      <button onClick={() => toggleDrawer("right", <Debug />)}>Debug</button>
       <Drawer isOpen={isDrawerOpen} onClose={closeDrawer} from={drawerFrom}>
         <DrawerContent content={drawerContent} />
       </Drawer>
