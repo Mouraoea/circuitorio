@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
+import "../App.css";
 // import logo from "./logo.svg";
 import CircuitBoard from "./CircuitBoard";
-import "../App.css";
 import LeftDrawer from "./LeftDrawer";
 import RightDrawer from "./RightDrawer";
 import DrawerContent from "./DrawerContent";
@@ -116,7 +116,7 @@ const Body: React.FC = () => {
   }, [toggleDrawer, setCursorPosition]);
 
   return (
-    <div className="App" style={{ display: "flex", flexDirection: "column" }}>
+    <div>
       <LeftDrawer isOpen={isLeftDrawerOpen} onClose={closeLeftDrawer}>
         <DrawerContent content={leftDrawerContent} />
       </LeftDrawer>

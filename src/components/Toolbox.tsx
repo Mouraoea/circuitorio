@@ -127,64 +127,70 @@ const Toolbox: React.FC = () => {
 
   return (
     <div>
-      <button
-        onClick={() =>
-          handleAddElement({
-            name: "Arithmetic Combinator",
-            type: "entity",
-            size: [2, 1],
-            sprite: "./circuitorio/img/base/graphics/hr-arithmetic-combinator.png",
-            spriteSize: [297, 64],
-            spriteOffsetRef: [-76, 0, -169, 15, -228, 0, -20, 12],
-            backgroundSizeRef: [64, 32, 36, 54, 64, 32, 36, 54],
-          })
-        }
-      >
-        Arithmetic Combinator
-      </button>
-      <button
-        onClick={() =>
-          handleAddElement({
-            name: "Decider Combinator",
-            type: "entity",
-            size: [2, 1],
-            sprite: "./circuitorio/img/base/graphics/hr-decider-combinator.png",
-            spriteSize: [312, 64],
-            spriteOffsetRef: [-80, 0, -178, 11, -241, 0, -22, 12],
-            backgroundSizeRef: [64, 32, 36, 54, 64, 32, 36, 54],
-          })
-        }
-      >
-        Decider Combinator
-      </button>
-      <button
-        onClick={() =>
-          handleAddElement({
-            name: "Constant Combinator",
-            type: "entity",
-            size: [1, 1],
-            sprite: "./circuitorio/img/base/graphics/hr-constant-combinator.png",
-            spriteSize: [228, 54],
-            spriteOffsetRef: [-68, 2, -127, 2, -182, 2, -12, 2],
-            backgroundSizeRef: [36, 36, 36, 36, 40, 36, 36, 36],
-          })
-        }
-      >
-        Constant Combinator
-      </button>
-      {isPlacing && elementToPlace && (
-        <div
-          style={{
-            position: "fixed",
-            left: placingPosition.x,
-            top: placingPosition.y,
-            opacity: 0.5,
-            pointerEvents: "none",
-            transform: `translate(-50%, -50%) scale(${scale})`,
-            ...getBackgroundImage(),
-          }}
-        ></div>
-      )}
+      <div className="flex-space-between">
+        <h2>Insert</h2>
+      </div>
+      <div className="panel-inset mb0 mt0"></div>
+      <div className="panel-inset-lighter mt0">
+        <button
+          onClick={() =>
+            handleAddElement({
+              name: "Arithmetic Combinator",
+              type: "entity",
+              size: [2, 1],
+              sprite: "./circuitorio/img/base/graphics/hr-arithmetic-combinator.png",
+              spriteSize: [297, 64],
+              spriteOffsetRef: [-76, 0, -169, 15, -228, 0, -20, 12],
+              backgroundSizeRef: [64, 32, 36, 54, 64, 32, 36, 54],
+            })
+          }
+        >
+          Arithmetic Combinator
+        </button>
+        <button
+          onClick={() =>
+            handleAddElement({
+              name: "Decider Combinator",
+              type: "entity",
+              size: [2, 1],
+              sprite: "./circuitorio/img/base/graphics/hr-decider-combinator.png",
+              spriteSize: [312, 64],
+              spriteOffsetRef: [-80, 0, -178, 11, -241, 0, -22, 12],
+              backgroundSizeRef: [64, 32, 36, 54, 64, 32, 36, 54],
+            })
+          }
+        >
+          Decider Combinator
+        </button>
+        <button
+          onClick={() =>
+            handleAddElement({
+              name: "Constant Combinator",
+              type: "entity",
+              size: [1, 1],
+              sprite: "./circuitorio/img/base/graphics/hr-constant-combinator.png",
+              spriteSize: [228, 54],
+              spriteOffsetRef: [-68, 2, -127, 2, -182, 2, -12, 2],
+              backgroundSizeRef: [36, 36, 36, 36, 40, 36, 36, 36],
+            })
+          }
+        >
+          Constant Combinator
+        </button>
+        {isPlacing && elementToPlace && (
+          <div
+            style={{
+              position: "fixed",
+              left: placingPosition.x,
+              top: placingPosition.y,
+              opacity: 0.5,
+              pointerEvents: "none",
+              transform: `translate(-50%, -50%) scale(${scale})`,
+              ...getBackgroundImage(),
+            }}
+          ></div>
+        )}
+      </div>
     </div>
   );
 };

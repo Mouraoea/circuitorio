@@ -64,7 +64,7 @@ const RightDrawer: React.FC<DrawerProps> = ({ isOpen, onClose, children }) => {
     <>
       {/* <Overlay isOpen={isOpen} onClick={handleOverlayClick} /> */}
       {visible && (
-        <DrawerContainer isOpen={isOpen} onTransitionEnd={handleTransitionEnd}>
+        <DrawerContainer className="panel" isOpen={isOpen} onTransitionEnd={handleTransitionEnd}>
           <CloseButton onClick={onClose}>X</CloseButton>
           {children}
         </DrawerContainer>
