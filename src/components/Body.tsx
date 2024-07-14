@@ -106,6 +106,12 @@ const Body: React.FC = () => {
         toggleDrawer("left", <Settings />, "settings");
         return;
       }
+      if (["Escape"].includes(event.key)) {
+        event.preventDefault();
+        closeLeftDrawer();
+        closeRightDrawer();
+        return;
+      }
     };
     window.addEventListener("keydown", handleKeyDown);
     window.addEventListener("mousemove", handleMouseMove);
