@@ -13,6 +13,7 @@ import Settings from "./Settings";
 import Help from "./Help";
 import { v4 as uuidv4 } from "uuid";
 import { addElement } from "../store/circuitSlice";
+import { clamp } from "../utils/clamp";
 
 const Body: React.FC = () => {
   const dispatch = useDispatch();
@@ -24,7 +25,10 @@ const Body: React.FC = () => {
     setCursorPosition,
     elementToPlace,
     isPlacing,
+    isPanning,
+    setIsPanning,
     scale,
+    setScale,
     setPlacingPosition,
     gridSize,
     setIsPlacing,
@@ -32,14 +36,20 @@ const Body: React.FC = () => {
     setElementToPlace,
     placingElementRotation,
     keyState,
+    setKeyState,
     boardRef,
     panPosition,
+    setPanPosition,
     setCursorGridPosition,
+    gridHeight,
+    gridWidth,
   } = useCanvasContext();
   const [leftDrawerContent, setLeftDrawerContent] = useState<React.ReactNode>(null);
   const [rightDrawerContent, setRightDrawerContent] = useState<React.ReactNode>(null);
   const [leftOpenDrawerId, setLeftOpenDrawerId] = useState<string | null>(null);
   const [rightOpenDrawerId, setRightOpenDrawerId] = useState<string | null>(null);
+  const [startMousePosition, setStartMousePosition] = useState({ x: 0, y: 0 });
+  const [startPanPosition, setStartPanPosition] = useState({ x: 0, y: 0 });
 
   const toggleDrawer = useCallback(
     (side: "left" | "right", content: React.ReactNode, id: string) => {
@@ -120,42 +130,165 @@ const Body: React.FC = () => {
     };
   };
 
-  // const handleMouseUp = useCallback(
-  //   (event: MouseEvent) => {
-  //     if (event.button === 0) {
-  //       if (isPlacing && elementToPlace) {
-  //         const newElement = {
-  //           ...elementToPlace,
-  //           position: { x: Math.floor(event.clientX / gridSize) * gridSize, y: Math.floor(event.clientY / gridSize) * gridSize },
-  //           placingElementRotation,
-  //           id: uuidv4(),
-  //         };
+  const movePan = useCallback(
+    (position: { x: number; y: number }) => {
+      const boardElement = boardRef.current;
+      if (boardElement) {
+        const rect = boardElement.getBoundingClientRect();
+        const parentRect = boardElement.parentElement?.getBoundingClientRect();
+        const viewPortSize = {
+          width: ((window.innerWidth - rect.left) / scale + panPosition.x) / gridSize,
+          height: ((window.innerHeight - rect.top) / scale + panPosition.y) / gridSize,
+        };
+        const panMinLimits = {
+          x: (viewPortSize.width - gridWidth) * gridSize,
+          y: (viewPortSize.height - gridHeight) * gridSize,
+        };
+        if (parentRect) {
+          const panLimits = {
+            minX: panMinLimits.x,
+            maxX: 0,
+            minY: panMinLimits.y,
+            maxY: 0,
+          };
+          setPanPosition({
+            x: clamp(position.x, panLimits.minX, panLimits.maxX),
+            y: clamp(position.y, panLimits.minY, panLimits.maxY),
+          });
+        }
+      }
+    },
+    [setPanPosition, panPosition, gridSize, gridWidth, gridHeight, scale, boardRef]
+  );
 
-  //         dispatch(addElement(newElement));
-  //         if (!keyState["Shift" as keyof KeyStateKeys]) {
-  //           setIsPlacing(false);
-  //           setPlacingElementRotation(0);
-  //           setElementToPlace(null);
-  //         }
-  //       }
-  //     }
-  //   },
-  //   [isPlacing, elementToPlace, dispatch, placingElementRotation, gridSize, setElementToPlace, setIsPlacing, keyState, setPlacingElementRotation]
-  // );
+  const handleZoom = useCallback(
+    (delta: number, cursorX: number, cursorY: number) => {
+      const boardElement = boardRef.current;
+      if (boardElement) {
+        const rect = boardElement.getBoundingClientRect();
+        const newScale = clamp(scale + delta, 0.5, 5);
+        const deltaScale = newScale - scale;
+
+        const cursorOffset = {
+          x: (cursorX - rect.left) / scale + panPosition.x,
+          y: (cursorY - rect.top) / scale + panPosition.y,
+        };
+
+        const offsetByCursor = {
+          x: cursorOffset.x * deltaScale,
+          y: cursorOffset.y * deltaScale,
+        };
+
+        const newPan = {
+          x: panPosition.x - offsetByCursor.x / newScale,
+          y: panPosition.y - offsetByCursor.y / newScale,
+        };
+
+        // Update the pan position
+        movePan(newPan);
+        // Update the scale
+        setScale(newScale);
+      }
+    },
+    [scale, panPosition, movePan, setScale, boardRef]
+  );
+
+  const handleWheel = useCallback(
+    (event: WheelEvent) => {
+      event.preventDefault();
+
+      const delta = event.deltaY > 0 ? -scale * 0.1 : scale * 0.101010101010101; // Adjust the zoom step as needed
+      handleZoom(delta, event.clientX, event.clientY);
+      // Verify the new pan position
+    },
+    [handleZoom, scale]
+  );
+
+  const handleMouseDown = useCallback(
+    (event: MouseEvent) => {
+      if (event.button === 1) {
+        event.preventDefault();
+        setIsPanning(true);
+        setStartPanPosition(panPosition);
+        setStartMousePosition({ x: event.clientX, y: event.clientY });
+      }
+    },
+    [panPosition, setIsPanning]
+  );
+
+  const handleMouseUp = useCallback(
+    (event: MouseEvent) => {
+      setIsPanning(false);
+      if (event.button === 0) {
+        if (isPlacing && elementToPlace) {
+          const newElement = {
+            ...elementToPlace,
+            position: { x: Math.floor(event.clientX / gridSize) * gridSize, y: Math.floor(event.clientY / gridSize) * gridSize },
+            placingElementRotation,
+            id: uuidv4(),
+          };
+
+          dispatch(addElement(newElement));
+          if (!keyState["Shift" as keyof KeyStateKeys]) {
+            setIsPlacing(false);
+            setPlacingElementRotation(0);
+            setElementToPlace(null);
+          }
+        }
+      }
+    },
+    [isPlacing, elementToPlace, dispatch, placingElementRotation, gridSize, setElementToPlace, setIsPlacing, keyState, setPlacingElementRotation, setIsPanning]
+  );
+
+  const updatePan = useCallback(() => {
+    const step = 32 / scale; // Adjust the step for smoother or slower panning
+    let deltaX = 0;
+    let deltaY = 0;
+
+    if (keyState.a || keyState["ArrowLeft"]) deltaX += step;
+    if (keyState.d || keyState["ArrowRight"]) deltaX -= step;
+    if (keyState.w || keyState["ArrowUp"]) deltaY += step;
+    if (keyState.s || keyState["ArrowDown"]) deltaY -= step;
+
+    if (deltaX !== 0 || deltaY !== 0) {
+      const newPan = { x: panPosition.x + deltaX, y: panPosition.y + deltaY };
+      movePan(newPan);
+    }
+  }, [keyState, panPosition, movePan, scale]);
 
   useEffect(() => {
     const handleMouseMove = (event: MouseEvent) => {
       setCursorPosition({ x: event.clientX, y: event.clientY });
-      // const boardElement = boardRef.current;
-      // if (!boardElement) return;
-      // const rect = boardElement.getBoundingClientRect();
-      // const cursorX = Math.floor((event.clientX - rect.left - panPosition.x * scale - 1 * scale) / gridSize / scale) + 1;
-      // const cursorY = Math.floor((event.clientY - rect.top - panPosition.y * scale - 1 * scale) / gridSize / scale) + 1;
-      // setPlacingPosition({ x: (cursorX - 1) * 32, y: (cursorY - 1) * 32 });
-      // setCursorGridPosition({ x: cursorX, y: cursorY });
+      const boardElement = boardRef.current;
+      if (!boardElement) return;
+      const rect = boardElement.getBoundingClientRect();
+      const cursorX = Math.floor((event.clientX - rect.left - panPosition.x * scale - 1 * scale) / gridSize / scale) + 1;
+      const cursorY = Math.floor((event.clientY - rect.top - panPosition.y * scale - 1 * scale) / gridSize / scale) + 1;
+      setPlacingPosition({ x: (cursorX - 1) * 32, y: (cursorY - 1) * 32 });
+      setCursorGridPosition({ x: cursorX, y: cursorY });
+      if (isPanning) {
+        const currentScale = scale;
+        const deltaX = (event.clientX - startMousePosition.x) / currentScale;
+        const deltaY = (event.clientY - startMousePosition.y) / currentScale;
+        const newPan = {
+          x: startPanPosition.x + deltaX,
+          y: startPanPosition.y + deltaY,
+        };
+        movePan(newPan);
+      }
     };
 
+    function handleKeyUp(event: KeyboardEvent) {
+      const key = event.key as keyof KeyStateKeys;
+      setKeyState({ [key]: false });
+    }
+
     const handleKeyDown = (event: KeyboardEvent) => {
+      const key = event.key as keyof KeyStateKeys;
+      setKeyState({ [key]: true });
+      if (["a", "s", "d", "w", "ArrowLeft", "ArrowDown", "ArrowRight", "ArrowUp"].includes(event.key)) {
+        updatePan();
+      }
       if (["o"].includes(event.key)) {
         event.preventDefault();
         toggleDrawer("right", <Debug />, "debug");
@@ -203,13 +336,22 @@ const Body: React.FC = () => {
         return;
       }
     };
+
+    const boardElement = boardRef.current;
     window.addEventListener("keydown", handleKeyDown);
+    boardElement?.addEventListener("wheel", handleWheel, { passive: false });
+    window.addEventListener("mouseup", handleMouseUp);
+    window.addEventListener("mousedown", handleMouseDown);
     window.addEventListener("mousemove", handleMouseMove);
-    // window.addEventListener("mouseup", handleMouseUp);
+    window.addEventListener("keyup", handleKeyUp);
+
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
+      boardElement?.removeEventListener("wheel", handleWheel);
+      window.removeEventListener("mouseup", handleMouseUp);
+      window.removeEventListener("mousedown", handleMouseDown);
       window.removeEventListener("mousemove", handleMouseMove);
-      // window.removeEventListener("mouseup", handleMouseUp);
+      window.removeEventListener("keyup", handleKeyUp);
     };
   }, [
     toggleDrawer,
@@ -226,11 +368,19 @@ const Body: React.FC = () => {
     setElementToPlace,
     keyState,
     dispatch,
-    // handleMouseUp,
     scale,
     panPosition,
     boardRef,
     setCursorGridPosition,
+    movePan,
+    isPanning,
+    startMousePosition,
+    startPanPosition,
+    handleWheel,
+    setKeyState,
+    handleMouseUp,
+    handleMouseDown,
+    updatePan,
   ]);
 
   return (
