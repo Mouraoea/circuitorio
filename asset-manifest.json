@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/circuitorio/static/css/main.f12d1cf1.css",
-    "main.js": "/circuitorio/static/js/main.b7de9c36.js",
+    "main.js": "/circuitorio/static/js/main.f323acac.js",
     "static/js/453.6367a1c1.chunk.js": "/circuitorio/static/js/453.6367a1c1.chunk.js",
     "index.html": "/circuitorio/index.html",
     "main.f12d1cf1.css.map": "/circuitorio/static/css/main.f12d1cf1.css.map",
-    "main.b7de9c36.js.map": "/circuitorio/static/js/main.b7de9c36.js.map",
+    "main.f323acac.js.map": "/circuitorio/static/js/main.f323acac.js.map",
     "453.6367a1c1.chunk.js.map": "/circuitorio/static/js/453.6367a1c1.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.f12d1cf1.css",
-    "static/js/main.b7de9c36.js"
+    "static/js/main.f323acac.js"
   ]
 }
