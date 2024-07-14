@@ -4,19 +4,18 @@ import styled from "styled-components";
 interface DrawerProps {
   isOpen: boolean;
   onClose: () => void;
-  from: "left" | "right";
   children: ReactNode;
 }
 
-const DrawerContainer = styled.div<{ isOpen: boolean; from: "left" | "right" }>`
+const DrawerContainer = styled.div<{ isOpen: boolean }>`
   position: fixed;
   top: 0;
-  ${(props) => (props.from === "left" ? "left: 0;" : "right: 0;")}
+  ${(props) => "left: 0;"}
   height: 100%;
   width: 300px;
   background-color: white;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
-  transform: ${(props) => (props.isOpen ? "translateX(0)" : props.from === "left" ? "translateX(-100%)" : "translateX(100%)")};
+  transform: ${(props) => (props.isOpen ? "translateX(0)" : "translateX(-100%)")};
   transition: transform 0.3s ease-in-out;
   z-index: 1000;
 `;
@@ -42,7 +41,7 @@ const CloseButton = styled.button`
   cursor: pointer;
 `;
 
-const Drawer: React.FC<DrawerProps> = ({ isOpen, onClose, from, children }) => {
+const LeftDrawer: React.FC<DrawerProps> = ({ isOpen, onClose, children }) => {
   const [visible, setVisible] = useState(isOpen);
 
   useEffect(() => {
@@ -65,7 +64,7 @@ const Drawer: React.FC<DrawerProps> = ({ isOpen, onClose, from, children }) => {
     <>
       {/* <Overlay isOpen={isOpen} onClick={handleOverlayClick} /> */}
       {visible && (
-        <DrawerContainer isOpen={isOpen} from={from} onTransitionEnd={handleTransitionEnd}>
+        <DrawerContainer isOpen={isOpen} onTransitionEnd={handleTransitionEnd}>
           <CloseButton onClick={onClose}>X</CloseButton>
           {children}
         </DrawerContainer>
@@ -74,4 +73,4 @@ const Drawer: React.FC<DrawerProps> = ({ isOpen, onClose, from, children }) => {
   );
 };
 
-export default Drawer;
+export default LeftDrawer;

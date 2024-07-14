@@ -14,8 +14,10 @@ interface CanvasContextProps {
   setBoardRef: (value: React.RefObject<HTMLDivElement>) => void;
   keyState: KeyStateKeys;
   setKeyState: (value: Partial<KeyStateKeys>) => void;
-  isDrawerOpen: boolean;
-  setIsDrawerOpen: (value: boolean) => void;
+  isLeftDrawerOpen: boolean;
+  setIsLeftDrawerOpen: (value: boolean) => void;
+  isRightDrawerOpen: boolean;
+  setIsRightDrawerOpen: (value: boolean) => void;
   drawerFrom: "left" | "right";
   setDrawerFrom: (value: "left" | "right") => void;
 }
@@ -87,11 +89,28 @@ export const CanvasProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     control: false,
     alt: false,
     meta: false,
+    "arrow-up": false,
+    "arrow-down": false,
+    "arrow-left": false,
+    "arrow-right": false,
+    F1: false,
+    F2: false,
+    F3: false,
+    F4: false,
+    F5: false,
+    F6: false,
+    F7: false,
+    F8: false,
+    F9: false,
+    F10: false,
+    F11: false,
+    F12: false,
   });
   const updateKeyState = (value: Partial<KeyStateKeys>) => {
     setKeyState((prevState) => ({ ...prevState, ...value }));
   };
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isLeftDrawerOpen, setIsLeftDrawerOpen] = useState(false);
+  const [isRightDrawerOpen, setIsRightDrawerOpen] = useState(false);
   const [drawerFrom, setDrawerFrom] = useState<"left" | "right">("left");
 
   return (
@@ -110,8 +129,10 @@ export const CanvasProvider: React.FC<{ children: ReactNode }> = ({ children }) 
         setBoardRef,
         keyState,
         setKeyState: updateKeyState,
-        isDrawerOpen,
-        setIsDrawerOpen,
+        isLeftDrawerOpen,
+        setIsLeftDrawerOpen,
+        isRightDrawerOpen,
+        setIsRightDrawerOpen,
         drawerFrom,
         setDrawerFrom,
       }}
@@ -181,4 +202,20 @@ export interface KeyStateKeys {
   control: boolean;
   alt: boolean;
   meta: boolean;
+  "arrow-up": boolean;
+  "arrow-down": boolean;
+  "arrow-left": boolean;
+  "arrow-right": boolean;
+  F1: boolean;
+  F2: boolean;
+  F3: boolean;
+  F4: boolean;
+  F5: boolean;
+  F6: boolean;
+  F7: boolean;
+  F8: boolean;
+  F9: boolean;
+  F10: boolean;
+  F11: boolean;
+  F12: boolean;
 }
