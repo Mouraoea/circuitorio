@@ -113,9 +113,6 @@ export const CanvasProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     F11: false,
     F12: false,
   });
-  const updateKeyState = (value: Partial<KeyStateKeys>) => {
-    setKeyState((prevState) => ({ ...prevState, ...value }));
-  };
   const [isLeftDrawerOpen, setIsLeftDrawerOpen] = useState(false);
   const [isRightDrawerOpen, setIsRightDrawerOpen] = useState(false);
   const [drawerFrom, setDrawerFrom] = useState<"left" | "right">("left");
@@ -125,6 +122,10 @@ export const CanvasProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   const [elementToPlace, setElementToPlace] = useState<CircuitElementProps | null>(null);
   const [isPlacing, setIsPlacing] = useState(false);
   const [placingElementRotation, setPlacingElementRotation] = useState(0);
+
+  const updateKeyState = (value: Partial<KeyStateKeys>) => {
+    setKeyState((prevKeyState) => ({ ...prevKeyState, ...value }));
+  };
 
   return (
     <CanvasContext.Provider

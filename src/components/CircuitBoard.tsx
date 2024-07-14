@@ -104,14 +104,6 @@ const CircuitBoard: React.FC = () => {
   const handleMouseDown = useCallback(
     (event: MouseEvent) => {
       if (event.button === 0) {
-        // Debug option - Print mouse position to console
-        const boardElement = boardRef.current;
-        if (boardElement) {
-          const rect = boardElement.getBoundingClientRect();
-          const cursorX = Math.floor((event.clientX - rect.left - 4) / gridSize / scale) + 1;
-          const cursorY = Math.floor((event.clientY - rect.top - 4) / gridSize / scale) + 1;
-          console.log(`Mouse position (gridCoordinates): x: ${cursorX}, y: ${cursorY}`);
-        }
       }
       if (event.button === 1) {
         event.preventDefault();
@@ -120,7 +112,7 @@ const CircuitBoard: React.FC = () => {
         setStartMousePosition({ x: event.clientX, y: event.clientY });
       }
     },
-    [panPosition, gridSize, scale, setIsPanning, setStartPanPosition, setStartMousePosition, boardRef]
+    [panPosition, setIsPanning, setStartPanPosition, setStartMousePosition]
   );
 
   const handleMouseUp = useCallback(() => {
