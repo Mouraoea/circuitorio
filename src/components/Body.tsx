@@ -22,6 +22,7 @@ const Body: React.FC = () => {
     setIsLeftDrawerOpen,
     isRightDrawerOpen,
     setIsRightDrawerOpen,
+    cursorPosition,
     setCursorPosition,
     elementToPlace,
     isPlacing,
@@ -29,7 +30,10 @@ const Body: React.FC = () => {
     setIsPanning,
     scale,
     setScale,
+    placingPosition,
     setPlacingPosition,
+    ghostElementPosition,
+    setGhostElementPosition,
     gridSize,
     setIsPlacing,
     setPlacingElementRotation,
@@ -147,9 +151,9 @@ const Body: React.FC = () => {
         if (parentRect) {
           const panLimits = {
             minX: panMinLimits.x,
-            maxX: 0,
+            maxX: 1800,
             minY: panMinLimits.y,
-            maxY: 0,
+            maxY: 1800,
           };
           setPanPosition({
             x: clamp(position.x, panLimits.minX, panLimits.maxX),
@@ -178,6 +182,8 @@ const Body: React.FC = () => {
           x: cursorOffset.x * deltaScale,
           y: cursorOffset.y * deltaScale,
         };
+        console.log("rect", rect);
+        console.log("offsetByCursor", offsetByCursor);
 
         const newPan = {
           x: panPosition.x - offsetByCursor.x / newScale,
@@ -223,11 +229,10 @@ const Body: React.FC = () => {
         if (isPlacing && elementToPlace) {
           const newElement = {
             ...elementToPlace,
-            position: { x: Math.floor(event.clientX / gridSize) * gridSize, y: Math.floor(event.clientY / gridSize) * gridSize },
+            position: placingPosition,
             placingElementRotation,
             id: uuidv4(),
           };
-
           dispatch(addElement(newElement));
           if (!keyState["Shift" as keyof KeyStateKeys]) {
             setIsPlacing(false);
@@ -237,7 +242,7 @@ const Body: React.FC = () => {
         }
       }
     },
-    [isPlacing, elementToPlace, dispatch, placingElementRotation, gridSize, setElementToPlace, setIsPlacing, keyState, setPlacingElementRotation, setIsPanning]
+    [isPlacing, elementToPlace, dispatch, placingElementRotation, setElementToPlace, setIsPlacing, keyState, setPlacingElementRotation, setIsPanning, placingPosition]
   );
 
   const updatePan = useCallback(() => {
@@ -266,6 +271,12 @@ const Body: React.FC = () => {
       const cursorY = Math.floor((event.clientY - rect.top - panPosition.y * scale - 1 * scale) / gridSize / scale) + 1;
       setPlacingPosition({ x: (cursorX - 1) * 32, y: (cursorY - 1) * 32 });
       setCursorGridPosition({ x: cursorX, y: cursorY });
+      if (isPlacing && elementToPlace) {
+        setGhostElementPosition({
+          x: (placingPosition.x + panPosition.x + rect.left) * scale,
+          y: (placingPosition.y + panPosition.y + rect.top) * scale,
+        });
+      }
       if (isPanning) {
         const currentScale = scale;
         const deltaX = (event.clientX - startMousePosition.x) / currentScale;
@@ -381,14 +392,17 @@ const Body: React.FC = () => {
     handleMouseUp,
     handleMouseDown,
     updatePan,
+    cursorPosition,
+    placingPosition,
+    setGhostElementPosition,
   ]);
 
   return (
     <div ref={boardRef}>
-      <LeftDrawer isOpen={isLeftDrawerOpen} onClose={closeLeftDrawer}>
+      <LeftDrawer isOpen2={isLeftDrawerOpen} onClose={closeLeftDrawer}>
         <DrawerContent content={leftDrawerContent} />
       </LeftDrawer>
-      <RightDrawer isOpen={isRightDrawerOpen} onClose={closeRightDrawer}>
+      <RightDrawer isOpen3={isRightDrawerOpen} onClose={closeRightDrawer}>
         <DrawerContent content={rightDrawerContent} />
       </RightDrawer>
       <CircuitBoard />{" "}
@@ -396,11 +410,11 @@ const Body: React.FC = () => {
         <div
           style={{
             position: "fixed",
-            left: 0,
-            top: 0,
+            left: ghostElementPosition.x,
+            top: ghostElementPosition.y,
             opacity: 0.5,
             pointerEvents: "none",
-            transform: `translate(-50%, -50%) scale(${scale})`,
+            transform: `scale(${scale})`,
             ...getBackgroundImage(),
           }}
         ></div>

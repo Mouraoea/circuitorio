@@ -3,7 +3,7 @@ import { useCanvasContext, type KeyStateKeys } from "../context/CanvasContext";
 import "../App.css";
 
 const Debug: React.FC = () => {
-  const { scale, panPosition, cursorPosition, placingPosition, keyState, cursorGridPosition, isLeftDrawerOpen } = useCanvasContext();
+  const { scale, panPosition, cursorPosition, placingPosition, keyState, cursorGridPosition, isLeftDrawerOpen, ghostElementPosition } = useCanvasContext();
   return (
     <div>
       <div className="flex-space-between">
@@ -20,6 +20,9 @@ const Debug: React.FC = () => {
         </p>
         <p>
           Cursor Grid Coord: (x: {cursorGridPosition.x}, y: {cursorGridPosition.y})
+        </p>
+        <p>
+          Ghost Element Position: (x: {Math.round(ghostElementPosition.x * 100) / 100}, y: {Math.round(ghostElementPosition.y * 100) / 100})
         </p>
         <p>
           Place Position: (x: {placingPosition.x}, y: {placingPosition.y})

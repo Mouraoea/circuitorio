@@ -2,7 +2,7 @@ import React, { useState, useEffect, ReactNode } from "react";
 import styled from "styled-components";
 
 interface DrawerProps {
-  isOpen: boolean;
+  isOpen2: boolean;
   onClose: () => void;
   children: ReactNode;
 }
@@ -41,17 +41,17 @@ const CloseButton = styled.button`
   cursor: pointer;
 `;
 
-const LeftDrawer: React.FC<DrawerProps> = ({ isOpen, onClose, children }) => {
-  const [visible, setVisible] = useState(isOpen);
+const LeftDrawer: React.FC<DrawerProps> = ({ isOpen2, onClose, children }) => {
+  const [visible, setVisible] = useState(isOpen2);
 
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen2) {
       setVisible(true);
     }
-  }, [isOpen]);
+  }, [isOpen2]);
 
   const handleTransitionEnd = () => {
-    if (!isOpen) {
+    if (!isOpen2) {
       setVisible(false);
     }
   };
@@ -64,7 +64,7 @@ const LeftDrawer: React.FC<DrawerProps> = ({ isOpen, onClose, children }) => {
     <>
       {/* <Overlay isOpen={isOpen} onClick={handleOverlayClick} /> */}
       {visible && (
-        <DrawerContainer className="panel" isOpen={isOpen} onTransitionEnd={handleTransitionEnd}>
+        <DrawerContainer className="panel" isOpen={isOpen2} onTransitionEnd={handleTransitionEnd}>
           <CloseButton onClick={onClose}>X</CloseButton>
           {children}
         </DrawerContainer>

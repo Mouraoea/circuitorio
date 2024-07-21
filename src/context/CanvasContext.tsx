@@ -26,6 +26,8 @@ interface CanvasContextProps {
   setCursorGridPosition: (value: { x: number; y: number }) => void;
   placingPosition: { x: number; y: number };
   setPlacingPosition: (value: { x: number; y: number }) => void;
+  ghostElementPosition: { x: number; y: number };
+  setGhostElementPosition: (value: { x: number; y: number }) => void;
   elementToPlace: CircuitElementProps | null;
   setElementToPlace: (value: CircuitElementProps | null) => void;
   isPlacing: boolean;
@@ -119,6 +121,7 @@ export const CanvasProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
   const [cursorGridPosition, setCursorGridPosition] = useState({ x: 0, y: 0 });
   const [placingPosition, setPlacingPosition] = useState({ x: 0, y: 0 });
+  const [ghostElementPosition, setGhostElementPosition] = useState({ x: 0, y: 0 });
   const [elementToPlace, setElementToPlace] = useState<CircuitElementProps | null>(null);
   const [isPlacing, setIsPlacing] = useState(false);
   const [placingElementRotation, setPlacingElementRotation] = useState(0);
@@ -154,6 +157,8 @@ export const CanvasProvider: React.FC<{ children: ReactNode }> = ({ children }) 
         setCursorGridPosition,
         placingPosition,
         setPlacingPosition,
+        ghostElementPosition,
+        setGhostElementPosition,
         elementToPlace,
         setElementToPlace,
         isPlacing,

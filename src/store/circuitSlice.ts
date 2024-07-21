@@ -13,14 +13,17 @@ interface CircuitElementProps {
   backgroundSizeRef: number[];
   position: { x: number; y: number };
   rotation: number;
+  opacity?: number;
 }
 
 interface CircuitState {
   elements: CircuitElementProps[];
+  previewElement: CircuitElementProps | null;
 }
 
 const initialState: CircuitState = {
   elements: [],
+  previewElement: null,
 };
 
 const circuitSlice = createSlice({
@@ -46,9 +49,14 @@ const circuitSlice = createSlice({
         element.backgroundSize = [element.backgroundSizeRef[element.rotation * 2], element.backgroundSizeRef[element.rotation * 2 + 1]];
       }
     },
+
+    setPreviewElement: (state, action: PayloadAction<CircuitElementProps | null>) => {
+      // New reducer for setting preview element
+      state.previewElement = action.payload;
+    },
   },
 });
 
-export const { addElement, updateElementPosition, rotateElement } = circuitSlice.actions;
+export const { addElement, updateElementPosition, rotateElement, setPreviewElement } = circuitSlice.actions;
 export type { CircuitElementProps };
 export default circuitSlice.reducer;

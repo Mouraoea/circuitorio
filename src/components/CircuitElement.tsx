@@ -7,6 +7,7 @@ import { type CircuitElementProps, rotateElement } from "../store/circuitSlice";
 const CircuitElement: React.FC<CircuitElementProps> = ({ id, type }) => {
   const dispatch = useDispatch();
   const element = useSelector((state: RootState) => state.circuit.elements.find((element) => element.id === id));
+  const previewElement = useSelector((state: RootState) => state.circuit.previewElement);
   const position = element?.position;
   const size = element?.size;
   const rotation = element?.rotation;
@@ -84,6 +85,20 @@ const CircuitElement: React.FC<CircuitElementProps> = ({ id, type }) => {
           <div className="corner" style={{ position: "relative", left: -24, top: element.size[1] * 32 - 162, backgroundPosition: "0px 64px" }} />
           <div className="corner" style={{ position: "relative", left: element.size[0] * 32 - 42, top: element.size[1] * 32 - 226, backgroundPosition: "64px 64px" }} />
         </div>
+      )}
+      {previewElement && (
+        <div
+          className="circuit-element-preview"
+          style={{
+            position: "absolute",
+            left: previewElement.position.x,
+            top: previewElement.position.y,
+            opacity: 0.5,
+            transform: `scale(${1})`,
+            pointerEvents: "none", // Prevents interaction with the preview element
+            ...getBackgroundImage(),
+          }}
+        />
       )}
     </div>
   );
