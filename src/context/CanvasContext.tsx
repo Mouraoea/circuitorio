@@ -34,6 +34,8 @@ interface CanvasContextProps {
   setIsPlacing: (value: boolean) => void;
   placingElementRotation: number;
   setPlacingElementRotation: (value: number) => void;
+  zoomCenter: { x: number; y: number };
+  setZoomCenter: (value: { x: number; y: number }) => void;
 }
 
 const CanvasContext = createContext<CanvasContextProps | undefined>(undefined);
@@ -125,6 +127,7 @@ export const CanvasProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   const [elementToPlace, setElementToPlace] = useState<CircuitElementProps | null>(null);
   const [isPlacing, setIsPlacing] = useState(false);
   const [placingElementRotation, setPlacingElementRotation] = useState(0);
+  const [zoomCenter, setZoomCenter] = useState({ x: 0, y: 0 });
 
   const updateKeyState = (value: Partial<KeyStateKeys>) => {
     setKeyState((prevKeyState) => ({ ...prevKeyState, ...value }));
@@ -165,6 +168,8 @@ export const CanvasProvider: React.FC<{ children: ReactNode }> = ({ children }) 
         setIsPlacing,
         placingElementRotation,
         setPlacingElementRotation,
+        zoomCenter,
+        setZoomCenter,
       }}
     >
       {children}

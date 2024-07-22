@@ -47,6 +47,8 @@ const Body: React.FC = () => {
     setCursorGridPosition,
     gridHeight,
     gridWidth,
+    zoomCenter,
+    setZoomCenter,
   } = useCanvasContext();
   const [leftDrawerContent, setLeftDrawerContent] = useState<React.ReactNode>(null);
   const [rightDrawerContent, setRightDrawerContent] = useState<React.ReactNode>(null);
@@ -173,37 +175,40 @@ const Body: React.FC = () => {
         const newScale = clamp(scale + delta, 0.5, 5);
         const deltaScale = newScale - scale;
 
-        const cursorOffset = {
-          x: (cursorX - rect.left) / scale + panPosition.x,
-          y: (cursorY - rect.top) / scale + panPosition.y,
+        const offsetByPan = {
+          x: panPosition.x * (1 - deltaScale / newScale),
+          y: panPosition.y * (1 - deltaScale / newScale),
         };
 
         const offsetByCursor = {
-          x: cursorOffset.x * deltaScale,
-          y: cursorOffset.y * deltaScale,
+          x: ((cursorX - rect.left) * deltaScale) / newScale,
+          y: ((cursorY - rect.top) * deltaScale) / newScale,
         };
-        console.log("rect", rect);
-        console.log("offsetByCursor", offsetByCursor);
 
         const newPan = {
-          x: panPosition.x - offsetByCursor.x / newScale,
-          y: panPosition.y - offsetByCursor.y / newScale,
+          x: offsetByPan.x - offsetByCursor.x,
+          y: offsetByPan.y - offsetByCursor.y,
         };
+
+        console.log("offsetByPan", offsetByPan);
+        console.log("offsetByCursor", offsetByCursor);
 
         // Update the pan position
         movePan(newPan);
         // Update the scale
         setScale(newScale);
+
+        setZoomCenter(offsetByCursor);
       }
     },
-    [scale, panPosition, movePan, setScale, boardRef]
+    [scale, panPosition, movePan, setScale, boardRef, setZoomCenter]
   );
 
   const handleWheel = useCallback(
     (event: WheelEvent) => {
       event.preventDefault();
 
-      const delta = event.deltaY > 0 ? -scale * 0.1 : scale * 0.101010101010101; // Adjust the zoom step as needed
+      const delta = event.deltaY > 0 ? -scale * 0.0909090909090909 : scale * 0.1; // Adjust the zoom step as needed
       handleZoom(delta, event.clientX, event.clientY);
       // Verify the new pan position
     },
@@ -326,25 +331,32 @@ const Body: React.FC = () => {
         closeRightDrawer();
         return;
       }
+      if (["\\"].includes(event.key)) {
+        setPanPosition({ x: 0, y: 0 });
+        setScale(1);
+      }
       if (["q"].includes(event.key)) {
         setIsPlacing(false); // Stop placing when 'q' is pressed
         setPlacingElementRotation(0); // Reset placingElementRotation after placing
         setElementToPlace(null); // Clear the element to be placed
-      } else if (event.key === "r" && isPlacing && elementToPlace) {
-        const newRotation = (placingElementRotation + 1) % 4;
-        const newSize = [elementToPlace.size[1], elementToPlace.size[0]];
-        const newSpriteOffset = [elementToPlace.spriteOffsetRef[newRotation * 2], elementToPlace.spriteOffsetRef[newRotation * 2 + 1]];
-        const newBackgroundSize = [elementToPlace.backgroundSizeRef[newRotation * 2], elementToPlace.backgroundSizeRef[newRotation * 2 + 1]];
+      }
+      if (["r"].includes(event.key)) {
+        if (isPlacing && elementToPlace) {
+          const newRotation = (placingElementRotation + 1) % 4;
+          const newSize = [elementToPlace.size[1], elementToPlace.size[0]];
+          const newSpriteOffset = [elementToPlace.spriteOffsetRef[newRotation * 2], elementToPlace.spriteOffsetRef[newRotation * 2 + 1]];
+          const newBackgroundSize = [elementToPlace.backgroundSizeRef[newRotation * 2], elementToPlace.backgroundSizeRef[newRotation * 2 + 1]];
 
-        setElementToPlace({
-          ...elementToPlace,
-          rotation: newRotation,
-          size: newSize,
-          spriteOffset: newSpriteOffset,
-          backgroundSize: newBackgroundSize,
-        });
-        setPlacingElementRotation(newRotation);
-        return;
+          setElementToPlace({
+            ...elementToPlace,
+            rotation: newRotation,
+            size: newSize,
+            spriteOffset: newSpriteOffset,
+            backgroundSize: newBackgroundSize,
+          });
+          setPlacingElementRotation(newRotation);
+          return;
+        }
       }
     };
 
@@ -395,6 +407,8 @@ const Body: React.FC = () => {
     cursorPosition,
     placingPosition,
     setGhostElementPosition,
+    setPanPosition,
+    setScale,
   ]);
 
   return (
@@ -405,7 +419,9 @@ const Body: React.FC = () => {
       <RightDrawer isOpen3={isRightDrawerOpen} onClose={closeRightDrawer}>
         <DrawerContent content={rightDrawerContent} />
       </RightDrawer>
-      <CircuitBoard />{" "}
+      <div style={{ position: "absolute", left: 0, top: 0 }}>
+        <CircuitBoard />
+      </div>
       {isPlacing && elementToPlace && (
         <div
           style={{
@@ -418,6 +434,21 @@ const Body: React.FC = () => {
             ...getBackgroundImage(),
           }}
         ></div>
+      )}
+      {zoomCenter && (
+        <div
+          style={{
+            position: "relative",
+            left: zoomCenter.x,
+            top: zoomCenter.y,
+            width: "10px",
+            height: "10px",
+            backgroundColor: "red",
+            transform: "translate(-50%, -50%)",
+          }}
+        >
+          X
+        </div>
       )}
     </div>
   );

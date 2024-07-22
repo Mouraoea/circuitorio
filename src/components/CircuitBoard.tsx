@@ -32,7 +32,7 @@ const CircuitBoard: React.FC = () => {
       }}
       className="circuit-board"
       style={{
-        position: "relative",
+        position: "fixed",
         width: `${gridSize * gridWidth}px`,
         height: `${gridSize * gridHeight}px`,
         border: "1px solid black",

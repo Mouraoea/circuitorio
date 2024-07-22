@@ -16,13 +16,19 @@ const Help: React.FC = () => {
         <br />
         q: Cancel Placement
         <br />
-        r: Rotate
+        r: Rotate element
         <br />
         F1/h: Help
         <br />
         F2: Settings
         <br />
         Escape: Close drawers
+        <br />
+        Arrow keys/ASWD: Pan
+        <br />
+        Scroll: Zoom
+        <br />
+        \: Reset zoom and pan
       </div>
     </div>
   );
