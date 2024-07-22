@@ -44,6 +44,10 @@ const Body: React.FC = () => {
     boardRef,
     panPosition,
     setPanPosition,
+    panPercentage,
+    setPanPercentage,
+    transformOrigin,
+    setTransformOrigin,
     setCursorGridPosition,
     gridHeight,
     gridWidth,
@@ -141,30 +145,39 @@ const Body: React.FC = () => {
       const boardElement = boardRef.current;
       if (boardElement) {
         const rect = boardElement.getBoundingClientRect();
-        const parentRect = boardElement.parentElement?.getBoundingClientRect();
         const viewPortSize = {
-          width: ((window.innerWidth - rect.left) / scale + panPosition.x) / gridSize,
-          height: ((window.innerHeight - rect.top) / scale + panPosition.y) / gridSize,
+          width: window.innerWidth - rect.left,
+          height: window.innerHeight - rect.top,
         };
         const panMinLimits = {
-          x: (viewPortSize.width - gridWidth) * gridSize,
-          y: (viewPortSize.height - gridHeight) * gridSize,
+          x: viewPortSize.width - gridWidth * gridSize * scale,
+          y: viewPortSize.height - gridHeight * gridSize * scale,
         };
-        if (parentRect) {
-          const panLimits = {
-            minX: panMinLimits.x,
-            maxX: 1800,
-            minY: panMinLimits.y,
-            maxY: 1800,
-          };
-          setPanPosition({
-            x: clamp(position.x, panLimits.minX, panLimits.maxX),
-            y: clamp(position.y, panLimits.minY, panLimits.maxY),
-          });
-        }
+        const panLimits = {
+          minX: panMinLimits.x,
+          maxX: 0,
+          minY: panMinLimits.y,
+          maxY: 0,
+        };
+        const newPanPosition = {
+          x: clamp(position.x, panLimits.minX, panLimits.maxX),
+          y: clamp(position.y, panLimits.minY, panLimits.maxY),
+        };
+        setPanPosition({
+          x: Math.round(newPanPosition.x * 100) / 100,
+          y: Math.round(newPanPosition.y * 100) / 100,
+        });
+        const panPercentage = {
+          x: (1 - (newPanPosition.x - panLimits.minX) / (panLimits.maxX - panLimits.minX)) * 100,
+          y: (1 - (newPanPosition.y - panLimits.minY) / (panLimits.maxY - panLimits.minY)) * 100,
+        };
+        setPanPercentage({
+          x: Math.round(panPercentage.x * 100) / 100,
+          y: Math.round(panPercentage.y * 100) / 100,
+        });
       }
     },
-    [setPanPosition, panPosition, gridSize, gridWidth, gridHeight, scale, boardRef]
+    [setPanPosition, gridSize, gridWidth, gridHeight, scale, boardRef, setPanPercentage]
   );
 
   const handleZoom = useCallback(
@@ -175,33 +188,28 @@ const Body: React.FC = () => {
         const newScale = clamp(scale + delta, 0.5, 5);
         const deltaScale = newScale - scale;
 
-        const offsetByPan = {
-          x: panPosition.x * (1 - deltaScale / newScale),
-          y: panPosition.y * (1 - deltaScale / newScale),
+        const cursorOffset = {
+          x: (cursorX - rect.left) / scale + panPosition.x,
+          y: (cursorY - rect.top) / scale + panPosition.y,
         };
 
         const offsetByCursor = {
-          x: ((cursorX - rect.left) * deltaScale) / newScale,
-          y: ((cursorY - rect.top) * deltaScale) / newScale,
+          x: cursorOffset.x * deltaScale,
+          y: cursorOffset.y * deltaScale,
         };
 
         const newPan = {
-          x: offsetByPan.x - offsetByCursor.x,
-          y: offsetByPan.y - offsetByCursor.y,
+          x: panPosition.x - offsetByCursor.x / newScale,
+          y: panPosition.y - offsetByCursor.y / newScale,
         };
-
-        console.log("offsetByPan", offsetByPan);
-        console.log("offsetByCursor", offsetByCursor);
 
         // Update the pan position
         movePan(newPan);
         // Update the scale
         setScale(newScale);
-
-        setZoomCenter(offsetByCursor);
       }
     },
-    [scale, panPosition, movePan, setScale, boardRef, setZoomCenter]
+    [scale, panPosition, movePan, setScale, boardRef]
   );
 
   const handleWheel = useCallback(
@@ -210,7 +218,6 @@ const Body: React.FC = () => {
 
       const delta = event.deltaY > 0 ? -scale * 0.0909090909090909 : scale * 0.1; // Adjust the zoom step as needed
       handleZoom(delta, event.clientX, event.clientY);
-      // Verify the new pan position
     },
     [handleZoom, scale]
   );
@@ -419,7 +426,7 @@ const Body: React.FC = () => {
       <RightDrawer isOpen3={isRightDrawerOpen} onClose={closeRightDrawer}>
         <DrawerContent content={rightDrawerContent} />
       </RightDrawer>
-      <div style={{ position: "absolute", left: 0, top: 0 }}>
+      <div style={{ position: "fixed", left: 0, top: 0 }}>
         <CircuitBoard />
       </div>
       {isPlacing && elementToPlace && (

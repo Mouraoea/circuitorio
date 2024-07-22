@@ -6,6 +6,10 @@ interface CanvasContextProps {
   setScale: (value: number) => void;
   panPosition: { x: number; y: number };
   setPanPosition: (value: { x: number; y: number }) => void;
+  panPercentage: { x: number; y: number };
+  setPanPercentage: (value: { x: number; y: number }) => void;
+  transformOrigin: { x: number; y: number };
+  setTransformOrigin: (value: { x: number; y: number }) => void;
   gridSize: number;
   gridHeight: number;
   gridWidth: number;
@@ -43,6 +47,8 @@ const CanvasContext = createContext<CanvasContextProps | undefined>(undefined);
 export const CanvasProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [scale, setScale] = useState<number>(1);
   const [panPosition, setPanPosition] = useState({ x: 0, y: 0 });
+  const [panPercentage, setPanPercentage] = useState({ x: 0, y: 0 });
+  const [transformOrigin, setTransformOrigin] = useState({ x: 0, y: 0 });
   const [gridSize] = useState(32);
   const [gridHeight] = useState(100);
   const [gridWidth] = useState(200);
@@ -140,6 +146,10 @@ export const CanvasProvider: React.FC<{ children: ReactNode }> = ({ children }) 
         setScale,
         panPosition,
         setPanPosition,
+        panPercentage,
+        setPanPercentage,
+        transformOrigin,
+        setTransformOrigin,
         gridSize,
         gridHeight,
         gridWidth,

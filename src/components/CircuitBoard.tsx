@@ -35,10 +35,10 @@ const CircuitBoard: React.FC = () => {
         position: "fixed",
         width: `${gridSize * gridWidth}px`,
         height: `${gridSize * gridHeight}px`,
-        border: "1px solid black",
+        border: "0px solid black",
         overflow: "hidden",
         transform: `scale(${scale}) translate(${panPosition.x}px, ${panPosition.y}px)`,
-        transformOrigin: "0 0",
+        transformOrigin: `${panPosition.x}px ${panPosition.y}px`,
         cursor: isPanning ? "grabbing" : "default",
       }}
       onContextMenu={(e) => e.preventDefault()} // Prevent the context menu from appearing
