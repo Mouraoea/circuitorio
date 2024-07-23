@@ -3,15 +3,16 @@ import { useDrag } from "react-dnd";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../store/store";
 import { type CircuitElementProps, rotateElement } from "../store/circuitSlice";
+import { useCanvasContext } from "../context/CanvasContext";
 
 const CircuitElement: React.FC<CircuitElementProps> = ({ id, type }) => {
   const dispatch = useDispatch();
   const element = useSelector((state: RootState) => state.circuit.elements.find((element) => element.id === id));
   const previewElement = useSelector((state: RootState) => state.circuit.previewElement);
   const position = element?.position;
-  const size = element?.size;
+  const size = element?.spriteSize;
   const rotation = element?.rotation;
-  const [hoveredElement, setHoveredElement] = useState<string | null>(null);
+  const { hoveredElement, setHoveredElement } = useCanvasContext();
 
   const [{ isDragging }, drag] = useDrag(
     () => ({
@@ -34,7 +35,7 @@ const CircuitElement: React.FC<CircuitElementProps> = ({ id, type }) => {
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "r" && hoveredElement) {
-        dispatch(rotateElement({ id: hoveredElement }));
+        dispatch(rotateElement({ id: hoveredElement.id }));
       }
     };
 
@@ -48,11 +49,12 @@ const CircuitElement: React.FC<CircuitElementProps> = ({ id, type }) => {
 
   const getBackgroundImage = () => {
     return {
-      backgroundImage: `url("${element.sprite}")`,
-      backgroundPosition: `${element.spriteOffset[0]}px ${element.spriteOffset[1]}px`,
-      backgroundSize: `${element.spriteSize[0]}px ${element.spriteSize[1]}px`,
-      width: `${element.backgroundSize[0]}px`,
-      height: `${element.backgroundSize[1] + 10}px`,
+      backgroundImage: `url("${element.spritePath}")`,
+      backgroundPosition: `${element.spriteOffset[element.orientation].x}px ${element.spriteOffset[element.orientation].y}px`,
+      width: `${element.spriteSize[element.orientation].width}px`,
+      height: `${element.spriteSize[element.orientation].height}px`,
+      left: position.x + element.origingOffset[element.orientation].x * element.spriteScale,
+      top: position.y + element.origingOffset[element.orientation].y * element.spriteScale,
     };
   };
   return (
@@ -61,16 +63,15 @@ const CircuitElement: React.FC<CircuitElementProps> = ({ id, type }) => {
       className="circuit-element"
       style={{
         position: "absolute",
-        left: position.x,
-        top: position.y - 8,
         opacity: isDragging ? 0.5 : 1,
         cursor: "move",
         zIndex: position.y,
-        transform: `scale(${1})`, // Elements are scaled uniformly
+        transform: `scale(${0.5})`,
+        transformOrigin: "top left",
         ...getBackgroundImage(),
       }}
       onMouseEnter={() => {
-        setHoveredElement(element.id);
+        setHoveredElement(element);
         setIsHovered(true);
       }}
       onMouseLeave={() => {
@@ -78,15 +79,15 @@ const CircuitElement: React.FC<CircuitElementProps> = ({ id, type }) => {
         setIsHovered(false);
       }}
     >
-      {isHovered && (
+      {/* {isHovered && (
         <div className="circuit-element-hover">
           <div className="corner" style={{ position: "relative", left: -24, top: -16, backgroundPosition: "0 0" }} />
           <div className="corner" style={{ position: "relative", left: element.size[0] * 32 - 42, top: -80, backgroundPosition: "64px 0px" }} />
           <div className="corner" style={{ position: "relative", left: -24, top: element.size[1] * 32 - 162, backgroundPosition: "0px 64px" }} />
           <div className="corner" style={{ position: "relative", left: element.size[0] * 32 - 42, top: element.size[1] * 32 - 226, backgroundPosition: "64px 64px" }} />
         </div>
-      )}
-      {previewElement && (
+      )} */}
+      {/* {previewElement && (
         <div
           className="circuit-element-preview"
           style={{
@@ -99,7 +100,7 @@ const CircuitElement: React.FC<CircuitElementProps> = ({ id, type }) => {
             ...getBackgroundImage(),
           }}
         />
-      )}
+      )} */}
     </div>
   );
 };

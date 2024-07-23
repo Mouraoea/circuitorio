@@ -3,7 +3,8 @@ import { useCanvasContext, type KeyStateKeys } from "../context/CanvasContext";
 import "../App.css";
 
 const Debug: React.FC = () => {
-  const { scale, panPosition, panPercentage, transformOrigin, cursorPosition, placingPosition, keyState, cursorGridPosition, isLeftDrawerOpen, ghostElementPosition } = useCanvasContext();
+  const { scale, panPosition, panPercentage, cursorPosition, cursorGridCoordinates, isPlacing, placingPosition, keyState, cursorGridPosition, isLeftDrawerOpen, ghostElementPosition, hoveredElement } =
+    useCanvasContext();
   return (
     <div>
       <div className="flex-space-between">
@@ -19,17 +20,21 @@ const Debug: React.FC = () => {
           Pan Percentage: (x: {Math.round(panPercentage.x * 100) / 100}%, y: {Math.round(panPercentage.y * 100) / 100}%)
         </p>
         <p>
-          Cursor Position: (x: {cursorPosition.x}, y: {cursorPosition.y})
+          Cursor Position (View port): (x: {cursorPosition.x}px, y: {cursorPosition.y}px)
         </p>
         <p>
-          Cursor Grid Coord: (x: {cursorGridPosition.x}, y: {cursorGridPosition.y})
+          Cursor Position (Grid): (x: {cursorGridPosition.x}, y: {cursorGridPosition.y})
         </p>
         <p>
-          Ghost Element Position: (x: {Math.round(ghostElementPosition.x * 100) / 100}, y: {Math.round(ghostElementPosition.y * 100) / 100})
+          Cursor Coordinates: (x: {cursorGridCoordinates.x}, y: {cursorGridCoordinates.y})
+        </p>
+        <p>
+          Ghost Element Position: (x: {isPlacing ? Math.round(ghostElementPosition.x * 100) / 100 : "-"}, y: {isPlacing ? Math.round(ghostElementPosition.y * 100) / 100 : "-"})
         </p>
         <p>
           Place Position: (x: {placingPosition.x}, y: {placingPosition.y})
         </p>
+        <p>Hovered Element: {hoveredElement ? "Name: " + hoveredElement.name + ", Orientation: " + hoveredElement.orientation : "None"}</p>
         <p>Active Keys: {Object.keys(keyState).filter((key) => keyState[key as keyof KeyStateKeys])}</p>
         <p>Left Drawer: {isLeftDrawerOpen ? "Open" : "Closed"}</p>
       </div>

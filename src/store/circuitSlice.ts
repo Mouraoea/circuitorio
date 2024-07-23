@@ -1,18 +1,15 @@
 // src/store/circuitSlice.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { EntitySprite } from "../spritesheets/SpriteProvider";
 
-interface CircuitElementProps {
+export type Orientation = "north" | "east" | "south" | "west";
+
+interface CircuitElementProps extends EntitySprite {
   id: string;
-  type: string;
-  size: number[];
-  sprite: string;
-  spriteSize: number[];
-  spriteOffset: number[];
-  backgroundSize: number[];
-  spriteOffsetRef: number[];
-  backgroundSizeRef: number[];
   position: { x: number; y: number };
   rotation: number;
+  orientation: Orientation;
+  size: { width: number; height: number };
   opacity?: number;
 }
 
@@ -40,13 +37,11 @@ const circuitSlice = createSlice({
       }
     },
     rotateElement: (state, action: PayloadAction<{ id: string }>) => {
-      const element = state.elements.find((el) => el.id === action.payload.id);
-
-      if (element) {
+      const searchResult: CircuitElementProps | undefined = state.elements.find((el) => el.id === action.payload.id);
+      if (searchResult) {
+        const element = searchResult;
         element.rotation = ++element.rotation % 4;
-        element.size = [element.size[1], element.size[0]];
-        element.spriteOffset = [element.spriteOffsetRef[element.rotation * 2], element.spriteOffsetRef[element.rotation * 2 + 1]];
-        element.backgroundSize = [element.backgroundSizeRef[element.rotation * 2], element.backgroundSizeRef[element.rotation * 2 + 1]];
+        element.orientation = ["north", "east", "south", "west"][element.rotation] as Orientation;
       }
     },
 

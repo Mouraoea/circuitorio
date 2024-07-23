@@ -49,6 +49,7 @@ const Body: React.FC = () => {
     transformOrigin,
     setTransformOrigin,
     setCursorGridPosition,
+    setCursorGridCoordinates,
     gridHeight,
     gridWidth,
     zoomCenter,
@@ -132,11 +133,11 @@ const Body: React.FC = () => {
       return {};
     }
     return {
-      backgroundImage: `url("${elementToPlace.sprite}")`,
-      backgroundPosition: `${elementToPlace.spriteOffset[0]}px ${elementToPlace.spriteOffset[1]}px`,
-      backgroundSize: `${elementToPlace.spriteSize[0]}px ${elementToPlace.spriteSize[1]}px`,
-      width: `${elementToPlace.backgroundSize[0]}px`,
-      height: `${elementToPlace.backgroundSize[1] + 10}px`,
+      // backgroundImage: `url("${elementToPlace.sprite}")`,
+      // backgroundPosition: `${elementToPlace.spriteOffset[0]}px ${elementToPlace.spriteOffset[1]}px`,
+      // backgroundSize: `${elementToPlace.spriteSize[0]}px ${elementToPlace.spriteSize[1]}px`,
+      // width: `${elementToPlace.backgroundSize[0]}px`,
+      // height: `${elementToPlace.backgroundSize[1] + 10}px`,
     };
   };
 
@@ -245,6 +246,7 @@ const Body: React.FC = () => {
             placingElementRotation,
             id: uuidv4(),
           };
+          console.log(newElement);
           dispatch(addElement(newElement));
           if (!keyState["Shift" as keyof KeyStateKeys]) {
             setIsPlacing(false);
@@ -276,23 +278,35 @@ const Body: React.FC = () => {
   useEffect(() => {
     const handleMouseMove = (event: MouseEvent) => {
       setCursorPosition({ x: event.clientX, y: event.clientY });
-      const boardElement = boardRef.current;
-      if (!boardElement) return;
-      const rect = boardElement.getBoundingClientRect();
-      const cursorX = Math.floor((event.clientX - rect.left - panPosition.x * scale - 1 * scale) / gridSize / scale) + 1;
-      const cursorY = Math.floor((event.clientY - rect.top - panPosition.y * scale - 1 * scale) / gridSize / scale) + 1;
-      setPlacingPosition({ x: (cursorX - 1) * 32, y: (cursorY - 1) * 32 });
-      setCursorGridPosition({ x: cursorX, y: cursorY });
+
+      const cursorGridPosition = {
+        x: Math.floor(((event.clientX - panPosition.x) / scale) * 100) / 100,
+        y: Math.floor(((event.clientY - panPosition.y) / scale) * 100) / 100,
+      };
+      setCursorGridPosition(cursorGridPosition);
+
+      const cursorGridCoordinates = {
+        x: Math.floor((cursorGridPosition.x - 1) / gridSize) + 1,
+        y: Math.floor((cursorGridPosition.y - 1) / gridSize) + 1,
+      };
+      setCursorGridCoordinates(cursorGridCoordinates);
+
+      const placingPosition = {
+        x: Math.floor((cursorGridCoordinates.x - 1) * gridSize),
+        y: Math.floor((cursorGridCoordinates.y - 1) * gridSize),
+      };
+      setPlacingPosition(placingPosition);
+
       if (isPlacing && elementToPlace) {
         setGhostElementPosition({
-          x: (placingPosition.x + panPosition.x + rect.left) * scale,
-          y: (placingPosition.y + panPosition.y + rect.top) * scale,
+          x: placingPosition.x * scale + panPosition.x,
+          y: placingPosition.y * scale + panPosition.y,
         });
       }
       if (isPanning) {
         const currentScale = scale;
-        const deltaX = (event.clientX - startMousePosition.x) / currentScale;
-        const deltaY = (event.clientY - startMousePosition.y) / currentScale;
+        const deltaX = (event.clientX - startMousePosition.x) * currentScale;
+        const deltaY = (event.clientY - startMousePosition.y) * currentScale;
         const newPan = {
           x: startPanPosition.x + deltaX,
           y: startPanPosition.y + deltaY,
@@ -348,22 +362,21 @@ const Body: React.FC = () => {
         setElementToPlace(null); // Clear the element to be placed
       }
       if (["r"].includes(event.key)) {
-        if (isPlacing && elementToPlace) {
-          const newRotation = (placingElementRotation + 1) % 4;
-          const newSize = [elementToPlace.size[1], elementToPlace.size[0]];
-          const newSpriteOffset = [elementToPlace.spriteOffsetRef[newRotation * 2], elementToPlace.spriteOffsetRef[newRotation * 2 + 1]];
-          const newBackgroundSize = [elementToPlace.backgroundSizeRef[newRotation * 2], elementToPlace.backgroundSizeRef[newRotation * 2 + 1]];
-
-          setElementToPlace({
-            ...elementToPlace,
-            rotation: newRotation,
-            size: newSize,
-            spriteOffset: newSpriteOffset,
-            backgroundSize: newBackgroundSize,
-          });
-          setPlacingElementRotation(newRotation);
-          return;
-        }
+        // if (isPlacing && elementToPlace) {
+        //   const newRotation = (placingElementRotation + 1) % 4;
+        //   const newSize = [elementToPlace.size[1], elementToPlace.size[0]];
+        //   const newSpriteOffset = [elementToPlace.spriteOffsetRef[newRotation * 2], elementToPlace.spriteOffsetRef[newRotation * 2 + 1]];
+        //   const newBackgroundSize = [elementToPlace.backgroundSizeRef[newRotation * 2], elementToPlace.backgroundSizeRef[newRotation * 2 + 1]];
+        //   setElementToPlace({
+        //     ...elementToPlace,
+        //     rotation: newRotation,
+        //     size: newSize,
+        //     spriteOffset: newSpriteOffset,
+        //     backgroundSize: newBackgroundSize,
+        //   });
+        //   setPlacingElementRotation(newRotation);
+        //   return;
+        // }
       }
     };
 
@@ -416,6 +429,7 @@ const Body: React.FC = () => {
     setGhostElementPosition,
     setPanPosition,
     setScale,
+    setCursorGridCoordinates,
   ]);
 
   return (
@@ -437,7 +451,12 @@ const Body: React.FC = () => {
             top: ghostElementPosition.y,
             opacity: 0.5,
             pointerEvents: "none",
-            transform: `scale(${scale})`,
+            // transform: `scale(${scale}) translate(14px, 11px)`, // Scale 5
+            // transform: `scale(${scale}) translate(13px, 8px)`, // Scale 3
+            // transform: `scale(${scale}) translate(9px, 4px)`, // Scale 2
+            // transform: `scale(${scale}) translate(5px, -0.5px)`, // Scale 1.5
+            // transform: `scale(${scale}) translate(0px, -8px)`, // Scale 1
+            // transform: `scale(${scale}) translate(-17px, -29px)`, // Scale 0.5
             ...getBackgroundImage(),
           }}
         ></div>

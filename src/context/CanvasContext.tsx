@@ -28,18 +28,24 @@ interface CanvasContextProps {
   setCursorPosition: (value: { x: number; y: number }) => void;
   cursorGridPosition: { x: number; y: number };
   setCursorGridPosition: (value: { x: number; y: number }) => void;
+  cursorGridCoordinates: { x: number; y: number };
+  setCursorGridCoordinates: (value: { x: number; y: number }) => void;
   placingPosition: { x: number; y: number };
   setPlacingPosition: (value: { x: number; y: number }) => void;
   ghostElementPosition: { x: number; y: number };
   setGhostElementPosition: (value: { x: number; y: number }) => void;
   elementToPlace: CircuitElementProps | null;
   setElementToPlace: (value: CircuitElementProps | null) => void;
+  // elementToPlace2: CircuitElementProps2 | null;
+  // setElementToPlace2: (value: CircuitElementProps2 | null) => void;
   isPlacing: boolean;
   setIsPlacing: (value: boolean) => void;
   placingElementRotation: number;
   setPlacingElementRotation: (value: number) => void;
   zoomCenter: { x: number; y: number };
   setZoomCenter: (value: { x: number; y: number }) => void;
+  hoveredElement: CircuitElementProps | null;
+  setHoveredElement: (value: CircuitElementProps | null) => void;
 }
 
 const CanvasContext = createContext<CanvasContextProps | undefined>(undefined);
@@ -128,12 +134,15 @@ export const CanvasProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   const [drawerFrom, setDrawerFrom] = useState<"left" | "right">("left");
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
   const [cursorGridPosition, setCursorGridPosition] = useState({ x: 0, y: 0 });
+  const [cursorGridCoordinates, setCursorGridCoordinates] = useState({ x: 0, y: 0 });
   const [placingPosition, setPlacingPosition] = useState({ x: 0, y: 0 });
   const [ghostElementPosition, setGhostElementPosition] = useState({ x: 0, y: 0 });
   const [elementToPlace, setElementToPlace] = useState<CircuitElementProps | null>(null);
+  // const [elementToPlace2, setElementToPlace2] = useState<CircuitElementProps2 | null>(null);
   const [isPlacing, setIsPlacing] = useState(false);
   const [placingElementRotation, setPlacingElementRotation] = useState(0);
   const [zoomCenter, setZoomCenter] = useState({ x: 0, y: 0 });
+  const [hoveredElement, setHoveredElement] = useState<CircuitElementProps | null>(null);
 
   const updateKeyState = (value: Partial<KeyStateKeys>) => {
     setKeyState((prevKeyState) => ({ ...prevKeyState, ...value }));
@@ -168,18 +177,24 @@ export const CanvasProvider: React.FC<{ children: ReactNode }> = ({ children }) 
         setCursorPosition,
         cursorGridPosition,
         setCursorGridPosition,
+        cursorGridCoordinates,
+        setCursorGridCoordinates,
         placingPosition,
         setPlacingPosition,
         ghostElementPosition,
         setGhostElementPosition,
         elementToPlace,
         setElementToPlace,
+        // elementToPlace2,
+        // setElementToPlace2,
         isPlacing,
         setIsPlacing,
         placingElementRotation,
         setPlacingElementRotation,
         zoomCenter,
         setZoomCenter,
+        hoveredElement,
+        setHoveredElement,
       }}
     >
       {children}
