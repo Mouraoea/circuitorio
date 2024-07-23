@@ -12,7 +12,7 @@ import Debug from "./Debug";
 import Settings from "./Settings";
 import Help from "./Help";
 import { v4 as uuidv4 } from "uuid";
-import { addElement, rotateElement } from "../store/circuitSlice";
+import { addElement, Orientation, rotateElement } from "../store/circuitSlice";
 import { clamp } from "../utils/clamp";
 import { getElementSprite } from "../utils/getElementSprite";
 
@@ -349,23 +349,26 @@ const Body: React.FC = () => {
         setElementToPlace(null); // Clear the element to be placed
       }
       if (["r"].includes(event.key)) {
-        // if (isPlacing && elementToPlace) {
-        //   const newRotation = (placingElementRotation + 1) % 4;
-        //   const newSize = [elementToPlace.size[1], elementToPlace.size[0]];
-        //   const newSpriteOffset = [elementToPlace.spriteOffsetRef[newRotation * 2], elementToPlace.spriteOffsetRef[newRotation * 2 + 1]];
-        //   const newBackgroundSize = [elementToPlace.backgroundSizeRef[newRotation * 2], elementToPlace.backgroundSizeRef[newRotation * 2 + 1]];
-        //   setElementToPlace({
-        //     ...elementToPlace,
-        //     rotation: newRotation,
-        //     size: newSize,
-        //     spriteOffset: newSpriteOffset,
-        //     backgroundSize: newBackgroundSize,
-        //   });
-        //   setPlacingElementRotation(newRotation);
-        //   return;
-        // }
+        if (isPlacing && elementToPlace) {
+          const newRotation = (placingElementRotation + 1) % 4;
+          const newOrientation = ["north", "east", "south", "west"][newRotation] as Orientation;
+          const newSize = {
+            width: elementToPlace.gridSize[newOrientation].width * gridSize,
+            height: elementToPlace.gridSize[newOrientation].height * gridSize,
+          };
+
+          setElementToPlace({
+            ...elementToPlace,
+            rotation: newRotation,
+            orientation: newOrientation,
+            size: newSize,
+          });
+          setPlacingElementRotation(newRotation);
+          return;
+        }
         if (hoveredElement) {
           dispatch(rotateElement({ id: hoveredElement.id }));
+          return;
         }
       }
     };
