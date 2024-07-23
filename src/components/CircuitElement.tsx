@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import { type CircuitElementProps } from "../store/circuitSlice";
 import { useCanvasContext } from "../context/CanvasContext";
+import { getElementSprite } from "../utils/getElementSprite";
 
 const CircuitElement: React.FC<CircuitElementProps> = ({ id, type }) => {
   const element = useSelector((state: RootState) => state.circuit.elements.find((element) => element.id === id));
@@ -27,16 +28,6 @@ const CircuitElement: React.FC<CircuitElementProps> = ({ id, type }) => {
 
   if (!element || !position) return null;
 
-  const getBackgroundImage = () => {
-    return {
-      backgroundImage: `url("${element.spritePath}")`,
-      backgroundPosition: `${element.spriteOffset[element.orientation].x}px ${element.spriteOffset[element.orientation].y}px`,
-      width: `${element.spriteSize[element.orientation].width}px`,
-      height: `${element.spriteSize[element.orientation].height}px`,
-      left: position.x + element.origingOffset[element.orientation].x * element.spriteScale,
-      top: position.y + element.origingOffset[element.orientation].y * element.spriteScale,
-    };
-  };
   return (
     <div
       ref={drag}
@@ -48,7 +39,7 @@ const CircuitElement: React.FC<CircuitElementProps> = ({ id, type }) => {
         zIndex: position.y,
         transform: `scale(${0.5})`,
         transformOrigin: "top left",
-        ...getBackgroundImage(),
+        ...getElementSprite(element),
       }}
       onMouseEnter={() => {
         setHoveredElement(element);

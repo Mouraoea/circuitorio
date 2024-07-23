@@ -14,6 +14,7 @@ import Help from "./Help";
 import { v4 as uuidv4 } from "uuid";
 import { addElement, rotateElement } from "../store/circuitSlice";
 import { clamp } from "../utils/clamp";
+import { getElementSprite } from "../utils/getElementSprite";
 
 const Body: React.FC = () => {
   const dispatch = useDispatch();
@@ -32,7 +33,7 @@ const Body: React.FC = () => {
     setScale,
     placingPosition,
     setPlacingPosition,
-    ghostElementPosition,
+    // ghostElementPosition,
     setGhostElementPosition,
     gridSize,
     setIsPlacing,
@@ -124,19 +125,6 @@ const Body: React.FC = () => {
     setRightDrawerContent(null);
     setRightOpenDrawerId(null);
   }, [setIsRightDrawerOpen]);
-
-  const getBackgroundImage = () => {
-    if (!elementToPlace) {
-      return {};
-    }
-    return {
-      // backgroundImage: `url("${elementToPlace.sprite}")`,
-      // backgroundPosition: `${elementToPlace.spriteOffset[0]}px ${elementToPlace.spriteOffset[1]}px`,
-      // backgroundSize: `${elementToPlace.spriteSize[0]}px ${elementToPlace.spriteSize[1]}px`,
-      // width: `${elementToPlace.backgroundSize[0]}px`,
-      // height: `${elementToPlace.backgroundSize[1] + 10}px`,
-    };
-  };
 
   const movePan = useCallback(
     (position: { x: number; y: number }) => {
@@ -295,10 +283,12 @@ const Body: React.FC = () => {
       setPlacingPosition(placingPosition);
 
       if (isPlacing && elementToPlace) {
-        setGhostElementPosition({
+        const newPosition = {
           x: placingPosition.x * scale + panPosition.x,
           y: placingPosition.y * scale + panPosition.y,
-        });
+        };
+        setGhostElementPosition(newPosition);
+        elementToPlace.position = newPosition;
       }
       if (isPanning) {
         const currentScale = scale;
@@ -448,17 +438,11 @@ const Body: React.FC = () => {
         <div
           style={{
             position: "fixed",
-            left: ghostElementPosition.x,
-            top: ghostElementPosition.y,
             opacity: 0.5,
             pointerEvents: "none",
-            // transform: `scale(${scale}) translate(14px, 11px)`, // Scale 5
-            // transform: `scale(${scale}) translate(13px, 8px)`, // Scale 3
-            // transform: `scale(${scale}) translate(9px, 4px)`, // Scale 2
-            // transform: `scale(${scale}) translate(5px, -0.5px)`, // Scale 1.5
-            // transform: `scale(${scale}) translate(0px, -8px)`, // Scale 1
-            // transform: `scale(${scale}) translate(-17px, -29px)`, // Scale 0.5
-            ...getBackgroundImage(),
+            transformOrigin: `${-elementToPlace.origingOffset[elementToPlace.orientation].x}px ${-elementToPlace.origingOffset[elementToPlace.orientation].y}px`,
+            transform: `scale(${scale * elementToPlace.spriteScale})`,
+            ...getElementSprite(elementToPlace),
           }}
         ></div>
       )}
