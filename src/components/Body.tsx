@@ -14,6 +14,7 @@ import { v4 as uuidv4 } from "uuid";
 import { addElement, Orientation, rotateElement } from "../store/circuitSlice";
 import { clamp } from "../utils/clamp";
 import { getElementSprite } from "../utils/getElementSprite";
+import { SpriteProvider, EntitySprite } from "../spritesheets/SpriteProvider";
 
 const Body: React.FC = () => {
   const dispatch = useDispatch();
@@ -356,9 +357,28 @@ const Body: React.FC = () => {
         setScale(1);
       }
       if (["q"].includes(event.key)) {
-        setIsPlacing(false); // Stop placing when 'q' is pressed
-        setPlacingElementRotation(0); // Reset placingElementRotation after placing
-        setElementToPlace(null); // Clear the element to be placed
+        if (isPlacing && elementToPlace) {
+          setIsPlacing(false); // Stop placing when 'q' is pressed
+          setPlacingElementRotation(0);
+          setElementToPlace(null); // Clear the element to be placed
+        }
+        if (hoveredElement) {
+          console.log(hoveredElement);
+          const elementName = hoveredElement.name;
+          const entity: EntitySprite = SpriteProvider(elementName);
+          console.log(entity);
+          const newElement = {
+            ...entity,
+            id: "",
+            position: hoveredElement.position,
+            rotation: hoveredElement.rotation,
+            orientation: hoveredElement.orientation,
+            size: entity.gridSize.north,
+          };
+          console.log(newElement);
+          setElementToPlace(newElement); // Set the element to be placed on mouse click
+          setIsPlacing(true); // Set the placing flag to true
+        }
       }
       if (["r"].includes(event.key)) {
         if (isPlacing && elementToPlace) {

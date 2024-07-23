@@ -1,5 +1,6 @@
 export interface EntitySprite {
   name: string;
+  displayName: string;
   type: string;
   gridSize: {
     // Size of the entity, in grid units
@@ -45,7 +46,8 @@ const basePath = getBasePath();
 
 const entities: { [key: string]: EntitySprite } = {
   "arithmetic-combinator": {
-    name: "Arithmetic Combinator",
+    name: "arithmetic-combinator",
+    displayName: "Arithmetic Combinator",
     type: "entity",
     gridSize: {
       north: { width: 1, height: 2 },
@@ -70,7 +72,8 @@ const entities: { [key: string]: EntitySprite } = {
     },
   },
   "decider-combinator": {
-    name: "Decider Combinator",
+    name: "decider-combinator",
+    displayName: "Decider Combinator",
     type: "entity",
     gridSize: {
       north: { width: 1, height: 2 },
@@ -95,7 +98,8 @@ const entities: { [key: string]: EntitySprite } = {
     },
   },
   "constant-combinator": {
-    name: "Constant Combinator",
+    name: "constant-combinator",
+    displayName: "Constant Combinator",
     type: "entity",
     gridSize: {
       north: { width: 1, height: 1 },
