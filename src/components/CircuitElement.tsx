@@ -10,7 +10,7 @@ const CircuitElement: React.FC<CircuitElementProps> = ({ id, type }) => {
   const position = element?.position;
   const size = element?.spriteSize;
   const rotation = element?.rotation;
-  const { setHoveredElement } = useCanvasContext();
+  const { setHoveredElement, hoveredElement, gridSize, isDebugMode } = useCanvasContext();
 
   const [{ isDragging }, drag] = useDrag(
     () => ({
@@ -59,14 +59,63 @@ const CircuitElement: React.FC<CircuitElementProps> = ({ id, type }) => {
         setIsHovered(false);
       }}
     >
-      {isHovered && (
-        <div className="circuit-element-hover">
-          <div className="corner" style={{ position: "relative", left: -24, top: -16, backgroundPosition: "0 0" }} />
-          <div className="corner" style={{ position: "relative", left: element.gridSize[element.orientation].width * 32 - 42, top: -80, backgroundPosition: "64px 0px" }} />
-          <div className="corner" style={{ position: "relative", left: -24, top: element.gridSize[element.orientation].height * 32 - 162, backgroundPosition: "0px 64px" }} />
+      {isHovered && hoveredElement && (
+        <div
+          className="circuit-element-hover"
+          style={{
+            border: isDebugMode ? "1px solid green" : "none",
+            position: "fixed",
+            left: -hoveredElement.origingOffset[hoveredElement.orientation].x,
+            top: -hoveredElement.origingOffset[hoveredElement.orientation].y,
+            height: (hoveredElement.gridSize[hoveredElement.orientation].height / hoveredElement.spriteScale) * gridSize,
+            width: (hoveredElement.gridSize[hoveredElement.orientation].width / hoveredElement.spriteScale) * gridSize,
+          }}
+        >
           <div
             className="corner"
-            style={{ position: "relative", left: element.gridSize[element.orientation].width * 32 - 42, top: element.gridSize[element.orientation].height * 32 - 226, backgroundPosition: "64px 64px" }}
+            style={{
+              position: "absolute",
+              backgroundPosition: "-7px -8px",
+              height: 33,
+              width: 34,
+              transform: `scale(2) translate(${-17 + 9}px,${-17 + 9}px) rotate(0deg)`,
+              border: isDebugMode ? "1px solid green" : "none",
+            }}
+          />
+          <div
+            className="corner"
+            style={{
+              position: "absolute",
+              backgroundPosition: "-7px -8px",
+              height: 33,
+              width: 34,
+              transform: `scale(2) translate(${-17 - 11 + (hoveredElement.gridSize[hoveredElement.orientation].width * gridSize) / hoveredElement.spriteScale}px,${-17 + 9.5}px) rotate(90deg)`,
+              border: isDebugMode ? "1px solid green" : "none",
+            }}
+          />
+          <div
+            className="corner"
+            style={{
+              position: "absolute",
+              backgroundPosition: "-7px -8px",
+              height: 33,
+              width: 34,
+              transform: `scale(2) translate(${-17 - 11 + (hoveredElement.gridSize[hoveredElement.orientation].width * gridSize) / hoveredElement.spriteScale}px,${
+                -17 - 11 + (hoveredElement.gridSize[hoveredElement.orientation].height * gridSize) / hoveredElement.spriteScale
+              }px) rotate(180deg)`,
+              border: isDebugMode ? "1px solid green" : "none",
+            }}
+          />
+          <div
+            className="corner"
+            style={{
+              position: "absolute",
+              backgroundPosition: "-7px -8px",
+              height: 33,
+              width: 34,
+              transform: `scale(2) translate(${-17 + 8.5}px,${-17 - 10.5 + (hoveredElement.gridSize[hoveredElement.orientation].height * gridSize) / hoveredElement.spriteScale}px) rotate(-90deg)`,
+              border: isDebugMode ? "1px solid green" : "none",
+            }}
           />
         </div>
       )}

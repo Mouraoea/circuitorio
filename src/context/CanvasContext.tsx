@@ -44,6 +44,8 @@ interface CanvasContextProps {
   setZoomCenter: (value: { x: number; y: number }) => void;
   hoveredElement: CircuitElementProps | null;
   setHoveredElement: (value: CircuitElementProps | null) => void;
+  isDebugMode: boolean;
+  setIsDebugMode: (value: boolean) => void;
 }
 
 const CanvasContext = createContext<CanvasContextProps | undefined>(undefined);
@@ -140,6 +142,7 @@ export const CanvasProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   const [placingElementRotation, setPlacingElementRotation] = useState(0);
   const [zoomCenter, setZoomCenter] = useState({ x: 0, y: 0 });
   const [hoveredElement, setHoveredElement] = useState<CircuitElementProps | null>(null);
+  const [isDebugMode, setIsDebugMode] = useState(false);
 
   const updateKeyState = (value: Partial<KeyStateKeys>) => {
     setKeyState((prevKeyState) => ({ ...prevKeyState, ...value }));
@@ -190,6 +193,8 @@ export const CanvasProvider: React.FC<{ children: ReactNode }> = ({ children }) 
         setZoomCenter,
         hoveredElement,
         setHoveredElement,
+        isDebugMode,
+        setIsDebugMode,
       }}
     >
       {children}

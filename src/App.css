@@ -1497,14 +1497,14 @@ hr.mn {
 
 .button {
   background-color: #8e8e8e;
-  padding: 10px 12px 10px 12px;
+  /* padding: 10px 12px 10px 12px; */
   font-size: 100%;
   text-align: left;
   color: #000;
   font-weight: 600;
   display: inline-block;
   vertical-align: baseline;
-  min-width: 128px;
+  /* min-width: 128px; */
   border: none;
   line-height: inherit;
   white-space: nowrap;
@@ -1542,8 +1542,8 @@ hr.mn {
 .button:active,
 .button.active {
   position: relative;
-  padding-top: 12px;
-  padding-bottom: 8px;
+  /* padding-top: 12px;
+  padding-bottom: 8px; */
   vertical-align: -2px;
   box-shadow: inset 0px 10px 2px -8px #000, inset 0px 9px 2px -8px #000, inset 8px 0px 4px -8px #563a10, inset 8px 0px 4px -8px #563a10, inset -8px 0px 4px -8px #563a10,
     inset -8px 0px 4px -8px #563a10, inset 0px 9px 2px -8px #563a10, inset 0px -9px 2px -8px #563a10, inset 0px -8.5px 0px -8px #563a10, 0px 0px 4px 0px #000;
@@ -1555,8 +1555,8 @@ hr.mn {
 .button.disabled,
 .button.disabled:hover,
 .button.disabled:active {
-  padding-top: 10px;
-  padding-bottom: 10px;
+  /* padding-top: 10px;
+  padding-bottom: 10px; */
   cursor: default;
   vertical-align: 0;
   background-color: #3d3d3d;
