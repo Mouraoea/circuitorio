@@ -113,6 +113,14 @@ const Body: React.FC = () => {
     ]
   );
 
+  const dispatchMouseEvent = useCallback(() => {
+    const event = new MouseEvent("mousemove", {
+      clientX: cursorPosition.x,
+      clientY: cursorPosition.y,
+    });
+    window.dispatchEvent(event);
+  }, [cursorPosition]);
+
   const closeLeftDrawer = useCallback(() => {
     setIsLeftDrawerOpen(false);
     setLeftDrawerContent(null);
@@ -165,43 +173,6 @@ const Body: React.FC = () => {
     [setPanPosition, gridSize, gridWidth, gridHeight, scale, boardRef, setPanPercentage]
   );
 
-  // const handleZoom = useCallback(
-  //   (delta: number, cursorX: number, cursorY: number) => {
-  //     const boardElement = boardRef.current;
-  //     if (boardElement) {
-  //       const rect = boardElement.getBoundingClientRect();
-  //       const newScale = clamp(scale + delta, 0.5, 5);
-  //       const deltaScale = newScale - scale;
-
-  //       const cursorOffset = {
-  //         x: (cursorX - rect.left) / scale + panPosition.x,
-  //         y: (cursorY - rect.top) / scale + panPosition.y,
-  //       };
-
-  //       const offsetByCursor = {
-  //         x: cursorOffset.x * deltaScale,
-  //         y: cursorOffset.y * deltaScale,
-  //       };
-
-  //       // const offsetByCursor = {
-  //       //   x: 0,
-  //       //   y: 0,
-  //       // };
-
-  //       const newPan = {
-  //         x: 0 - offsetByCursor.x / newScale,
-  //         y: 0 - offsetByCursor.y / newScale,
-  //       };
-
-  //       // Update the pan position
-  //       movePan(newPan);
-  //       // Update the scale
-  //       setScale(newScale);
-  //     }
-  //   },
-  //   [scale, panPosition, movePan, setScale, boardRef]
-  // );
-
   const handleZoom = useCallback(
     (delta: number, cursorX: number, cursorY: number) => {
       const boardElement = boardRef.current;
@@ -234,9 +205,10 @@ const Body: React.FC = () => {
         movePan(newPan);
         // Update the scale
         setScale(newScale);
+        dispatchMouseEvent();
       }
     },
-    [scale, panPosition, movePan, setScale, boardRef, cursorGridPosition]
+    [scale, panPosition, movePan, setScale, boardRef, cursorGridPosition, dispatchMouseEvent]
   );
 
   const handleWheel = useCallback(
@@ -272,7 +244,6 @@ const Body: React.FC = () => {
             placingElementRotation,
             id: uuidv4(),
           };
-          console.log(newElement);
           dispatch(addElement(newElement));
           if (!keyState["Shift" as keyof KeyStateKeys]) {
             setIsPlacing(false);
@@ -405,11 +376,9 @@ const Body: React.FC = () => {
             size: newSize,
           });
           setPlacingElementRotation(newRotation);
-          return;
         }
         if (hoveredElement) {
           dispatch(rotateElement({ id: hoveredElement.id }));
-          return;
         }
       }
     };
@@ -465,6 +434,7 @@ const Body: React.FC = () => {
     setScale,
     setCursorGridCoordinates,
     hoveredElement,
+    dispatchMouseEvent,
   ]);
 
   return (
