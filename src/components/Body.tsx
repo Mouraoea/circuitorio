@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useDispatch } from "react-redux";
 import "../App.css";
-// import logo from "./logo.svg";
 import CircuitBoard from "./CircuitBoard";
 import LeftDrawer from "./LeftDrawer";
 import RightDrawer from "./RightDrawer";
@@ -47,11 +46,11 @@ const Body: React.FC = () => {
     panPosition,
     setPanPosition,
     setPanPercentage,
+    cursorGridPosition,
     setCursorGridPosition,
     setCursorGridCoordinates,
     gridHeight,
     gridWidth,
-    zoomCenter,
   } = useCanvasContext();
   const [leftDrawerContent, setLeftDrawerContent] = useState<React.ReactNode>(null);
   const [rightDrawerContent, setRightDrawerContent] = useState<React.ReactNode>(null);
@@ -166,17 +165,54 @@ const Body: React.FC = () => {
     [setPanPosition, gridSize, gridWidth, gridHeight, scale, boardRef, setPanPercentage]
   );
 
+  // const handleZoom = useCallback(
+  //   (delta: number, cursorX: number, cursorY: number) => {
+  //     const boardElement = boardRef.current;
+  //     if (boardElement) {
+  //       const rect = boardElement.getBoundingClientRect();
+  //       const newScale = clamp(scale + delta, 0.5, 5);
+  //       const deltaScale = newScale - scale;
+
+  //       const cursorOffset = {
+  //         x: (cursorX - rect.left) / scale + panPosition.x,
+  //         y: (cursorY - rect.top) / scale + panPosition.y,
+  //       };
+
+  //       const offsetByCursor = {
+  //         x: cursorOffset.x * deltaScale,
+  //         y: cursorOffset.y * deltaScale,
+  //       };
+
+  //       // const offsetByCursor = {
+  //       //   x: 0,
+  //       //   y: 0,
+  //       // };
+
+  //       const newPan = {
+  //         x: 0 - offsetByCursor.x / newScale,
+  //         y: 0 - offsetByCursor.y / newScale,
+  //       };
+
+  //       // Update the pan position
+  //       movePan(newPan);
+  //       // Update the scale
+  //       setScale(newScale);
+  //     }
+  //   },
+  //   [scale, panPosition, movePan, setScale, boardRef]
+  // );
+
   const handleZoom = useCallback(
     (delta: number, cursorX: number, cursorY: number) => {
       const boardElement = boardRef.current;
       if (boardElement) {
-        const rect = boardElement.getBoundingClientRect();
+        // const rect = boardElement.getBoundingClientRect();
         const newScale = clamp(scale + delta, 0.5, 5);
         const deltaScale = newScale - scale;
 
         const cursorOffset = {
-          x: (cursorX - rect.left) / scale + panPosition.x,
-          y: (cursorY - rect.top) / scale + panPosition.y,
+          x: cursorGridPosition.x + panPosition.x / scale,
+          y: cursorGridPosition.y + panPosition.y / scale,
         };
 
         const offsetByCursor = {
@@ -184,9 +220,14 @@ const Body: React.FC = () => {
           y: cursorOffset.y * deltaScale,
         };
 
+        const offsetByPan = {
+          x: (panPosition.x * deltaScale) / scale,
+          y: (panPosition.y * deltaScale) / scale,
+        };
+
         const newPan = {
-          x: panPosition.x - offsetByCursor.x / newScale,
-          y: panPosition.y - offsetByCursor.y / newScale,
+          x: panPosition.x + offsetByPan.x - offsetByCursor.x,
+          y: panPosition.y + offsetByPan.y - offsetByCursor.y,
         };
 
         // Update the pan position
@@ -195,7 +236,7 @@ const Body: React.FC = () => {
         setScale(newScale);
       }
     },
-    [scale, panPosition, movePan, setScale, boardRef]
+    [scale, panPosition, movePan, setScale, boardRef, cursorGridPosition]
   );
 
   const handleWheel = useCallback(
@@ -448,21 +489,6 @@ const Body: React.FC = () => {
             ...getElementSprite(elementToPlace),
           }}
         ></div>
-      )}
-      {zoomCenter && (
-        <div
-          style={{
-            position: "relative",
-            left: zoomCenter.x,
-            top: zoomCenter.y,
-            width: "10px",
-            height: "10px",
-            backgroundColor: "red",
-            transform: "translate(-50%, -50%)",
-          }}
-        >
-          X
-        </div>
       )}
     </div>
   );
