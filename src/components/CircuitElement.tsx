@@ -1,18 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useDrag } from "react-dnd";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
-import { type CircuitElementProps, rotateElement } from "../store/circuitSlice";
+import { type CircuitElementProps } from "../store/circuitSlice";
 import { useCanvasContext } from "../context/CanvasContext";
 
 const CircuitElement: React.FC<CircuitElementProps> = ({ id, type }) => {
-  const dispatch = useDispatch();
   const element = useSelector((state: RootState) => state.circuit.elements.find((element) => element.id === id));
-  const previewElement = useSelector((state: RootState) => state.circuit.previewElement);
   const position = element?.position;
   const size = element?.spriteSize;
   const rotation = element?.rotation;
-  const { hoveredElement, setHoveredElement } = useCanvasContext();
+  const { setHoveredElement } = useCanvasContext();
 
   const [{ isDragging }, drag] = useDrag(
     () => ({
@@ -26,24 +24,6 @@ const CircuitElement: React.FC<CircuitElementProps> = ({ id, type }) => {
   );
 
   const [isHovered, setIsHovered] = useState(false);
-
-  useEffect(() => {
-    if (hoveredElement) {
-    }
-  }, [hoveredElement]);
-
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "r" && hoveredElement) {
-        dispatch(rotateElement({ id: hoveredElement.id }));
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [dispatch, hoveredElement]);
 
   if (!element || !position) return null;
 
@@ -79,14 +59,17 @@ const CircuitElement: React.FC<CircuitElementProps> = ({ id, type }) => {
         setIsHovered(false);
       }}
     >
-      {/* {isHovered && (
+      {isHovered && (
         <div className="circuit-element-hover">
           <div className="corner" style={{ position: "relative", left: -24, top: -16, backgroundPosition: "0 0" }} />
-          <div className="corner" style={{ position: "relative", left: element.size[0] * 32 - 42, top: -80, backgroundPosition: "64px 0px" }} />
-          <div className="corner" style={{ position: "relative", left: -24, top: element.size[1] * 32 - 162, backgroundPosition: "0px 64px" }} />
-          <div className="corner" style={{ position: "relative", left: element.size[0] * 32 - 42, top: element.size[1] * 32 - 226, backgroundPosition: "64px 64px" }} />
+          <div className="corner" style={{ position: "relative", left: element.gridSize[element.orientation].width * 32 - 42, top: -80, backgroundPosition: "64px 0px" }} />
+          <div className="corner" style={{ position: "relative", left: -24, top: element.gridSize[element.orientation].height * 32 - 162, backgroundPosition: "0px 64px" }} />
+          <div
+            className="corner"
+            style={{ position: "relative", left: element.gridSize[element.orientation].width * 32 - 42, top: element.gridSize[element.orientation].height * 32 - 226, backgroundPosition: "64px 64px" }}
+          />
         </div>
-      )} */}
+      )}
       {/* {previewElement && (
         <div
           className="circuit-element-preview"

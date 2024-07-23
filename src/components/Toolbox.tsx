@@ -1,4 +1,3 @@
-// src/components/Toolbox.tsx
 import React from "react";
 import { useCanvasContext } from "../context/CanvasContext";
 import { SpriteProvider, EntitySprite } from "../spritesheets/SpriteProvider";
@@ -10,34 +9,6 @@ type ToolboxProps = {
 
 const Toolbox: React.FC<ToolboxProps> = ({ closeLeftDrawer }) => {
   const { setElementToPlace, setIsPlacing } = useCanvasContext();
-
-  // const handleAddElement = (element: { [key: string]: string | number[] }) => {
-  //   const type = element.type as string;
-  //   const size = element.size as number[];
-  //   const sprite = element.sprite as string;
-  //   const spriteSize = element.spriteSize as number[];
-  //   const spriteOffsetRef = element.spriteOffsetRef as number[];
-  //   const backgroundSizeRef = element.backgroundSizeRef as number[];
-  //   const spriteOffset = [element.spriteOffsetRef[0], element.spriteOffsetRef[1]] as number[];
-  //   const backgroundSize = [element.backgroundSizeRef[0], element.backgroundSizeRef[1]] as number[];
-
-  //   const newElement = {
-  //     id: "",
-  //     type,
-  //     size,
-  //     sprite,
-  //     spriteSize,
-  //     spriteOffset,
-  //     backgroundSize,
-  //     spriteOffsetRef,
-  //     backgroundSizeRef,
-  //     position: { x: 0, y: 0 },
-  //     rotation: 0,
-  //   };
-
-  //   setElementToPlace(newElement); // Set the element to be placed on mouse click
-  //   setIsPlacing(true); // Set the placing flag to true
-  // };
 
   const handleAddElement = (element: string) => {
     const entity: EntitySprite = SpriteProvider(element);

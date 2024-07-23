@@ -36,8 +36,6 @@ interface CanvasContextProps {
   setGhostElementPosition: (value: { x: number; y: number }) => void;
   elementToPlace: CircuitElementProps | null;
   setElementToPlace: (value: CircuitElementProps | null) => void;
-  // elementToPlace2: CircuitElementProps2 | null;
-  // setElementToPlace2: (value: CircuitElementProps2 | null) => void;
   isPlacing: boolean;
   setIsPlacing: (value: boolean) => void;
   placingElementRotation: number;
@@ -138,7 +136,6 @@ export const CanvasProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   const [placingPosition, setPlacingPosition] = useState({ x: 0, y: 0 });
   const [ghostElementPosition, setGhostElementPosition] = useState({ x: 0, y: 0 });
   const [elementToPlace, setElementToPlace] = useState<CircuitElementProps | null>(null);
-  // const [elementToPlace2, setElementToPlace2] = useState<CircuitElementProps2 | null>(null);
   const [isPlacing, setIsPlacing] = useState(false);
   const [placingElementRotation, setPlacingElementRotation] = useState(0);
   const [zoomCenter, setZoomCenter] = useState({ x: 0, y: 0 });
@@ -185,8 +182,6 @@ export const CanvasProvider: React.FC<{ children: ReactNode }> = ({ children }) 
         setGhostElementPosition,
         elementToPlace,
         setElementToPlace,
-        // elementToPlace2,
-        // setElementToPlace2,
         isPlacing,
         setIsPlacing,
         placingElementRotation,

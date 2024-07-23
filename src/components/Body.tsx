@@ -12,7 +12,7 @@ import Debug from "./Debug";
 import Settings from "./Settings";
 import Help from "./Help";
 import { v4 as uuidv4 } from "uuid";
-import { addElement } from "../store/circuitSlice";
+import { addElement, rotateElement } from "../store/circuitSlice";
 import { clamp } from "../utils/clamp";
 
 const Body: React.FC = () => {
@@ -42,18 +42,15 @@ const Body: React.FC = () => {
     keyState,
     setKeyState,
     boardRef,
+    hoveredElement,
     panPosition,
     setPanPosition,
-    panPercentage,
     setPanPercentage,
-    transformOrigin,
-    setTransformOrigin,
     setCursorGridPosition,
     setCursorGridCoordinates,
     gridHeight,
     gridWidth,
     zoomCenter,
-    setZoomCenter,
   } = useCanvasContext();
   const [leftDrawerContent, setLeftDrawerContent] = useState<React.ReactNode>(null);
   const [rightDrawerContent, setRightDrawerContent] = useState<React.ReactNode>(null);
@@ -377,6 +374,9 @@ const Body: React.FC = () => {
         //   setPlacingElementRotation(newRotation);
         //   return;
         // }
+        if (hoveredElement) {
+          dispatch(rotateElement({ id: hoveredElement.id }));
+        }
       }
     };
 
@@ -430,6 +430,7 @@ const Body: React.FC = () => {
     setPanPosition,
     setScale,
     setCursorGridCoordinates,
+    hoveredElement,
   ]);
 
   return (

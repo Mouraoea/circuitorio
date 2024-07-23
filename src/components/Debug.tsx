@@ -34,7 +34,16 @@ const Debug: React.FC = () => {
         <p>
           Place Position: (x: {placingPosition.x}, y: {placingPosition.y})
         </p>
-        <p>Hovered Element: {hoveredElement ? "Name: " + hoveredElement.name + ", Orientation: " + hoveredElement.orientation : "None"}</p>
+        <p>Hovered Element Name: </p>
+        {hoveredElement && (
+          <ul>
+            <li>{hoveredElement.name}</li>
+            <li>Orientation: {hoveredElement.orientation}</li>
+            <li>
+              x: {hoveredElement.position.x}, y: {hoveredElement.position.y}
+            </li>
+          </ul>
+        )}
         <p>Active Keys: {Object.keys(keyState).filter((key) => keyState[key as keyof KeyStateKeys])}</p>
         <p>Left Drawer: {isLeftDrawerOpen ? "Open" : "Closed"}</p>
       </div>
