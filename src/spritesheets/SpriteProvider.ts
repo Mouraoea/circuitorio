@@ -33,6 +33,16 @@ export interface EntitySprite {
   };
 }
 
+const getBasePath = () => {
+  if (process.env.NODE_ENV === "production") {
+    return "./img/";
+  } else {
+    return "./circuitorio/img/";
+  }
+};
+
+const basePath = getBasePath();
+
 const entities: { [key: string]: EntitySprite } = {
   "arithmetic-combinator": {
     name: "Arithmetic Combinator",
@@ -50,7 +60,7 @@ const entities: { [key: string]: EntitySprite } = {
       south: { x: -322, y: 0 },
       west: { x: -454, y: 0 },
     },
-    spritePath: "./circuitorio/img/base/graphics/hr-arithmetic-combinator.png",
+    spritePath: `${basePath}base/graphics/hr-arithmetic-combinator.png`,
     spriteScale: 0.5,
     spriteSize: {
       north: { width: 77, height: 109 },
@@ -75,7 +85,7 @@ const entities: { [key: string]: EntitySprite } = {
       south: { x: -346, y: -10 },
       west: { x: -497, y: 0 },
     },
-    spritePath: "./circuitorio/img/base/graphics/hr-decider-combinator.png",
+    spritePath: `${basePath}base/graphics/hr-decider-combinator.png`,
     spriteScale: 0.5,
     spriteSize: {
       north: { width: 86, height: 111 },
@@ -100,7 +110,7 @@ const entities: { [key: string]: EntitySprite } = {
       south: { x: -245, y: -11 },
       west: { x: -359, y: 0 },
     },
-    spritePath: "./circuitorio/img/base/graphics/hr-constant-combinator.png",
+    spritePath: `${basePath}base/graphics/hr-constant-combinator.png`,
     spriteScale: 0.5,
     spriteSize: {
       north: { width: 82, height: 75 },
