@@ -15,10 +15,25 @@ import { addElement, Orientation, rotateElement } from "../store/circuitSlice";
 import { clamp } from "../utils/clamp";
 import { getElementSprite } from "../utils/getElementSprite";
 import { SpriteProvider, EntitySprite } from "../spritesheets/SpriteProvider";
+import Modal from "react-modal";
+
+const environment = process.env.NODE_ENV;
+const rootPath = environment === "development" ? "/circuitorio" : "";
+
+interface ChangeLogEntry {
+  version: string;
+  content: string;
+}
+
+Modal.setAppElement("#root");
 
 const Body: React.FC = () => {
   const dispatch = useDispatch();
   const {
+    disclaimerIsOpen,
+    setDisclaimerIsOpen,
+    appVersion,
+    setAppVersion,
     isLeftDrawerOpen,
     setIsLeftDrawerOpen,
     isRightDrawerOpen,
@@ -59,6 +74,8 @@ const Body: React.FC = () => {
   const [rightOpenDrawerId, setRightOpenDrawerId] = useState<string | null>(null);
   const [startMousePosition, setStartMousePosition] = useState({ x: 0, y: 0 });
   const [startPanPosition, setStartPanPosition] = useState({ x: 0, y: 0 });
+  const [disclaimer, setDisclaimer] = useState("");
+  const [changeLog, setChangeLog] = useState<ChangeLogEntry[]>([]);
 
   const toggleDrawer = useCallback(
     (side: "left" | "right", content: React.ReactNode, id: string) => {
@@ -452,10 +469,64 @@ const Body: React.FC = () => {
     setCursorGridCoordinates,
     hoveredElement,
     dispatchMouseEvent,
+    setDisclaimerIsOpen,
   ]);
+
+  useEffect(() => {
+    fetch(`.${rootPath}/changelog.json`)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setDisclaimer(data.disclaimer);
+        setChangeLog(data.changeLog);
+        setAppVersion(data.changeLog[0].version);
+        const lastSeenVersion = localStorage.getItem("appVersion");
+        if (lastSeenVersion !== data.changeLog[0].version) {
+          setDisclaimerIsOpen(true);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching the data:", error);
+      });
+  }, [setDisclaimerIsOpen, appVersion, setAppVersion, changeLog]);
+
+  const closeModal = () => {
+    localStorage.setItem("appVersion", appVersion);
+    setDisclaimerIsOpen(false);
+  };
 
   return (
     <div ref={boardRef}>
+      <div style={{ margin: "20px" }}>
+        <Modal
+          isOpen={disclaimerIsOpen}
+          className="panel"
+          style={{ content: { margin: "50px", padding: "20px 20px 20px 20px" }, overlay: { backgroundColor: "rgba(0,0,0,0.75)" } }}
+          onRequestClose={closeModal}
+          contentLabel="Disclaimer and Change Log"
+        >
+          <h2>Disclaimer and Change Log</h2>
+          <div>
+            <h3>Disclaimer</h3>
+            <p>{disclaimer}</p>
+            <h3>Change Log</h3>
+            <ul>
+              {changeLog.map((log, index) => (
+                <li key={index}>
+                  <strong>{log.version}:</strong> {log.content}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <button className="button" onClick={closeModal}>
+            Close
+          </button>
+        </Modal>
+      </div>
       <LeftDrawer isOpen2={isLeftDrawerOpen} onClose={closeLeftDrawer}>
         <DrawerContent content={leftDrawerContent} />
       </LeftDrawer>

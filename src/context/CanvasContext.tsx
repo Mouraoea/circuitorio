@@ -2,6 +2,10 @@ import React, { createContext, useContext, useState, useRef, ReactNode } from "r
 import { CircuitElementProps } from "../store/circuitSlice";
 
 interface CanvasContextProps {
+  disclaimerIsOpen: boolean;
+  setDisclaimerIsOpen: (value: boolean) => void;
+  appVersion: string;
+  setAppVersion: (value: string) => void;
   scale: number;
   setScale: (value: number) => void;
   panPosition: { x: number; y: number };
@@ -51,6 +55,8 @@ interface CanvasContextProps {
 const CanvasContext = createContext<CanvasContextProps | undefined>(undefined);
 
 export const CanvasProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [disclaimerIsOpen, setDisclaimerIsOpen] = useState(false);
+  const [appVersion, setAppVersion] = useState("0.0.0");
   const [scale, setScale] = useState<number>(1);
   const [panPosition, setPanPosition] = useState({ x: 0, y: 0 });
   const [panPercentage, setPanPercentage] = useState({ x: 0, y: 0 });
@@ -151,6 +157,10 @@ export const CanvasProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   return (
     <CanvasContext.Provider
       value={{
+        disclaimerIsOpen,
+        setDisclaimerIsOpen,
+        appVersion,
+        setAppVersion,
         scale,
         setScale,
         panPosition,
