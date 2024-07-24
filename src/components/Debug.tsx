@@ -4,6 +4,7 @@ import "../App.css";
 
 const Debug: React.FC = () => {
   const {
+    appVersion,
     scale,
     panPosition,
     panPercentage,
@@ -41,7 +42,10 @@ const Debug: React.FC = () => {
         </button>
         <h2>Debug Menu</h2>
       </div>
-      <div className="panel-inset mb0 mt0">Readings</div>
+      <div className="panel-inset mb0 mt0">
+        <p>Version: {appVersion}</p>
+        <p>Readings</p>
+      </div>
 
       <div className="panel-inset-lighter mt0">
         <p>Debug Mode: {isDebugMode ? "Enabled" : "Disabled"}</p>
