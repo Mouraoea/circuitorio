@@ -70,7 +70,7 @@ const Debug: React.FC = () => {
         <p>Hovered Element Name: </p>
         {hoveredElement && (
           <ul>
-            <li>{hoveredElement.name}</li>
+            <li>{hoveredElement.displayName}</li>
             <li>Orientation: {hoveredElement.orientation}</li>
             <li>
               x: {hoveredElement.position.x}, y: {hoveredElement.position.y}
