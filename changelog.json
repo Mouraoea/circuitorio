@@ -1,6 +1,28 @@
 {
   "disclaimer": "This application is a fan-made project designed to assist with debugging Factorio’s circuit network. It is created by fans for fans, with the sole purpose of enhancing the gaming experience. I do not own any of the images used in this application. All image properties and rights are owned by Wube Software, the developers of Factorio. If you enjoy Factorio and find this tool helpful, please consider supporting the developers by visiting https://factorio.com/.",
   "changeLog": [
+    { "version": "alpha-0.1.01", "content": "Added roadmap" },
     { "version": "alpha-0.1.0", "content": "Initial release of the application. This version includes basic functionality for adding and moving combinators, camera control, and drawer panels" }
+  ],
+  "roadmap": [
+    "Add colision detection for entities",
+    "Add support for selecting and deleting entities",
+    "Add support for connecting combinators with wires",
+    "Add support for editing combinator settings",
+    "Add support for saving and loading blueprints",
+    "Add support for importing and exporting blueprints",
+    "Add support for editing circuit network signals",
+    "Add support for editing circuit network conditions",
+    "Add support for editing circuit network connections",
+    "Add support for editing circuit network filters",
+    "Add support for editing circuit network arithmetic",
+    "Add support for editing circuit network decider",
+    "Add support for editing circuit network constant combinators",
+    "Add support for editing circuit network power switches",
+    "Add support for editing circuit network power poles",
+    "Add support for editing circuit network train stations",
+    "Add support for editing circuit network train signals",
+    "Add support for editing circuit network train rail signals",
+    "Add support for editing circuit network train chain signals"
   ]
 }
