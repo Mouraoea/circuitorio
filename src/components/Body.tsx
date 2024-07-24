@@ -363,10 +363,8 @@ const Body: React.FC = () => {
           setElementToPlace(null); // Clear the element to be placed
         }
         if (hoveredElement) {
-          console.log(hoveredElement);
           const elementName = hoveredElement.name;
           const entity: EntitySprite = SpriteProvider(elementName);
-          console.log(entity);
           const newElement = {
             ...entity,
             id: "",
@@ -375,7 +373,6 @@ const Body: React.FC = () => {
             orientation: hoveredElement.orientation,
             size: entity.gridSize.north,
           };
-          console.log(newElement);
           setElementToPlace(newElement); // Set the element to be placed on mouse click
           setIsPlacing(true); // Set the placing flag to true
         }

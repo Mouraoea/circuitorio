@@ -1,5 +1,4 @@
-// src/components/CircuitBoard.tsx
-import React, { useRef } from "react";
+import React, { useCallback } from "react";
 import { useDrop } from "react-dnd";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
@@ -14,21 +13,28 @@ const CircuitBoard: React.FC = () => {
   const dispatch = useDispatch();
   const elements = useSelector((state: RootState) => state.circuit.elements);
   const { scale, panPosition, gridSize, gridHeight, gridWidth, isPanning } = useCanvasContext();
-  const boardRef = useRef<HTMLDivElement | null>(null);
-  const [, drop] = useDrop(() => ({
-    accept: "CIRCUIT_ELEMENT",
-    drop: (item: CircuitElementProps, monitor) => {
+
+  const handleDrop = useCallback(
+    (item: CircuitElementProps, monitor: any) => {
       const delta = monitor.getDifferenceFromInitialOffset();
       const newPosition = gridSnap(setNewPosition(item.position, delta, scale), gridSize);
       dispatch(updateElementPosition({ id: item.id, position: newPosition }));
     },
-  }));
+    [scale, gridSize, dispatch]
+  );
+
+  const [, drop] = useDrop(
+    () => ({
+      accept: "CIRCUIT_ELEMENT",
+      drop: (item: CircuitElementProps, monitor) => handleDrop(item, monitor),
+    }),
+    [handleDrop]
+  );
 
   return (
     <div
       ref={(node) => {
         drop(node);
-        boardRef.current = node;
       }}
       className="circuit-board"
       style={{

@@ -110,20 +110,6 @@ const CircuitElement: React.FC<CircuitElementProps> = ({ id, type }) => {
           />
         </div>
       )}
-      {/* {previewElement && (
-        <div
-          className="circuit-element-preview"
-          style={{
-            position: "absolute",
-            left: previewElement.position.x,
-            top: previewElement.position.y,
-            opacity: 0.5,
-            transform: `scale(${1})`,
-            pointerEvents: "none", // Prevents interaction with the preview element
-            ...getBackgroundImage(),
-          }}
-        />
-      )} */}
     </div>
   );
 };
