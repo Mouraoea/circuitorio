@@ -8,8 +8,6 @@ const Help: React.FC = () => {
       </div>
       <div className="panel-inset mb0 mt0">Shortcuts</div>
       <div className="panel-inset-lighter mt0">
-        h: Help
-        <br />
         e: Inventory
         <br />
         o: Debug
@@ -24,7 +22,7 @@ const Help: React.FC = () => {
         <br />
         Escape: Close drawers
         <br />
-        Arrow keys/ASWD: Pan
+        Mouse middle button/Arrow keys/ASWD: Pan
         <br />
         Scroll: Zoom
         <br />

@@ -76,6 +76,7 @@ const Body: React.FC = () => {
   const [startPanPosition, setStartPanPosition] = useState({ x: 0, y: 0 });
   const [disclaimer, setDisclaimer] = useState("");
   const [changeLog, setChangeLog] = useState<ChangeLogEntry[]>([]);
+  const [roadmap, setRoadmap] = useState<string[]>([]);
 
   const toggleDrawer = useCallback(
     (side: "left" | "right", content: React.ReactNode, id: string) => {
@@ -388,7 +389,7 @@ const Body: React.FC = () => {
             position: hoveredElement.position,
             rotation: hoveredElement.rotation,
             orientation: hoveredElement.orientation,
-            size: entity.gridSize.north,
+            size: hoveredElement.gridSize[hoveredElement.orientation],
           };
           setElementToPlace(newElement); // Set the element to be placed on mouse click
           setIsPlacing(true); // Set the placing flag to true
@@ -399,8 +400,8 @@ const Body: React.FC = () => {
           const newRotation = (placingElementRotation + 1) % 4;
           const newOrientation = ["north", "east", "south", "west"][newRotation] as Orientation;
           const newSize = {
-            width: elementToPlace.gridSize[newOrientation].width * gridSize,
-            height: elementToPlace.gridSize[newOrientation].height * gridSize,
+            width: elementToPlace.gridSize[newOrientation].width,
+            height: elementToPlace.gridSize[newOrientation].height,
           };
 
           setElementToPlace({
@@ -483,6 +484,7 @@ const Body: React.FC = () => {
       .then((data) => {
         setDisclaimer(data.disclaimer);
         setChangeLog(data.changeLog);
+        setRoadmap(data.roadmap);
         setAppVersion(data.changeLog[0].version);
         const lastSeenVersion = localStorage.getItem("appVersion");
         if (lastSeenVersion !== data.changeLog[0].version) {
@@ -519,6 +521,12 @@ const Body: React.FC = () => {
                 <li key={index}>
                   <strong>{log.version}:</strong> {log.content}
                 </li>
+              ))}
+            </ul>
+            <h3>Roadmap</h3>
+            <ul>
+              {roadmap.map((item, index) => (
+                <li key={index}>{item}</li>
               ))}
             </ul>
           </div>

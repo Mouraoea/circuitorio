@@ -2,7 +2,7 @@ import React, { useCallback } from "react";
 import { useDrop } from "react-dnd";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
-import { updateElementPosition, CircuitElementProps } from "../store/circuitSlice";
+import { checkForCollision, CircuitElementProps } from "../store/circuitSlice";
 import CircuitElement from "./CircuitElement";
 import { gridSnap } from "../utils/gridSnap";
 import { setNewPosition } from "../utils/setNewPosition";
@@ -18,7 +18,7 @@ const CircuitBoard: React.FC = () => {
     (item: CircuitElementProps, monitor: any) => {
       const delta = monitor.getDifferenceFromInitialOffset();
       const newPosition = gridSnap(setNewPosition(item.position, delta, scale), gridSize);
-      dispatch(updateElementPosition({ id: item.id, position: newPosition }));
+      dispatch(checkForCollision({ id: item.id, newPosition: newPosition }));
     },
     [scale, gridSize, dispatch]
   );
