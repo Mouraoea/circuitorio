@@ -77,10 +77,24 @@ const circuitSlice = createSlice({
     rotateElement: (state, action: PayloadAction<{ id: string }>) => {
       const searchResult: CircuitElementProps | undefined = state.elements.find((el) => el.id === action.payload.id);
       if (searchResult) {
-        const element = searchResult;
-        element.rotation = ++element.rotation % 4;
-        element.orientation = ["north", "east", "south", "west"][element.rotation] as Orientation;
-        element.size = element.gridSize[element.orientation];
+        let newRotation = ++searchResult.rotation % 4;
+        let newOrientation = ["north", "east", "south", "west"][newRotation] as Orientation;
+        let newSize = searchResult.gridSize[newOrientation];
+        const newElement = {
+          ...searchResult,
+          rotation: newRotation,
+          orientation: newOrientation,
+          size: newSize,
+        };
+
+        if (checkCollision(newElement, state.elements)) {
+          newRotation = ++searchResult.rotation % 4;
+          newOrientation = ["north", "east", "south", "west"][newRotation] as Orientation;
+          newSize = searchResult.gridSize[newOrientation];
+        }
+        searchResult.rotation = newRotation;
+        searchResult.orientation = newOrientation;
+        searchResult.size = newSize;
       }
     },
     setPreviewElement: (state, action: PayloadAction<CircuitElementProps | null>) => {
