@@ -12,11 +12,12 @@ import Settings from "./Settings";
 import Help from "./Help";
 import TopOverlay from "./TopOverlay";
 import { v4 as uuidv4 } from "uuid";
-import { addElement, Orientation, rotateElement, removeElement } from "../store/circuitSlice";
+import { addElement, Orientation, rotateElement, removeElement, selectElementById } from "../store/circuitSlice";
 import { clamp } from "../utils/clamp";
 import { getElementSprite } from "../utils/getElementSprite";
 import { SpriteProvider, EntitySprite } from "../spritesheets/SpriteProvider";
 import Modal from "react-modal";
+import store from "../store/store";
 
 const environment = process.env.NODE_ENV;
 const rootPath = environment === "development" ? "/circuitorio" : "";
@@ -66,6 +67,9 @@ const Body: React.FC = () => {
     setKeyState,
     boardRef,
     hoveredElement,
+    setHoveredElement,
+    selectedElement,
+    setSelectedElement,
     panPosition,
     setPanPosition,
     setPanPercentage,
@@ -253,6 +257,9 @@ const Body: React.FC = () => {
       event.preventDefault();
       switch (event.button) {
         case 0:
+          if (hoveredElement) {
+            setSelectedElement(hoveredElement);
+          }
           break;
         case 1:
           setIsPanning(true);
@@ -277,7 +284,7 @@ const Body: React.FC = () => {
           break;
       }
     },
-    [panPosition, setIsPanning, dispatch, isPlacing, elementToPlace, hoveredElement, setIsPlacing, setPlacingElementRotation, setElementToPlace]
+    [panPosition, setIsPanning, dispatch, isPlacing, elementToPlace, hoveredElement, setIsPlacing, setPlacingElementRotation, setElementToPlace, setSelectedElement]
   );
 
   const handleMouseUp = useCallback(
@@ -454,6 +461,13 @@ const Body: React.FC = () => {
         }
         if (hoveredElement) {
           dispatch(rotateElement({ id: hoveredElement.id }));
+          const updatedElement = selectElementById(store.getState(), hoveredElement.id);
+          if (updatedElement) {
+            setHoveredElement(updatedElement);
+            if (selectedElement && selectedElement.id === hoveredElement.id) {
+              setSelectedElement(updatedElement);
+            }
+          }
         }
       }
     };
@@ -509,8 +523,11 @@ const Body: React.FC = () => {
     setScale,
     setCursorGridCoordinates,
     hoveredElement,
+    setHoveredElement,
     dispatchMouseEvent,
     setDisclaimerIsOpen,
+    selectedElement,
+    setSelectedElement,
   ]);
 
   useEffect(() => {

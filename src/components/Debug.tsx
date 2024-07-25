@@ -16,6 +16,7 @@ const Debug: React.FC = () => {
     cursorGridPosition,
     isLeftDrawerOpen,
     ghostElementPosition,
+    selectedElement,
     hoveredElement,
     isDebugMode,
     setIsDebugMode,
@@ -71,10 +72,20 @@ const Debug: React.FC = () => {
         <p>
           Place Position: (x: {placingPosition.x}, y: {placingPosition.y})
         </p>
-        <p>Hovered Element Name: </p>
+        <p>Selected Element </p>
+        {selectedElement && (
+          <ul>
+            <li>Name: {selectedElement.displayName}</li>
+            <li>Orientation: {selectedElement.orientation}</li>
+            <li>
+              x: {selectedElement.position.x}, y: {selectedElement.position.y}
+            </li>
+          </ul>
+        )}
+        <p>Hovered Element </p>
         {hoveredElement && (
           <ul>
-            <li>{hoveredElement.displayName}</li>
+            <li>Name: {hoveredElement.displayName}</li>
             <li>Orientation: {hoveredElement.orientation}</li>
             <li>
               x: {hoveredElement.position.x}, y: {hoveredElement.position.y}

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import { type CircuitElementProps } from "../store/circuitSlice";
@@ -6,11 +6,30 @@ import { useCanvasContext } from "../context/CanvasContext";
 import { getElementSprite } from "../utils/getElementSprite";
 
 const CircuitElement: React.FC<CircuitElementProps> = ({ id, type }) => {
-  const element = useSelector((state: RootState) => state.circuit.elements.find((element) => element.id === id));
-  const position = element?.position;
+  let element: CircuitElementProps | null;
+  let position: { x: number; y: number };
+  element = useSelector((state: RootState) => state.circuit.elements.find((element) => element.id === id)) || null;
+  position = element?.position || { x: 0, y: 0 };
   const { setHoveredElement, hoveredElement, gridSize, isDebugMode } = useCanvasContext();
-
   const [isHovered, setIsHovered] = useState(false);
+  const hoveredElementRef = useRef<CircuitElementProps | null>(null);
+
+  const handleMouseEnter = (element: CircuitElementProps | null) => {
+    if (!element) return;
+    setHoveredElement(element);
+    setIsHovered(true);
+    hoveredElementRef.current = element;
+  };
+
+  const handleMouseLeave = () => {
+    setHoveredElement(null);
+    setIsHovered(false);
+    hoveredElementRef.current = null;
+  };
+
+  useEffect(() => {
+    setInterval(() => {}, 1000);
+  }, []);
 
   if (!element || !position) return null;
 
@@ -21,19 +40,13 @@ const CircuitElement: React.FC<CircuitElementProps> = ({ id, type }) => {
         position: "absolute",
         opacity: 1,
         cursor: "move",
-        zIndex: position.y,
+        zIndex: position?.y ? position.y : 0,
         transform: `scale(${0.5})`,
         transformOrigin: "top left",
         ...getElementSprite(element),
       }}
-      onMouseEnter={() => {
-        setHoveredElement(element);
-        setIsHovered(true);
-      }}
-      onMouseLeave={() => {
-        setHoveredElement(null);
-        setIsHovered(false);
-      }}
+      onMouseEnter={() => handleMouseEnter(element)}
+      onMouseLeave={() => handleMouseLeave()}
     >
       {isHovered && hoveredElement && (
         <div

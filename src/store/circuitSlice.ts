@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { EntitySprite } from "../spritesheets/SpriteProvider";
+import { RootState } from "./store";
 
 export type Orientation = "north" | "east" | "south" | "west";
 
@@ -99,7 +100,7 @@ const circuitSlice = createSlice({
     },
   },
 });
-
+export const selectElementById = (state: RootState, id: string) => state.circuit.elements.find((el: CircuitElementProps) => el.id === id);
 export const { addElement, updateElementPosition, rotateElement, setPreviewElement, checkForCollision, removeElement } = circuitSlice.actions;
 export type { CircuitElementProps };
 export default circuitSlice.reducer;

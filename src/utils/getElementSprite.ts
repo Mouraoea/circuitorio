@@ -13,7 +13,10 @@ interface Position {
   y: number;
 }
 
-export const getElementSprite = (element: Element) => {
+export const getElementSprite = (element: Element | undefined) => {
+  if (!element) {
+    return {};
+  }
   const position = element.position;
   return {
     backgroundImage: `url("${element.spritePath}")`,
