@@ -547,27 +547,29 @@ const Body: React.FC = () => {
   ]);
 
   useEffect(() => {
-    fetch(`.${rootPath}/changelog.json`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setDisclaimer(data.disclaimer);
-        setChangeLog(data.changeLog);
-        setRoadmap(data.roadmap);
-        setAppVersion(data.changeLog[0].version);
-        const lastSeenVersion = localStorage.getItem("appVersion");
-        if (lastSeenVersion !== data.changeLog[0].version) {
-          setDisclaimerIsOpen(true);
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching the data:", error);
-      });
-  }, [setDisclaimerIsOpen, appVersion, setAppVersion, changeLog]);
+    if (!disclaimer) {
+      fetch(`.${rootPath}/changelog.json`)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          setDisclaimer(data.disclaimer);
+          setChangeLog(data.changeLog);
+          setRoadmap(data.roadmap);
+          setAppVersion(data.changeLog[0].version);
+          const lastSeenVersion = localStorage.getItem("appVersion");
+          if (lastSeenVersion !== data.changeLog[0].version) {
+            setDisclaimerIsOpen(true);
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching the data:", error);
+        });
+    }
+  }, [setDisclaimerIsOpen, appVersion, setAppVersion, changeLog, disclaimer]);
 
   const closeModal = () => {
     localStorage.setItem("appVersion", appVersion);
