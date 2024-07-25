@@ -1,41 +1,16 @@
-import React, { useCallback } from "react";
-import { useDrop } from "react-dnd";
-import { useDispatch, useSelector } from "react-redux";
+import React from "react";
+import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
-import { checkForCollision, CircuitElementProps } from "../store/circuitSlice";
 import CircuitElement from "./CircuitElement";
-import { gridSnap } from "../utils/gridSnap";
-import { setNewPosition } from "../utils/setNewPosition";
 import "./CircuitBoard.css";
 import { useCanvasContext } from "../context/CanvasContext";
 
 const CircuitBoard: React.FC = () => {
-  const dispatch = useDispatch();
   const elements = useSelector((state: RootState) => state.circuit.elements);
   const { scale, panPosition, gridSize, gridHeight, gridWidth, isPanning } = useCanvasContext();
 
-  const handleDrop = useCallback(
-    (item: CircuitElementProps, monitor: any) => {
-      const delta = monitor.getDifferenceFromInitialOffset();
-      const newPosition = gridSnap(setNewPosition(item.position, delta, scale), gridSize);
-      dispatch(checkForCollision({ id: item.id, newPosition: newPosition }));
-    },
-    [scale, gridSize, dispatch]
-  );
-
-  const [, drop] = useDrop(
-    () => ({
-      accept: "CIRCUIT_ELEMENT",
-      drop: (item: CircuitElementProps, monitor) => handleDrop(item, monitor),
-    }),
-    [handleDrop]
-  );
-
   return (
     <div
-      ref={(node) => {
-        drop(node);
-      }}
       className="circuit-board"
       style={{
         position: "fixed",

@@ -1,6 +1,7 @@
 {
   "disclaimer": "This application is a fan-made project designed to assist with debugging Factorio’s circuit network. It is created by fans for fans, with the sole purpose of enhancing the gaming experience. We do not own any of the images used in this application. All image properties and rights are owned by Wube Software, the developers of Factorio. If you enjoy Factorio and find this tool helpful, please consider supporting the developers by visiting https://factorio.com/. This is an open-source project, and you can find the source code at https://github.com/Mouraoea/circuitorio",
   "changeLog": [
+    { "version": "alpha-0.1.05", "content": "Removed drag and drop feature. This will be replaced by the in-game select -> move feature in the future" },
     { "version": "alpha-0.1.04", "content": "Added help button" },
     { "version": "alpha-0.1.03", "content": "Added remove entity with mouse button 2 functionality" },
     { "version": "alpha-0.1.02", "content": "Colision detection" },
@@ -9,6 +10,8 @@
   ],
   "roadmap": [
     "Add support for selecting entities",
+    "Add support for selecting multiple entities",
+    "Add support for moving entities",
     "Add support for connecting combinators with wires",
     "Add support for editing combinator settings",
     "Add support for saving and loading blueprints",

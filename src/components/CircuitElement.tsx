@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useDrag } from "react-dnd";
 import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import { type CircuitElementProps } from "../store/circuitSlice";
@@ -9,20 +8,7 @@ import { getElementSprite } from "../utils/getElementSprite";
 const CircuitElement: React.FC<CircuitElementProps> = ({ id, type }) => {
   const element = useSelector((state: RootState) => state.circuit.elements.find((element) => element.id === id));
   const position = element?.position;
-  const size = element?.spriteSize;
-  const rotation = element?.rotation;
   const { setHoveredElement, hoveredElement, gridSize, isDebugMode } = useCanvasContext();
-
-  const [{ isDragging }, drag] = useDrag(
-    () => ({
-      type: "CIRCUIT_ELEMENT",
-      item: { id, type, position, size, rotation },
-      collect: (monitor) => ({
-        isDragging: !!monitor.isDragging(),
-      }),
-    }),
-    [position]
-  );
 
   const [isHovered, setIsHovered] = useState(false);
 
@@ -30,11 +16,10 @@ const CircuitElement: React.FC<CircuitElementProps> = ({ id, type }) => {
 
   return (
     <div
-      ref={drag}
       className="circuit-element"
       style={{
         position: "absolute",
-        opacity: isDragging ? 0.5 : 1,
+        opacity: 1,
         cursor: "move",
         zIndex: position.y,
         transform: `scale(${0.5})`,
