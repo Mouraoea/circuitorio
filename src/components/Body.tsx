@@ -18,6 +18,7 @@ import { getElementSprite } from "../utils/getElementSprite";
 import { SpriteProvider, EntitySprite } from "../spritesheets/SpriteProvider";
 import Modal from "react-modal";
 import store from "../store/store";
+import EntityPanel from "./EntityPanel";
 
 const environment = process.env.NODE_ENV;
 const rootPath = environment === "development" ? "/circuitorio" : "";
@@ -70,6 +71,7 @@ const Body: React.FC = () => {
     setHoveredElement,
     selectedElement,
     setSelectedElement,
+    setIsEntityPanelOpen,
     panPosition,
     setPanPosition,
     setPanPercentage,
@@ -259,6 +261,7 @@ const Body: React.FC = () => {
         case 0:
           if (hoveredElement) {
             setSelectedElement(hoveredElement);
+            setIsEntityPanelOpen(true);
           }
           break;
         case 1:
@@ -284,7 +287,20 @@ const Body: React.FC = () => {
           break;
       }
     },
-    [panPosition, setIsPanning, dispatch, isPlacing, elementToPlace, hoveredElement, setIsPlacing, setPlacingElementRotation, setElementToPlace, setSelectedElement]
+    [
+      panPosition,
+      setIsPanning,
+      dispatch,
+      isPlacing,
+      elementToPlace,
+      hoveredElement,
+      setIsPlacing,
+      setPlacingElementRotation,
+      setElementToPlace,
+      setSelectedElement,
+      setIsEntityPanelOpen,
+      setRemoveTimeout,
+    ]
   );
 
   const handleMouseUp = useCallback(
@@ -636,6 +652,7 @@ const Body: React.FC = () => {
           ></div>
         )}
       </div>
+      <EntityPanel />
     </DrawerContext.Provider>
   );
 };

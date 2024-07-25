@@ -11,6 +11,15 @@ interface CircuitElementProps extends EntitySprite {
   orientation: Orientation;
   size: { width: number; height: number };
   opacity?: number;
+  condition?: CombinatorCondition;
+}
+
+interface CombinatorCondition {
+  firstSignal?: string;
+  secondSignal?: string;
+  comparator?: string;
+  constant?: number;
+  output?: { [key: string]: string };
 }
 
 interface CircuitState {

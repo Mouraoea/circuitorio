@@ -52,6 +52,14 @@ interface CanvasContextProps {
   setSelectedElement: (value: CircuitElementProps | null) => void;
   isDebugMode: boolean;
   setIsDebugMode: (value: boolean) => void;
+  isEntityPanelOpen: boolean;
+  setIsEntityPanelOpen: (value: boolean) => void;
+  isEntityPanelDragging: boolean;
+  setIsEntityPanelDragging: (value: boolean) => void;
+  entityPanelPosition: { x: number; y: number };
+  setEntityPanelPosition: (value: { x: number; y: number }) => void;
+  entityPanelContent: ReactNode;
+  setEntityPanelContent: (value: ReactNode) => void;
 }
 
 const CanvasContext = createContext<CanvasContextProps | undefined>(undefined);
@@ -152,6 +160,10 @@ export const CanvasProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   const [hoveredElement, setHoveredElement] = useState<CircuitElementProps | null>(null);
   const [selectedElement, setSelectedElement] = useState<CircuitElementProps | null>(null);
   const [isDebugMode, setIsDebugMode] = useState(false);
+  const [isEntityPanelOpen, setIsEntityPanelOpen] = useState(false);
+  const [isEntityPanelDragging, setIsEntityPanelDragging] = useState(false);
+  const [entityPanelPosition, setEntityPanelPosition] = useState({ x: 0, y: 0 });
+  const [entityPanelContent, setEntityPanelContent] = useState<ReactNode>(null);
 
   const updateKeyState = (value: Partial<KeyStateKeys>) => {
     setKeyState((prevKeyState) => ({ ...prevKeyState, ...value }));
@@ -210,6 +222,14 @@ export const CanvasProvider: React.FC<{ children: ReactNode }> = ({ children }) 
         setSelectedElement,
         isDebugMode,
         setIsDebugMode,
+        isEntityPanelOpen,
+        setIsEntityPanelOpen,
+        isEntityPanelDragging,
+        setIsEntityPanelDragging,
+        entityPanelPosition,
+        setEntityPanelPosition,
+        entityPanelContent,
+        setEntityPanelContent,
       }}
     >
       {children}
