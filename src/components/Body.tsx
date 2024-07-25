@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { useDispatch } from "react-redux";
 import "../App.css";
 import CircuitBoard from "./CircuitBoard";
@@ -10,6 +10,7 @@ import Toolbox from "./Toolbox";
 import Debug from "./Debug";
 import Settings from "./Settings";
 import Help from "./Help";
+import TopOverlay from "./TopOverlay";
 import { v4 as uuidv4 } from "uuid";
 import { addElement, Orientation, rotateElement, removeElement } from "../store/circuitSlice";
 import { clamp } from "../utils/clamp";
@@ -26,6 +27,12 @@ interface ChangeLogEntry {
 }
 
 Modal.setAppElement("#root");
+
+interface DrawerContextProps {
+  toggleDrawer: (side: "left" | "right", content: React.ReactNode, id: string) => void;
+}
+
+const DrawerContext = createContext<DrawerContextProps | undefined>(undefined);
 
 const Body: React.FC = () => {
   const dispatch = useDispatch();
@@ -535,82 +542,92 @@ const Body: React.FC = () => {
   };
 
   return (
-    <div ref={boardRef}>
-      <div style={{ margin: "20px" }}>
-        <Modal
-          isOpen={disclaimerIsOpen}
-          className="panel"
-          style={{ content: { margin: "50px", padding: "20px 20px 20px 20px", overflowY: "scroll", height: "90%" }, overlay: { backgroundColor: "rgba(0,0,0,0.75)" } }}
-          onRequestClose={closeModal}
-          contentLabel="Welcome"
-        >
-          <h2>Welcome to Circuitorio</h2>
-          <div>
-            <h3>Disclaimer</h3>
-            <p>{disclaimer}</p>
-            <div style={{ display: "flex", marginTop: "30px" }}>
-              <div style={{ flex: "50%" }}>
-                <h3>Change Log</h3>
-                <ul>
-                  {changeLog.map((log, index) => (
-                    <li key={index}>
-                      <strong>{log.version}:</strong> {log.content}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div style={{ flex: "50%" }}>
-                <h3>Roadmap</h3>
-                <ul>
-                  {roadmap.map((item, index) => (
-                    <li key={index}>{item}</li>
-                  ))}
-                </ul>
+    <DrawerContext.Provider value={{ toggleDrawer }}>
+      <div ref={boardRef}>
+        <TopOverlay />
+        <div style={{ margin: "20px" }}>
+          <Modal
+            isOpen={disclaimerIsOpen}
+            className="panel"
+            style={{ content: { margin: "50px", padding: "20px 20px 20px 20px", overflowY: "scroll", height: "90%", zIndex: 10000 }, overlay: { backgroundColor: "rgba(0,0,0,0.75)", zIndex: 9999 } }}
+            onRequestClose={closeModal}
+            contentLabel="Welcome"
+          >
+            <h2>Welcome to Circuitorio</h2>
+            <div>
+              <h3>Disclaimer</h3>
+              <p>{disclaimer}</p>
+              <div style={{ display: "flex", marginTop: "30px" }}>
+                <div style={{ flex: "50%" }}>
+                  <h3>Change Log</h3>
+                  <ul>
+                    {changeLog.map((log, index) => (
+                      <li key={index}>
+                        <strong>{log.version}:</strong> {log.content}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div style={{ flex: "50%" }}>
+                  <h3>Roadmap</h3>
+                  <ul>
+                    {roadmap.map((item, index) => (
+                      <li key={index}>{item}</li>
+                    ))}
+                  </ul>
+                </div>
               </div>
             </div>
-          </div>
-          <button className="button" onClick={closeModal}>
-            Close
-          </button>
-        </Modal>
+            <button className="button" onClick={closeModal}>
+              Close
+            </button>
+          </Modal>
+        </div>
+        <LeftDrawer isOpen2={isLeftDrawerOpen} onClose={closeLeftDrawer}>
+          <DrawerContent content={leftDrawerContent} />
+        </LeftDrawer>
+        <RightDrawer isOpen3={isRightDrawerOpen} onClose={closeRightDrawer}>
+          <DrawerContent content={rightDrawerContent} />
+        </RightDrawer>
+        <div style={{ position: "fixed", left: 0, top: 0 }}>
+          <CircuitBoard />
+        </div>
+        {isPlacing && elementToPlace && (
+          <div
+            style={{
+              position: "fixed",
+              opacity: 0.5,
+              pointerEvents: "none",
+              transformOrigin: `${-elementToPlace.origingOffset[elementToPlace.orientation].x}px ${-elementToPlace.origingOffset[elementToPlace.orientation].y}px`,
+              transform: `scale(${scale * elementToPlace.spriteScale})`,
+              ...getElementSprite(elementToPlace),
+            }}
+          ></div>
+        )}
+        {removeTimeout && (
+          <div
+            className="loader"
+            style={{
+              position: "fixed",
+              top: cursorPosition.y,
+              left: cursorPosition.x,
+              pointerEvents: "none",
+              zIndex: 1000,
+              width: "32px",
+              height: "32px",
+            }}
+          ></div>
+        )}
       </div>
-      <LeftDrawer isOpen2={isLeftDrawerOpen} onClose={closeLeftDrawer}>
-        <DrawerContent content={leftDrawerContent} />
-      </LeftDrawer>
-      <RightDrawer isOpen3={isRightDrawerOpen} onClose={closeRightDrawer}>
-        <DrawerContent content={rightDrawerContent} />
-      </RightDrawer>
-      <div style={{ position: "fixed", left: 0, top: 0 }}>
-        <CircuitBoard />
-      </div>
-      {isPlacing && elementToPlace && (
-        <div
-          style={{
-            position: "fixed",
-            opacity: 0.5,
-            pointerEvents: "none",
-            transformOrigin: `${-elementToPlace.origingOffset[elementToPlace.orientation].x}px ${-elementToPlace.origingOffset[elementToPlace.orientation].y}px`,
-            transform: `scale(${scale * elementToPlace.spriteScale})`,
-            ...getElementSprite(elementToPlace),
-          }}
-        ></div>
-      )}
-      {removeTimeout && (
-        <div
-          className="loader"
-          style={{
-            position: "fixed",
-            top: cursorPosition.y,
-            left: cursorPosition.x,
-            pointerEvents: "none",
-            zIndex: 1000,
-            width: "32px",
-            height: "32px",
-          }}
-        ></div>
-      )}
-    </div>
+    </DrawerContext.Provider>
   );
 };
 
 export default Body;
+export const useDrawer = (): DrawerContextProps => {
+  const context = useContext(DrawerContext);
+  if (!context) {
+    throw new Error("useDrawer must be used within a DrawerProvider");
+  }
+  return context;
+};
