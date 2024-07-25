@@ -94,9 +94,12 @@ const circuitSlice = createSlice({
         currentElement.position = action.payload.newPosition;
       }
     },
+    removeElement: (state, action: PayloadAction<{ id: string }>) => {
+      state.elements = state.elements.filter((el) => el.id !== action.payload.id);
+    },
   },
 });
 
-export const { addElement, updateElementPosition, rotateElement, setPreviewElement, checkForCollision } = circuitSlice.actions;
+export const { addElement, updateElementPosition, rotateElement, setPreviewElement, checkForCollision, removeElement } = circuitSlice.actions;
 export type { CircuitElementProps };
 export default circuitSlice.reducer;

@@ -11,7 +11,7 @@ import Debug from "./Debug";
 import Settings from "./Settings";
 import Help from "./Help";
 import { v4 as uuidv4 } from "uuid";
-import { addElement, Orientation, rotateElement } from "../store/circuitSlice";
+import { addElement, Orientation, rotateElement, removeElement } from "../store/circuitSlice";
 import { clamp } from "../utils/clamp";
 import { getElementSprite } from "../utils/getElementSprite";
 import { SpriteProvider, EntitySprite } from "../spritesheets/SpriteProvider";
@@ -77,6 +77,7 @@ const Body: React.FC = () => {
   const [disclaimer, setDisclaimer] = useState("");
   const [changeLog, setChangeLog] = useState<ChangeLogEntry[]>([]);
   const [roadmap, setRoadmap] = useState<string[]>([]);
+  const [removeTimeout, setRemoveTimeout] = useState<NodeJS.Timeout | null>(null);
 
   const toggleDrawer = useCallback(
     (side: "left" | "right", content: React.ReactNode, id: string) => {
@@ -242,37 +243,69 @@ const Body: React.FC = () => {
 
   const handleMouseDown = useCallback(
     (event: MouseEvent) => {
-      if (event.button === 1) {
-        event.preventDefault();
-        setIsPanning(true);
-        setStartPanPosition(panPosition);
-        setStartMousePosition({ x: event.clientX, y: event.clientY });
+      event.preventDefault();
+      switch (event.button) {
+        case 0:
+          break;
+        case 1:
+          setIsPanning(true);
+          setStartPanPosition(panPosition);
+          setStartMousePosition({ x: event.clientX, y: event.clientY });
+          break;
+        case 2:
+          if (isPlacing && elementToPlace) {
+            setIsPlacing(false); // Stop placing when right mouse button is pressed
+            setPlacingElementRotation(0);
+            setElementToPlace(null); // Clear the element to be placed
+          } else if (hoveredElement) {
+            setRemoveTimeout(
+              setTimeout(() => {
+                dispatch(removeElement({ id: hoveredElement.id }));
+                setRemoveTimeout(null);
+              }, 500)
+            );
+          }
+          break;
+        default:
+          break;
       }
     },
-    [panPosition, setIsPanning]
+    [panPosition, setIsPanning, dispatch, isPlacing, elementToPlace, hoveredElement, setIsPlacing, setPlacingElementRotation, setElementToPlace]
   );
 
   const handleMouseUp = useCallback(
     (event: MouseEvent) => {
       setIsPanning(false);
-      if (event.button === 0) {
-        if (isPlacing && elementToPlace) {
-          const newElement = {
-            ...elementToPlace,
-            position: placingPosition,
-            placingElementRotation,
-            id: uuidv4(),
-          };
-          dispatch(addElement(newElement));
-          if (!keyState["Shift" as keyof KeyStateKeys]) {
-            setIsPlacing(false);
-            setPlacingElementRotation(0);
-            setElementToPlace(null);
+      switch (event.button) {
+        case 0:
+          if (isPlacing && elementToPlace) {
+            const newElement = {
+              ...elementToPlace,
+              position: placingPosition,
+              placingElementRotation,
+              id: uuidv4(),
+            };
+            dispatch(addElement(newElement));
+            if (!keyState["Shift" as keyof KeyStateKeys]) {
+              setIsPlacing(false);
+              setPlacingElementRotation(0);
+              setElementToPlace(null);
+            }
           }
-        }
+          break;
+        case 1:
+          break;
+        case 2:
+          if (removeTimeout) {
+            clearTimeout(removeTimeout);
+            setRemoveTimeout(null);
+          }
+          break;
+        default:
+          break;
       }
     },
-    [isPlacing, elementToPlace, dispatch, placingElementRotation, setElementToPlace, setIsPlacing, keyState, setPlacingElementRotation, setIsPanning, placingPosition]
+    [isPlacing, elementToPlace, dispatch, placingElementRotation, setElementToPlace, setIsPlacing, keyState, setPlacingElementRotation, setIsPanning, placingPosition, removeTimeout]
   );
 
   const updatePan = useCallback(() => {
@@ -507,28 +540,34 @@ const Body: React.FC = () => {
         <Modal
           isOpen={disclaimerIsOpen}
           className="panel"
-          style={{ content: { margin: "50px", padding: "20px 20px 20px 20px" }, overlay: { backgroundColor: "rgba(0,0,0,0.75)" } }}
+          style={{ content: { margin: "50px", padding: "20px 20px 20px 20px", overflowY: "scroll", height: "90%" }, overlay: { backgroundColor: "rgba(0,0,0,0.75)" } }}
           onRequestClose={closeModal}
-          contentLabel="Disclaimer and Change Log"
+          contentLabel="Welcome"
         >
-          <h2>Disclaimer and Change Log</h2>
+          <h2>Welcome to Circuitorio</h2>
           <div>
             <h3>Disclaimer</h3>
             <p>{disclaimer}</p>
-            <h3>Change Log</h3>
-            <ul>
-              {changeLog.map((log, index) => (
-                <li key={index}>
-                  <strong>{log.version}:</strong> {log.content}
-                </li>
-              ))}
-            </ul>
-            <h3>Roadmap</h3>
-            <ul>
-              {roadmap.map((item, index) => (
-                <li key={index}>{item}</li>
-              ))}
-            </ul>
+            <div style={{ display: "flex", marginTop: "30px" }}>
+              <div style={{ flex: "50%" }}>
+                <h3>Change Log</h3>
+                <ul>
+                  {changeLog.map((log, index) => (
+                    <li key={index}>
+                      <strong>{log.version}:</strong> {log.content}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div style={{ flex: "50%" }}>
+                <h3>Roadmap</h3>
+                <ul>
+                  {roadmap.map((item, index) => (
+                    <li key={index}>{item}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
           </div>
           <button className="button" onClick={closeModal}>
             Close
@@ -553,6 +592,20 @@ const Body: React.FC = () => {
             transformOrigin: `${-elementToPlace.origingOffset[elementToPlace.orientation].x}px ${-elementToPlace.origingOffset[elementToPlace.orientation].y}px`,
             transform: `scale(${scale * elementToPlace.spriteScale})`,
             ...getElementSprite(elementToPlace),
+          }}
+        ></div>
+      )}
+      {removeTimeout && (
+        <div
+          className="loader"
+          style={{
+            position: "fixed",
+            top: cursorPosition.y,
+            left: cursorPosition.x,
+            pointerEvents: "none",
+            zIndex: 1000,
+            width: "32px",
+            height: "32px",
           }}
         ></div>
       )}
