@@ -19,6 +19,7 @@ const SignalPicker: React.FC = () => {
     setSignalPickerSelectedGroup,
     signalPickerSelectedSignal,
     setSignalPickerSelectedSignal,
+    setSignalPickerConstantValue,
   } = useCanvasContext();
 
   const handleOpen = () => {
@@ -46,6 +47,17 @@ const SignalPicker: React.FC = () => {
 
   const handleSignalButtonClick = (signal: string) => {
     setSignalPickerSelectedSignal(signal);
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const allowedKeys = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "Backspace", "ArrowLeft", "ArrowRight", "Delete"];
+    if (!allowedKeys.includes(e.key)) {
+      e.preventDefault();
+    }
+  };
+
+  const handleConstantValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSignalPickerConstantValue(Number(e.target.value));
   };
 
   const renderItemGroupIcons = () => {
@@ -214,7 +226,15 @@ const SignalPicker: React.FC = () => {
           </div>
           <div className="flex-row panel-inset-lighter mt0" style={{ justifyContent: "space-between", alignContent: "center", height: "60px" }}>
             <div className="" onClick={(e) => e.stopPropagation()}>
-              <input type="number" inputMode="numeric" onMouseDown={(e) => e.stopPropagation()} onMouseUp={(e) => e.stopPropagation()} />
+              <input
+                type="number"
+                inputMode="numeric"
+                placeholder={"1"}
+                onChange={handleConstantValueChange}
+                onKeyDown={handleKeyPress}
+                onMouseDown={(e) => e.stopPropagation()}
+                onMouseUp={(e) => e.stopPropagation()}
+              />
             </div>
             <div>
               <button className="button-green p0" style={{ width: "40px" }}>

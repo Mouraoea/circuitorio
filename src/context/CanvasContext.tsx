@@ -72,6 +72,8 @@ interface CanvasContextProps {
   setSelectedSignalSlot: (value: string) => void;
   signalPickerSelectedGroup: string;
   setSignalPickerSelectedGroup: (value: string) => void;
+  signalPickerConstantValue: number;
+  setSignalPickerConstantValue: (value: number) => void;
   signalPickerSelectedSignal: string;
   setSignalPickerSelectedSignal: (value: string) => void;
 }
@@ -184,6 +186,7 @@ export const CanvasProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   const [SignalPickerContent, setSignalPickerContent] = useState<ReactNode>(null);
   const [selectedSignalSlot, setSelectedSignalSlot] = useState("");
   const [signalPickerSelectedGroup, setSignalPickerSelectedGroup] = useState("logistics");
+  const [signalPickerConstantValue, setSignalPickerConstantValue] = useState(1);
   const [signalPickerSelectedSignal, setSignalPickerSelectedSignal] = useState("");
 
   const updateKeyState = (value: Partial<KeyStateKeys>) => {
@@ -263,6 +266,8 @@ export const CanvasProvider: React.FC<{ children: ReactNode }> = ({ children }) 
         setSelectedSignalSlot,
         signalPickerSelectedGroup,
         setSignalPickerSelectedGroup,
+        signalPickerConstantValue,
+        setSignalPickerConstantValue,
         signalPickerSelectedSignal,
         setSignalPickerSelectedSignal,
       }}

@@ -22,6 +22,7 @@ const Debug: React.FC = () => {
     setIsDebugMode,
     selectedSignalSlot,
     signalPickerSelectedSignal,
+    signalPickerConstantValue,
   } = useCanvasContext();
 
   const toggleDebugMode = () => {
@@ -98,6 +99,7 @@ const Debug: React.FC = () => {
         <ul>
           <li>Slot id: {selectedSignalSlot}</li>
           <li>Selected signal: {signalPickerSelectedSignal}</li>
+          <li>Constant value: {signalPickerConstantValue}</li>
         </ul>
 
         <p>Active Keys: {Object.keys(keyState).filter((key) => keyState[key as keyof KeyStateKeys])}</p>
