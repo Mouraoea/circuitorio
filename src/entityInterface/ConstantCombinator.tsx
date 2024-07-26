@@ -8,8 +8,10 @@ const ConstantCombinator: React.FC<EntityInterfaceProps> = ({ openSignalPicker }
 
   if (!selectedElement || selectedElement.name !== "constant-combinator") return null;
 
-  const renderButtons = (count: number) => {
-    return Array.from({ length: count }).map((_, index) => <input key={index} type="button" onClick={openSignalPicker} className="button-black button-output square40" id="output" value="" />);
+  const renderButtons = (count: number, row: number) => {
+    return Array.from({ length: count }).map((_, index) => (
+      <input key={index} type="button" onClick={() => openSignalPicker(`output-${row}-${index}`)} className="button-black button-output square40" id={`output-${row}-${index}`} value="" />
+    ));
   };
 
   return (
@@ -25,8 +27,8 @@ const ConstantCombinator: React.FC<EntityInterfaceProps> = ({ openSignalPicker }
       <div>
         <h6>Output signals</h6>
         <div className="flex-column margin-10 ">
-          <div className="flex-row">{renderButtons(10)}</div>
-          <div className="flex-row">{renderButtons(10)}</div>
+          <div className="flex-row">{renderButtons(10, 1)}</div>
+          <div className="flex-row">{renderButtons(10, 2)}</div>
         </div>
       </div>
     </div>

@@ -14,16 +14,16 @@ const DeciderCombinator: React.FC<EntityInterfaceProps> = ({ openSignalPicker })
       <div>
         <h6>Condition</h6>
         <div className="flex-row" style={{ padding: "10px" }}>
-          <input type="button" onClick={openSignalPicker} className="button-black square40" id="firstInput" value={""} />
+          <input type="button" onClick={() => openSignalPicker("firstInput")} className="button-black square40" id="firstInput" value={""} />
           <input type="button" className="button condition-button" id="condition" value={""} />
-          <input type="button" onClick={openSignalPicker} className="button-black square40" id="secondInput" value={""} />
+          <input type="button" onClick={() => openSignalPicker("secondInput")} className="button-black square40" id="secondInput" value={""} />
         </div>
       </div>
       <div className="separator"></div>
       <div>
         <h6>Output</h6>
         <div className="flex-row" style={{ padding: "10px" }}>
-          <input type="button" className="button-black square40" id="output" value={""} />
+          <input type="button" className="button-black square40" onClick={() => openSignalPicker("output")} id="output" value={""} />
           <div className="flex-column">
             <div className="flex-row">
               <input type="radio" id="output-mode-1" value={""} />

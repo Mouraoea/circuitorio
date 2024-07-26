@@ -18,6 +18,7 @@ const EntityPanel: React.FC = () => {
     isSignalPickerOpen,
     setIsSignalPickerOpen,
     setSignalPickerPosition,
+    setSelectedSignalSlot,
   } = useCanvasContext();
 
   const handleOpen = () => {
@@ -39,8 +40,9 @@ const EntityPanel: React.FC = () => {
     setIsEntityPanelDragging(false);
   };
 
-  const handleOpenSignalPicker = () => {
+  const handleOpenSignalPicker = (slotId: string) => {
     setIsSignalPickerOpen(true);
+    setSelectedSignalSlot(slotId);
   };
 
   if (!isEntityPanelOpen) return null;

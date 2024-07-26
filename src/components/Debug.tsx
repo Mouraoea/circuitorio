@@ -20,6 +20,7 @@ const Debug: React.FC = () => {
     hoveredElement,
     isDebugMode,
     setIsDebugMode,
+    selectedSignalSlot,
     signalPickerSelectedSignal,
   } = useCanvasContext();
 
@@ -95,7 +96,7 @@ const Debug: React.FC = () => {
         )}
         <p>Signal Picker:</p>
         <ul>
-          <li>Slot type: </li>
+          <li>Slot id: {selectedSignalSlot}</li>
           <li>Selected signal: {signalPickerSelectedSignal}</li>
         </ul>
 
