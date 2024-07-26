@@ -15,10 +15,6 @@ const SignalPicker: React.FC = () => {
     setIsSignalPickerDragging,
     SignalPickerPosition,
     setSignalPickerPosition,
-    // SignalPickerContent,
-    // setSignalPickerContent,
-    // selectedElement,
-    // setSelectedElement,
     signalPickerSelectedGroup,
     setSignalPickerSelectedGroup,
     signalPickerSelectedSignal,
@@ -177,18 +173,7 @@ const SignalPicker: React.FC = () => {
                 }}
                 onClick={() => handleSignalButtonClick(icon.name)}
               >
-                <div
-                  style={{
-                    width: "32px",
-                    height: "32px",
-                    scale: "0.9",
-                    backgroundImage: `url(${icon.spritePath})`,
-                    backgroundSize: "62px 32px",
-                    backgroundPosition: "0px 0px",
-                    backgroundRepeat: "no-repeat",
-                    marginLeft: "2px",
-                  }}
-                ></div>
+                <div style={icon.style}></div>
               </button>
             );
           })}
