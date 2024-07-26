@@ -60,6 +60,14 @@ interface CanvasContextProps {
   setEntityPanelPosition: (value: { x: number; y: number }) => void;
   entityPanelContent: ReactNode;
   setEntityPanelContent: (value: ReactNode) => void;
+  isSignalPickerOpen: boolean;
+  setIsSignalPickerOpen: (value: boolean) => void;
+  isSignalPickerDragging: boolean;
+  setIsSignalPickerDragging: (value: boolean) => void;
+  SignalPickerPosition: { x: number; y: number };
+  setSignalPickerPosition: (value: { x: number; y: number }) => void;
+  SignalPickerContent: ReactNode;
+  setSignalPickerContent: (value: ReactNode) => void;
 }
 
 const CanvasContext = createContext<CanvasContextProps | undefined>(undefined);
@@ -164,6 +172,10 @@ export const CanvasProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   const [isEntityPanelDragging, setIsEntityPanelDragging] = useState(false);
   const [entityPanelPosition, setEntityPanelPosition] = useState({ x: 0, y: 0 });
   const [entityPanelContent, setEntityPanelContent] = useState<ReactNode>(null);
+  const [isSignalPickerOpen, setIsSignalPickerOpen] = useState(false);
+  const [isSignalPickerDragging, setIsSignalPickerDragging] = useState(false);
+  const [SignalPickerPosition, setSignalPickerPosition] = useState({ x: 0, y: 0 });
+  const [SignalPickerContent, setSignalPickerContent] = useState<ReactNode>(null);
 
   const updateKeyState = (value: Partial<KeyStateKeys>) => {
     setKeyState((prevKeyState) => ({ ...prevKeyState, ...value }));
@@ -230,6 +242,14 @@ export const CanvasProvider: React.FC<{ children: ReactNode }> = ({ children }) 
         setEntityPanelPosition,
         entityPanelContent,
         setEntityPanelContent,
+        isSignalPickerOpen,
+        setIsSignalPickerOpen,
+        isSignalPickerDragging,
+        setIsSignalPickerDragging,
+        SignalPickerPosition,
+        setSignalPickerPosition,
+        SignalPickerContent,
+        setSignalPickerContent,
       }}
     >
       {children}

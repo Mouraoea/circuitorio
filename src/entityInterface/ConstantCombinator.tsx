@@ -1,14 +1,15 @@
 import React from "react";
 import { useCanvasContext } from "../context/CanvasContext";
 import "../App.css";
+import { EntityInterfaceProps } from "./EntityInterface";
 
-const ConstantCombinator: React.FC = () => {
+const ConstantCombinator: React.FC<EntityInterfaceProps> = ({ openSignalPicker }) => {
   const { selectedElement } = useCanvasContext();
 
   if (!selectedElement || selectedElement.name !== "constant-combinator") return null;
 
   const renderButtons = (count: number) => {
-    return Array.from({ length: count }).map((_, index) => <input key={index} type="button" className="button-black button-output square40" id="output" value="" />);
+    return Array.from({ length: count }).map((_, index) => <input key={index} type="button" onClick={openSignalPicker} className="button-black button-output square40" id="output" value="" />);
   };
 
   return (

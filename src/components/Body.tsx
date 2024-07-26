@@ -19,6 +19,7 @@ import { SpriteProvider, EntitySprite } from "../spritesheets/SpriteProvider";
 import Modal from "react-modal";
 import store from "../store/store";
 import EntityPanel from "./EntityPanel";
+import SignalPicker from "./SignalPicker";
 
 const environment = process.env.NODE_ENV;
 const rootPath = environment === "development" ? "/circuitorio" : "";
@@ -80,6 +81,7 @@ const Body: React.FC = () => {
     setCursorGridCoordinates,
     gridHeight,
     gridWidth,
+    setIsSignalPickerOpen,
   } = useCanvasContext();
   const [leftDrawerContent, setLeftDrawerContent] = useState<React.ReactNode>(null);
   const [rightDrawerContent, setRightDrawerContent] = useState<React.ReactNode>(null);
@@ -262,6 +264,7 @@ const Body: React.FC = () => {
           if (hoveredElement) {
             setSelectedElement(hoveredElement);
             setIsEntityPanelOpen(true);
+            setIsSignalPickerOpen(false);
           }
           break;
         case 1:
@@ -300,6 +303,7 @@ const Body: React.FC = () => {
       setSelectedElement,
       setIsEntityPanelOpen,
       setRemoveTimeout,
+      setIsSignalPickerOpen,
     ]
   );
 
@@ -655,6 +659,7 @@ const Body: React.FC = () => {
         )}
       </div>
       <EntityPanel />
+      <SignalPicker />
     </DrawerContext.Provider>
   );
 };

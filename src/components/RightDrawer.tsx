@@ -20,17 +20,6 @@ const DrawerContainer = styled.div<{ isOpen3: boolean }>`
   z-index: 1000;
 `;
 
-// const Overlay = styled.div<{ isOpen3: boolean }>`
-//   display: ${(props) => (props.isOpen3 ? "block" : "none")};
-//   position: fixed;
-//   top: 0;
-//   left: 0;
-//   right: 0;
-//   bottom: 0;
-//   background-color: rgba(0, 0, 0, 0.5);
-//   z-index: 999;
-// `;
-
 const CloseButton = styled.button`
   position: absolute;
   top: 10px;

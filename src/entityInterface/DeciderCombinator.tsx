@@ -1,8 +1,9 @@
 import React from "react";
 import { useCanvasContext } from "../context/CanvasContext";
 import "../App.css";
+import { EntityInterfaceProps } from "./EntityInterface";
 
-const DeciderCombinator: React.FC = () => {
+const DeciderCombinator: React.FC<EntityInterfaceProps> = ({ openSignalPicker }) => {
   const { selectedElement } = useCanvasContext();
 
   if (!selectedElement) return null;
@@ -13,9 +14,9 @@ const DeciderCombinator: React.FC = () => {
       <div>
         <h6>Condition</h6>
         <div className="flex-row" style={{ padding: "10px" }}>
-          <input type="button" className="button-black square40" id="firstInput" value={""} />
+          <input type="button" onClick={openSignalPicker} className="button-black square40" id="firstInput" value={""} />
           <input type="button" className="button condition-button" id="condition" value={""} />
-          <input type="button" className="button-black square40" id="secondInput" value={""} />
+          <input type="button" onClick={openSignalPicker} className="button-black square40" id="secondInput" value={""} />
         </div>
       </div>
       <div className="separator"></div>

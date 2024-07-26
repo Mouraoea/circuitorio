@@ -15,6 +15,9 @@ const EntityPanel: React.FC = () => {
     // setEntityPanelContent,
     selectedElement,
     setSelectedElement,
+    isSignalPickerOpen,
+    setIsSignalPickerOpen,
+    setSignalPickerPosition,
   } = useCanvasContext();
 
   const handleOpen = () => {
@@ -23,14 +26,21 @@ const EntityPanel: React.FC = () => {
 
   const handleClose = () => {
     setIsEntityPanelOpen(false);
-
     setEntityPanelPosition({ x: 600, y: 220 });
     setSelectedElement(null);
+    if (isSignalPickerOpen) {
+      setIsSignalPickerOpen(false);
+      setSignalPickerPosition({ x: 600, y: 220 });
+    }
   };
 
   const handleDragStop = (e: DraggableEvent, data: DraggableData) => {
     setEntityPanelPosition({ x: data.x, y: data.y });
     setIsEntityPanelDragging(false);
+  };
+
+  const handleOpenSignalPicker = () => {
+    setIsSignalPickerOpen(true);
   };
 
   if (!isEntityPanelOpen) return null;
@@ -46,9 +56,9 @@ const EntityPanel: React.FC = () => {
             </button>
           </div>
         </div>
-        <DeciderCombinator />
-        <ArithmeticCombinator />
-        <ConstantCombinator />
+        <DeciderCombinator openSignalPicker={handleOpenSignalPicker} />
+        <ArithmeticCombinator openSignalPicker={handleOpenSignalPicker} />
+        <ConstantCombinator openSignalPicker={handleOpenSignalPicker} />
       </div>
     </Draggable>
   );

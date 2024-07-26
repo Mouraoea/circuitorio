@@ -34,6 +34,26 @@ export interface EntitySprite {
   };
 }
 
+export interface iconSprite {
+  name: string;
+  displayName: string;
+  type: string;
+  originOffset: {
+    x: number;
+    y: number;
+  };
+  spritePath: string;
+  spriteOffset: {
+    x: number;
+    y: number;
+  };
+  spriteScale: number;
+  spriteSize: {
+    width: number;
+    height: number;
+  };
+}
+
 const getBasePath = () => {
   if (process.env.NODE_ENV === "production") {
     return "./img/";
@@ -43,6 +63,79 @@ const getBasePath = () => {
 };
 
 const basePath = getBasePath();
+
+const icons: { [key: string]: iconSprite } = {
+  effects: {
+    name: "effects",
+    displayName: "Effects",
+    type: "item-group",
+    originOffset: { x: 0, y: 0 },
+    spriteOffset: { x: 0, y: 0 },
+    spritePath: `${basePath}base/graphics/item-group/effects.png`,
+    spriteScale: 1,
+    spriteSize: { width: 128, height: 128 },
+  },
+  fluids: {
+    name: "fluids",
+    displayName: "Fluids",
+    type: "item-group",
+    originOffset: { x: 0, y: 0 },
+    spriteOffset: { x: 0, y: 0 },
+    spritePath: `${basePath}base/graphics/item-group/fluids.png`,
+    spriteScale: 1,
+    spriteSize: { width: 128, height: 128 },
+  },
+  "intermediate-products": {
+    name: "intermediate-products",
+    displayName: "Intermediate Products",
+    type: "item-group",
+    originOffset: { x: 0, y: 0 },
+    spriteOffset: { x: 0, y: 0 },
+    spritePath: `${basePath}base/graphics/item-group/intermediate-products.png`,
+    spriteScale: 1,
+    spriteSize: { width: 128, height: 128 },
+  },
+  logistics: {
+    name: "logistics",
+    displayName: "Logistics",
+    type: "item-group",
+    originOffset: { x: 0, y: 0 },
+    spriteOffset: { x: 0, y: 0 },
+    spritePath: `${basePath}base/graphics/item-group/logistics.png`,
+    spriteScale: 1,
+    spriteSize: { width: 128, height: 128 },
+  },
+  military: {
+    name: "military",
+    displayName: "Military",
+    type: "item-group",
+    originOffset: { x: 0, y: 0 },
+    spriteOffset: { x: 0, y: 0 },
+    spritePath: `${basePath}base/graphics/item-group/military.png`,
+    spriteScale: 1,
+    spriteSize: { width: 128, height: 128 },
+  },
+  production: {
+    name: "production",
+    displayName: "Production",
+    type: "item-group",
+    originOffset: { x: 0, y: 0 },
+    spriteOffset: { x: 0, y: 0 },
+    spritePath: `${basePath}base/graphics/item-group/production.png`,
+    spriteScale: 1,
+    spriteSize: { width: 128, height: 128 },
+  },
+  signals: {
+    name: "signals",
+    displayName: "Signals",
+    type: "item-group",
+    originOffset: { x: 0, y: 0 },
+    spriteOffset: { x: 0, y: 0 },
+    spritePath: `${basePath}base/graphics/item-group/signals.png`,
+    spriteScale: 1,
+    spriteSize: { width: 128, height: 128 },
+  },
+};
 
 const entities: { [key: string]: EntitySprite } = {
   "arithmetic-combinator": {
@@ -128,4 +221,9 @@ const entities: { [key: string]: EntitySprite } = {
 export const SpriteProvider = (entityId: string): EntitySprite => {
   const entity = entities[entityId];
   return entity;
+};
+
+export const IconProvider = (iconId: string): iconSprite => {
+  const icon = icons[iconId];
+  return icon;
 };
