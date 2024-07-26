@@ -34,6 +34,7 @@ const SignalPicker: React.FC = () => {
   };
 
   const handleDragStop = (e: DraggableEvent, data: DraggableData) => {
+    e.stopPropagation();
     setSignalPickerPosition({ x: data.x, y: data.y });
     setIsSignalPickerDragging(false);
   };
@@ -191,7 +192,15 @@ const SignalPicker: React.FC = () => {
   if (!isSignalPickerOpen) return null;
 
   return (
-    <Draggable handle=".entity-panel-header" position={SignalPickerPosition} onStart={handleOpen} onStop={handleDragStop}>
+    <Draggable
+      handle=".entity-panel-header"
+      position={SignalPickerPosition}
+      onStart={(e) => {
+        e.stopPropagation();
+        handleOpen();
+      }}
+      onStop={handleDragStop}
+    >
       <div className="panel" style={{ width: "420px" }}>
         <div className="entity-panel-header" style={{ display: "flex", justifyContent: "space-between", cursor: isSignalPickerDragging ? "grabbing" : "grab" }}>
           <h3>Select a signal</h3>
@@ -210,7 +219,18 @@ const SignalPicker: React.FC = () => {
               {renderSignalIcons(signalPickerSelectedGroup)}
             </div>
           </div>
-          <div className="panel-inset-lighter mt0">3</div>
+          <div className="flex-row panel-inset-lighter mt0" style={{ justifyContent: "space-between", alignContent: "center", height: "60px" }}>
+            <div className="" onClick={(e) => e.stopPropagation()}>
+              <input type="number" inputMode="numeric" onMouseDown={(e) => e.stopPropagation()} onMouseUp={(e) => e.stopPropagation()} />
+            </div>
+            <div>
+              <button className="button-green p0" style={{ width: "40px" }}>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="#000000" width="40px" height="40px" viewBox="0 0 32 32">
+                  <path d="M5 16.577l2.194-2.195 5.486 5.484L24.804 7.743 27 9.937l-14.32 14.32z" />
+                </svg>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </Draggable>
