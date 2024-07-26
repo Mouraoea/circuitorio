@@ -20,6 +20,7 @@ const Debug: React.FC = () => {
     hoveredElement,
     isDebugMode,
     setIsDebugMode,
+    signalPickerSelectedSignal,
   } = useCanvasContext();
 
   const toggleDebugMode = () => {
@@ -92,6 +93,12 @@ const Debug: React.FC = () => {
             </li>
           </ul>
         )}
+        <p>Signal Picker:</p>
+        <ul>
+          <li>Slot type: </li>
+          <li>Selected signal: {signalPickerSelectedSignal}</li>
+        </ul>
+
         <p>Active Keys: {Object.keys(keyState).filter((key) => keyState[key as keyof KeyStateKeys])}</p>
         <p>Left Drawer: {isLeftDrawerOpen ? "Open" : "Closed"}</p>
       </div>

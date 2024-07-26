@@ -21,6 +21,8 @@ const SignalPicker: React.FC = () => {
     // setSelectedElement,
     signalPickerSelectedGroup,
     setSignalPickerSelectedGroup,
+    signalPickerSelectedSignal,
+    setSignalPickerSelectedSignal,
   } = useCanvasContext();
 
   const handleOpen = () => {
@@ -44,6 +46,10 @@ const SignalPicker: React.FC = () => {
     return () => {
       setSignalPickerSelectedGroup(group);
     };
+  };
+
+  const handleSignalButtonClick = (signal: string) => {
+    setSignalPickerSelectedSignal(signal);
   };
 
   const renderItemGroupIcons = () => {
@@ -162,12 +168,14 @@ const SignalPicker: React.FC = () => {
             return (
               <button
                 key={index}
-                className="button-black"
+                id={icon.name}
+                className={`button-black ${icon.name === signalPickerSelectedSignal ? "active" : ""}`}
                 style={{
                   width: "38px",
                   height: "38px",
                   padding: "0",
                 }}
+                onClick={() => handleSignalButtonClick(icon.name)}
               >
                 <div
                   style={{
