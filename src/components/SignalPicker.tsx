@@ -2,6 +2,7 @@ import React from "react";
 import Draggable, { DraggableData, DraggableEvent } from "react-draggable";
 import { useCanvasContext } from "../context/CanvasContext";
 import { IconProvider } from "../spritesheets/SpriteProvider";
+import { clamp } from "../utils/clamp";
 
 interface signalGroups {
   [key: string]: string[][];
@@ -50,14 +51,20 @@ const SignalPicker: React.FC = () => {
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    const allowedKeys = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "Backspace", "ArrowLeft", "ArrowRight", "Delete"];
+    const allowedKeys = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "-", "Backspace", "ArrowLeft", "ArrowRight", "Delete", "Enter"];
     if (!allowedKeys.includes(e.key)) {
       e.preventDefault();
     }
   };
 
   const handleConstantValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSignalPickerConstantValue(Number(e.target.value));
+    const value = Number(e.target.value);
+    const clampedValue = clamp(value, -2147483648, 2147483647);
+    setSignalPickerConstantValue(clampedValue);
+
+    if (value !== clampedValue) {
+      e.target.value = clampedValue.toString();
+    }
   };
 
   const renderItemGroupIcons = () => {
@@ -229,6 +236,8 @@ const SignalPicker: React.FC = () => {
               <input
                 type="number"
                 inputMode="numeric"
+                min={-2147483648}
+                max={2147483647}
                 placeholder={"1"}
                 onChange={handleConstantValueChange}
                 onKeyDown={handleKeyPress}
