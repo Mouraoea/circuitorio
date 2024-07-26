@@ -83,6 +83,7 @@ const Debug: React.FC = () => {
             <li>
               x: {selectedElement.position.x}, y: {selectedElement.position.y}
             </li>
+            <li>Signals: {JSON.stringify(selectedElement.signals)}</li>
           </ul>
         )}
         <p>Hovered Element </p>

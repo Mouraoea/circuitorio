@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useCallback } from "react";
 import Draggable, { DraggableData, DraggableEvent } from "react-draggable";
 import { useCanvasContext } from "../context/CanvasContext";
 import { IconProvider } from "../spritesheets/SpriteProvider";
 import { clamp } from "../utils/clamp";
+import { updateElementDetails } from "../store/circuitSlice";
+import { useDispatch } from "react-redux";
 
 interface signalGroups {
   [key: string]: string[][];
@@ -10,6 +12,8 @@ interface signalGroups {
 
 const SignalPicker: React.FC = () => {
   const {
+    selectedElement,
+    setSelectedElement,
     isSignalPickerOpen,
     setIsSignalPickerOpen,
     isSignalPickerDragging,
@@ -20,8 +24,12 @@ const SignalPicker: React.FC = () => {
     setSignalPickerSelectedGroup,
     signalPickerSelectedSignal,
     setSignalPickerSelectedSignal,
+    signalPickerConstantValue,
     setSignalPickerConstantValue,
+
+    selectedSignalSlot,
   } = useCanvasContext();
+  const dispatch = useDispatch();
 
   const handleOpen = () => {
     setIsSignalPickerDragging(true);
@@ -66,6 +74,26 @@ const SignalPicker: React.FC = () => {
       e.target.value = clampedValue.toString();
     }
   };
+
+  const handleSaveChanges = useCallback(() => {
+    if (!selectedElement) return;
+    const signalSlot = selectedSignalSlot;
+    if (!signalSlot) return;
+    const signalKey = signalPickerSelectedSignal;
+    if (!signalKey) return;
+    const signalValue = signalPickerConstantValue;
+    if (!signalValue) return;
+    const updatedElement = { ...selectedElement };
+
+    updatedElement.signals = {
+      ...(selectedElement.signals || {}),
+      [signalSlot]: {
+        [signalKey]: signalValue,
+      },
+    };
+    setSelectedElement(updatedElement);
+    dispatch(updateElementDetails({ id: updatedElement.id, details: updatedElement }));
+  }, [selectedElement, selectedSignalSlot, signalPickerConstantValue, signalPickerSelectedSignal, setSelectedElement, dispatch]);
 
   const renderItemGroupIcons = () => {
     const icons = groups.map((group) => {
@@ -238,7 +266,7 @@ const SignalPicker: React.FC = () => {
                 inputMode="numeric"
                 min={-2147483648}
                 max={2147483647}
-                placeholder={"1"}
+                defaultValue={1}
                 onChange={handleConstantValueChange}
                 onKeyDown={handleKeyPress}
                 onMouseDown={(e) => e.stopPropagation()}
@@ -246,7 +274,7 @@ const SignalPicker: React.FC = () => {
               />
             </div>
             <div>
-              <button className="button-green p0" style={{ width: "40px" }}>
+              <button className="button-green p0" onClick={handleSaveChanges} style={{ width: "40px" }}>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="#000000" width="40px" height="40px" viewBox="0 0 32 32">
                   <path d="M5 16.577l2.194-2.195 5.486 5.484L24.804 7.743 27 9.937l-14.32 14.32z" />
                 </svg>

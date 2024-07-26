@@ -11,14 +11,12 @@ interface CircuitElementProps extends EntitySprite {
   orientation: Orientation;
   size: { width: number; height: number };
   opacity?: number;
-  condition?: CombinatorCondition;
+  signals?: Signals;
 }
 
-interface CombinatorCondition {
-  firstSignal?: string;
-  secondSignal?: string;
-  comparator?: string;
-  constant?: number;
+interface Signals {
+  input?: { [key: string]: string };
+  operator?: { [key: string]: string };
   output?: { [key: string]: string };
 }
 
@@ -83,6 +81,13 @@ const circuitSlice = createSlice({
         element.position = action.payload.position;
       }
     },
+    updateElementDetails: (state, action: PayloadAction<{ id: string; details: Partial<CircuitElementProps> }>) => {
+      const element = state.elements.find((el) => el.id === action.payload.id);
+      if (element) {
+        Object.assign(element, action.payload.details);
+      }
+    },
+
     rotateElement: (state, action: PayloadAction<{ id: string }>) => {
       const searchResult: CircuitElementProps | undefined = state.elements.find((el) => el.id === action.payload.id);
       if (searchResult) {
@@ -124,6 +129,6 @@ const circuitSlice = createSlice({
   },
 });
 export const selectElementById = (state: RootState, id: string) => state.circuit.elements.find((el: CircuitElementProps) => el.id === id);
-export const { addElement, updateElementPosition, rotateElement, setPreviewElement, checkForCollision, removeElement } = circuitSlice.actions;
+export const { addElement, updateElementPosition, rotateElement, setPreviewElement, checkForCollision, removeElement, updateElementDetails } = circuitSlice.actions;
 export type { CircuitElementProps };
 export default circuitSlice.reducer;
