@@ -2,7 +2,7 @@ import React from "react";
 import Draggable, { DraggableData, DraggableEvent } from "react-draggable";
 import { useCanvasContext } from "../context/CanvasContext";
 import { DeciderCombinator, ArithmeticCombinator, ConstantCombinator } from "../entityInterface/EntityInterface";
-import { useResetEntityPanel } from "../utils/useResetEntityPanel";
+import { useResetEntityPanel } from "../hooks/useResetEntityPanel";
 
 const EntityPanel: React.FC = () => {
   const {
