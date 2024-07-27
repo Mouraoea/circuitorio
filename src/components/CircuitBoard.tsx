@@ -22,7 +22,7 @@ const CircuitBoard: React.FC = () => {
         transformOrigin: `${panPosition.x}px ${panPosition.y}px`,
         cursor: isPanning ? "grabbing" : "default",
       }}
-      onContextMenu={(e) => e.preventDefault()} // Prevent the context menu from appearing
+      onContextMenu={(e) => e.preventDefault()}
     >
       {elements.map((element) => (
         <CircuitElement key={element.id} {...element} />
