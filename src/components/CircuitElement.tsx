@@ -5,20 +5,19 @@ import { type CircuitElementProps } from "../store/circuitSlice";
 import { useCanvasContext } from "../context/CanvasContext";
 import { getElementSprite } from "../utils/getElementSprite";
 
-const CircuitElement: React.FC<CircuitElementProps> = ({ id, type }) => {
-  let element: CircuitElementProps | null;
-  let position: { x: number; y: number };
-  element = useSelector((state: RootState) => state.circuit.elements.find((element) => element.id === id)) || null;
-  position = element?.position || { x: 0, y: 0 };
+const CircuitElement: React.FC<CircuitElementProps> = ({ id }) => {
+  const element = useSelector((state: RootState) => state.circuit.elements.find((el) => el.id === id)) || null;
+  const position = element?.position || { x: 0, y: 0 };
   const { setHoveredElement, hoveredElement, gridSize, isDebugMode } = useCanvasContext();
   const [isHovered, setIsHovered] = useState(false);
   const hoveredElementRef = useRef<CircuitElementProps | null>(null);
 
   const handleMouseEnter = (element: CircuitElementProps | null) => {
-    if (!element) return;
-    setHoveredElement(element);
-    setIsHovered(true);
-    hoveredElementRef.current = element;
+    if (element) {
+      setHoveredElement(element);
+      setIsHovered(true);
+      hoveredElementRef.current = element;
+    }
   };
 
   const handleMouseLeave = () => {
@@ -28,10 +27,19 @@ const CircuitElement: React.FC<CircuitElementProps> = ({ id, type }) => {
   };
 
   useEffect(() => {
-    setInterval(() => {}, 1000);
+    const interval = setInterval(() => {}, 1000);
+    return () => clearInterval(interval);
   }, []);
 
-  if (!element || !position) return null;
+  if (!element) return null;
+
+  const getCornerStyle = (transform: string) => ({
+    backgroundPosition: "-7px -8px",
+    height: 33,
+    width: 34,
+    transform,
+    border: isDebugMode ? "1px solid green" : "none",
+  });
 
   return (
     <div
@@ -40,13 +48,13 @@ const CircuitElement: React.FC<CircuitElementProps> = ({ id, type }) => {
         position: "absolute",
         opacity: 1,
         cursor: "move",
-        zIndex: position?.y ? position.y : 0,
-        transform: `scale(${0.5})`,
+        zIndex: position.y,
+        transform: `scale(0.5)`,
         transformOrigin: "top left",
         ...getElementSprite(element),
       }}
       onMouseEnter={() => handleMouseEnter(element)}
-      onMouseLeave={() => handleMouseLeave()}
+      onMouseLeave={handleMouseLeave}
     >
       {isHovered && hoveredElement && (
         <div
@@ -60,52 +68,16 @@ const CircuitElement: React.FC<CircuitElementProps> = ({ id, type }) => {
             width: (hoveredElement.gridSize[hoveredElement.orientation].width / hoveredElement.spriteScale) * gridSize,
           }}
         >
-          <div
-            className="corner"
-            style={{
-              position: "absolute",
-              backgroundPosition: "-7px -8px",
-              height: 33,
-              width: 34,
-              transform: `scale(2) translate(${-17 + 9}px,${-17 + 9}px) rotate(0deg)`,
-              border: isDebugMode ? "1px solid green" : "none",
-            }}
-          />
-          <div
-            className="corner"
-            style={{
-              position: "absolute",
-              backgroundPosition: "-7px -8px",
-              height: 33,
-              width: 34,
-              transform: `scale(2) translate(${-17 - 11 + (hoveredElement.gridSize[hoveredElement.orientation].width * gridSize) / hoveredElement.spriteScale}px,${-17 + 9.5}px) rotate(90deg)`,
-              border: isDebugMode ? "1px solid green" : "none",
-            }}
-          />
-          <div
-            className="corner"
-            style={{
-              position: "absolute",
-              backgroundPosition: "-7px -8px",
-              height: 33,
-              width: 34,
-              transform: `scale(2) translate(${-17 - 11 + (hoveredElement.gridSize[hoveredElement.orientation].width * gridSize) / hoveredElement.spriteScale}px,${
-                -17 - 11 + (hoveredElement.gridSize[hoveredElement.orientation].height * gridSize) / hoveredElement.spriteScale
-              }px) rotate(180deg)`,
-              border: isDebugMode ? "1px solid green" : "none",
-            }}
-          />
-          <div
-            className="corner"
-            style={{
-              position: "absolute",
-              backgroundPosition: "-7px -8px",
-              height: 33,
-              width: 34,
-              transform: `scale(2) translate(${-17 + 8.5}px,${-17 - 10.5 + (hoveredElement.gridSize[hoveredElement.orientation].height * gridSize) / hoveredElement.spriteScale}px) rotate(-90deg)`,
-              border: isDebugMode ? "1px solid green" : "none",
-            }}
-          />
+          {[
+            `scale(2) translate(${-17 + 9}px,${-17 + 9}px) rotate(0deg)`,
+            `scale(2) translate(${-17 - 11 + (hoveredElement.gridSize[hoveredElement.orientation].width * gridSize) / hoveredElement.spriteScale}px,${-17 + 9.5}px) rotate(90deg)`,
+            `scale(2) translate(${-17 - 11 + (hoveredElement.gridSize[hoveredElement.orientation].width * gridSize) / hoveredElement.spriteScale}px,${
+              -17 - 11 + (hoveredElement.gridSize[hoveredElement.orientation].height * gridSize) / hoveredElement.spriteScale
+            }px) rotate(180deg)`,
+            `scale(2) translate(${-17 + 8.5}px,${-17 - 10.5 + (hoveredElement.gridSize[hoveredElement.orientation].height * gridSize) / hoveredElement.spriteScale}px) rotate(-90deg)`,
+          ].map((transform) => (
+            <div key={transform} className="corner" style={getCornerStyle(transform)} />
+          ))}
         </div>
       )}
     </div>
