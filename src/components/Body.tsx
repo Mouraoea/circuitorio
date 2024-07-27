@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import "../App.css";
 import CircuitBoard from "./CircuitBoard";
 import DrawerContent from "./DrawerContent";
-import { useCanvasContext, type KeyStateKeys } from "../context/CanvasContext";
+import { useCanvasContext } from "../context/CanvasContext";
 import Toolbox from "./Toolbox";
 import Debug from "./Debug";
 import Settings from "./Settings";
@@ -19,6 +19,7 @@ import store from "../store/store";
 import EntityPanel from "./EntityPanel";
 import SignalPicker from "./SignalPicker";
 import Drawer from "./Drawer";
+import { KeyStateKeys } from "../hooks/useCanvasState";
 
 const environment = process.env.NODE_ENV;
 const rootPath = environment === "development" ? "/circuitorio" : "";

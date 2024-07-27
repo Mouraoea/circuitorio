@@ -1,6 +1,7 @@
 import React from "react";
-import { useCanvasContext, type KeyStateKeys } from "../context/CanvasContext";
+import { useCanvasContext } from "../context/CanvasContext";
 import "../App.css";
+import { KeyStateKeys } from "../hooks/useCanvasState";
 
 const Debug: React.FC = () => {
   const {
