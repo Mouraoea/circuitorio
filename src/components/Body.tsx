@@ -2,7 +2,6 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 import { useDispatch } from "react-redux";
 import "../App.css";
 import CircuitBoard from "./CircuitBoard";
-import DrawerContent from "./DrawerContent";
 import { useCanvasContext } from "../context/CanvasContext";
 import Toolbox from "./Toolbox";
 import Debug from "./Debug";
@@ -12,14 +11,14 @@ import TopOverlay from "./TopOverlay";
 import { v4 as uuidv4 } from "uuid";
 import { addElement, Orientation, rotateElement, removeElement, selectElementById } from "../store/circuitSlice";
 import { clamp } from "../utils/clamp";
-import { getElementSprite } from "../utils/getElementSprite";
 import { SpriteProvider, EntitySprite } from "../spritesheets/SpriteProvider";
 import Modal from "react-modal";
 import store from "../store/store";
 import EntityPanel from "./EntityPanel";
 import SignalPicker from "./SignalPicker";
-import Drawer from "./Drawer";
 import { KeyStateKeys } from "../hooks/useCanvasState";
+import Disclaimer from "./Disclaimer";
+import { PlacingElement, Loader, Drawers } from "./OverlayComponents";
 
 const environment = process.env.NODE_ENV;
 const rootPath = environment === "development" ? "/circuitorio" : "";
@@ -58,7 +57,6 @@ const Body: React.FC = () => {
     setScale,
     placingPosition,
     setPlacingPosition,
-    // ghostElementPosition,
     setGhostElementPosition,
     gridSize,
     setIsPlacing,
@@ -83,6 +81,7 @@ const Body: React.FC = () => {
     gridWidth,
     setIsSignalPickerOpen,
   } = useCanvasContext();
+
   const [leftDrawerContent, setLeftDrawerContent] = useState<React.ReactNode>(null);
   const [rightDrawerContent, setRightDrawerContent] = useState<React.ReactNode>(null);
   const [leftOpenDrawerId, setLeftOpenDrawerId] = useState<string | null>(null);
@@ -592,71 +591,22 @@ const Body: React.FC = () => {
             onRequestClose={closeModal}
             contentLabel="Welcome"
           >
-            <h2>Welcome to Circuitorio</h2>
-            <div>
-              <h3>Disclaimer</h3>
-              <p>{disclaimer}</p>
-              <div style={{ display: "flex", marginTop: "30px" }}>
-                <div style={{ flex: "50%" }}>
-                  <h3>Change Log</h3>
-                  <ul>
-                    {changeLog.map((log, index) => (
-                      <li key={index}>
-                        <strong>{log.version}:</strong> {log.content}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                <div style={{ flex: "50%" }}>
-                  <h3>Roadmap</h3>
-                  <ul>
-                    {roadmap.map((item, index) => (
-                      <li key={index}>{item}</li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            </div>
-            <button className="button" onClick={closeModal}>
-              Close
-            </button>
+            <Disclaimer disclaimer={disclaimer} changeLog={changeLog} roadmap={roadmap} closeModal={closeModal} />
           </Modal>
         </div>
-        <Drawer isopen={isLeftDrawerOpen} onClose={() => setIsLeftDrawerOpen(false)} side="left">
-          <DrawerContent content={leftDrawerContent} />
-        </Drawer>
-        <Drawer isopen={isRightDrawerOpen} onClose={() => setIsRightDrawerOpen(false)} side="right">
-          <DrawerContent content={rightDrawerContent} />
-        </Drawer>
+        <Drawers
+          isLeftDrawerOpen={isLeftDrawerOpen}
+          isRightDrawerOpen={isRightDrawerOpen}
+          leftDrawerContent={leftDrawerContent}
+          rightDrawerContent={rightDrawerContent}
+          setIsLeftDrawerOpen={setIsLeftDrawerOpen}
+          setIsRightDrawerOpen={setIsRightDrawerOpen}
+        />
         <div style={{ position: "fixed", left: 0, top: 0 }}>
           <CircuitBoard />
         </div>
-        {isPlacing && elementToPlace && (
-          <div
-            style={{
-              position: "fixed",
-              opacity: 0.5,
-              pointerEvents: "none",
-              transformOrigin: `${-elementToPlace.origingOffset[elementToPlace.orientation].x}px ${-elementToPlace.origingOffset[elementToPlace.orientation].y}px`,
-              transform: `scale(${scale * elementToPlace.spriteScale})`,
-              ...getElementSprite(elementToPlace),
-            }}
-          ></div>
-        )}
-        {removeTimeout && (
-          <div
-            className="loader"
-            style={{
-              position: "fixed",
-              top: cursorPosition.y,
-              left: cursorPosition.x,
-              pointerEvents: "none",
-              zIndex: 1000,
-              width: "32px",
-              height: "32px",
-            }}
-          ></div>
-        )}
+        <PlacingElement isPlacing={isPlacing} elementToPlace={elementToPlace} scale={scale} />
+        {removeTimeout && <Loader cursorPosition={cursorPosition} />}
       </div>
       <EntityPanel />
       <SignalPicker />
