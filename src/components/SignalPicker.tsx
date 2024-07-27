@@ -5,6 +5,7 @@ import { IconProvider } from "../spritesheets/SpriteProvider";
 import { clamp } from "../utils/clamp";
 import { updateElementDetails } from "../store/circuitSlice";
 import { useDispatch } from "react-redux";
+import { useResetSignalPicker } from "../utils/useResetSignalPicker";
 
 interface signalGroups {
   [key: string]: string[][];
@@ -15,7 +16,6 @@ const SignalPicker: React.FC = () => {
     selectedElement,
     setSelectedElement,
     isSignalPickerOpen,
-    setIsSignalPickerOpen,
     isSignalPickerDragging,
     setIsSignalPickerDragging,
     SignalPickerPosition,
@@ -34,10 +34,10 @@ const SignalPicker: React.FC = () => {
     setIsSignalPickerDragging(true);
   };
 
+  const resetSignalPicker = useResetSignalPicker();
+
   const handleClose = () => {
-    setIsSignalPickerOpen(false);
-    setSignalPickerPosition({ x: 600, y: 220 });
-    setSignalPickerSelectedGroup("logistics");
+    resetSignalPicker();
   };
 
   const handleDragStop = (e: DraggableEvent, data: DraggableData) => {
@@ -86,8 +86,6 @@ const SignalPicker: React.FC = () => {
     if (!signalValue) return;
     const updatedElement = { ...selectedElement };
 
-    console.log(signalType, signalId, signalKey, signalValue);
-
     updatedElement.signals = {
       ...(selectedElement.signals || {}),
       [signalType]: {
@@ -98,12 +96,6 @@ const SignalPicker: React.FC = () => {
       },
     };
 
-    // updatedElement.signals = {
-    //   ...(selectedElement.signals || {}),
-    //   [signalSlot]: {
-    //     [signalKey]: signalValue,
-    //   },
-    // };
     setSelectedElement(updatedElement);
     dispatch(updateElementDetails({ id: updatedElement.id, details: updatedElement }));
   }, [selectedElement, selectedSignalSlot, signalPickerConstantValue, signalPickerSelectedSignal, setSelectedElement, dispatch]);
