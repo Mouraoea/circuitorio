@@ -2,8 +2,6 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 import { useDispatch } from "react-redux";
 import "../App.css";
 import CircuitBoard from "./CircuitBoard";
-import LeftDrawer from "./LeftDrawer";
-import RightDrawer from "./RightDrawer";
 import DrawerContent from "./DrawerContent";
 import { useCanvasContext, type KeyStateKeys } from "../context/CanvasContext";
 import Toolbox from "./Toolbox";
@@ -20,6 +18,7 @@ import Modal from "react-modal";
 import store from "../store/store";
 import EntityPanel from "./EntityPanel";
 import SignalPicker from "./SignalPicker";
+import Drawer from "./Drawer";
 
 const environment = process.env.NODE_ENV;
 const rootPath = environment === "development" ? "/circuitorio" : "";
@@ -622,12 +621,12 @@ const Body: React.FC = () => {
             </button>
           </Modal>
         </div>
-        <LeftDrawer isOpen2={isLeftDrawerOpen} onClose={closeLeftDrawer}>
+        <Drawer isopen={isLeftDrawerOpen} onClose={() => setIsLeftDrawerOpen(false)} side="left">
           <DrawerContent content={leftDrawerContent} />
-        </LeftDrawer>
-        <RightDrawer isOpen3={isRightDrawerOpen} onClose={closeRightDrawer}>
+        </Drawer>
+        <Drawer isopen={isRightDrawerOpen} onClose={() => setIsRightDrawerOpen(false)} side="right">
           <DrawerContent content={rightDrawerContent} />
-        </RightDrawer>
+        </Drawer>
         <div style={{ position: "fixed", left: 0, top: 0 }}>
           <CircuitBoard />
         </div>

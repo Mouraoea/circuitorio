@@ -2,20 +2,21 @@ import React, { useState, useEffect, ReactNode } from "react";
 import styled from "styled-components";
 
 interface DrawerProps {
-  isOpen3: boolean;
+  isopen: boolean;
   onClose: () => void;
   children: ReactNode;
+  side: "left" | "right";
 }
 
-const DrawerContainer = styled.div<{ isOpen3: boolean }>`
+const DrawerContainer = styled.div<{ isopen: boolean; side: "left" | "right" }>`
   position: fixed;
   top: 0;
-  ${(props) => "right: 0;"}
+  ${(props) => (props.side === "left" ? "left: 0;" : "right: 0;")}
   height: 100%;
   width: 300px;
   background-color: white;
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
-  transform: ${(props) => (props.isOpen3 ? "translateX(0)" : "translateX(100%)")};
+  box-shadow: ${(props) => (props.side === "left" ? "2px 0 5px rgba(0, 0, 0, 0.3);" : "-2px 0 5px rgba(0, 0, 0, 0.3);")};
+  transform: ${(props) => (props.isopen ? "translateX(0)" : props.side === "left" ? "translateX(-100%)" : "translateX(100%)")};
   transition: transform 0.3s ease-in-out;
   z-index: 1000;
 `;
@@ -30,30 +31,25 @@ const CloseButton = styled.button`
   cursor: pointer;
 `;
 
-const RightDrawer: React.FC<DrawerProps> = ({ isOpen3, onClose, children }) => {
-  const [visible, setVisible] = useState(isOpen3);
+const Drawer: React.FC<DrawerProps> = ({ isopen, onClose, children, side }) => {
+  const [visible, setVisible] = useState(isopen);
 
   useEffect(() => {
-    if (isOpen3) {
+    if (isopen) {
       setVisible(true);
     }
-  }, [isOpen3]);
+  }, [isopen]);
 
   const handleTransitionEnd = () => {
-    if (!isOpen3) {
+    if (!isopen) {
       setVisible(false);
     }
   };
 
-  //   const handleOverlayClick = () => {
-  //     onClose();
-  //   };
-
   return (
     <>
-      {/* <Overlay isOpen3={isOpen3} onClick={handleOverlayClick} /> */}
       {visible && (
-        <DrawerContainer className="panel" isOpen3={isOpen3} onTransitionEnd={handleTransitionEnd}>
+        <DrawerContainer className="panel" side={side} isopen={isopen} onTransitionEnd={handleTransitionEnd}>
           <CloseButton onClick={onClose}>X</CloseButton>
           {children}
         </DrawerContainer>
@@ -62,4 +58,4 @@ const RightDrawer: React.FC<DrawerProps> = ({ isOpen3, onClose, children }) => {
   );
 };
 
-export default RightDrawer;
+export default Drawer;
