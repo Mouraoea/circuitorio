@@ -10,7 +10,7 @@ const ConstantCombinator: React.FC<EntityInterfaceProps> = ({ openSignalPicker }
 
   const renderButtons = (count: number, row: number) => {
     return Array.from({ length: count }).map((_, index) => (
-      <input key={index} type="button" onClick={() => openSignalPicker(`output-${row}-${index}`)} className="button-black button-output square40" id={`output-${row}-${index}`} value="" />
+      <input key={index} type="button" onClick={() => openSignalPicker(`output-${row}-${index}`, "output")} className="button-black button-output square40" id={`output-${row}-${index}`} value="" />
     ));
   };
 

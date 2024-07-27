@@ -5,5 +5,5 @@ import ConstantCombinator from "./ConstantCombinator";
 export { DeciderCombinator, ArithmeticCombinator, ConstantCombinator };
 
 export interface EntityInterfaceProps {
-  openSignalPicker: (slotId: string) => void;
+  openSignalPicker: (slotId: string, type: "input" | "output") => void;
 }

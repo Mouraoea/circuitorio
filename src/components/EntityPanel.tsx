@@ -40,9 +40,9 @@ const EntityPanel: React.FC = () => {
     setIsEntityPanelDragging(false);
   };
 
-  const handleOpenSignalPicker = (slotId: string) => {
+  const handleOpenSignalPicker = (slotId: string, type: "input" | "output") => {
     setIsSignalPickerOpen(true);
-    setSelectedSignalSlot(slotId);
+    setSelectedSignalSlot({ [type]: slotId });
   };
 
   if (!isEntityPanelOpen) return null;

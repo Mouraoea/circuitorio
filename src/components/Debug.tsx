@@ -98,7 +98,7 @@ const Debug: React.FC = () => {
         )}
         <p>Signal Picker:</p>
         <ul>
-          <li>Slot id: {selectedSignalSlot}</li>
+          <li>Slot id: {JSON.stringify(selectedSignalSlot)}</li>
           <li>Selected signal: {signalPickerSelectedSignal}</li>
           <li>Constant value: {signalPickerConstantValue}</li>
         </ul>

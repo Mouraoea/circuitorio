@@ -26,7 +26,6 @@ const SignalPicker: React.FC = () => {
     setSignalPickerSelectedSignal,
     signalPickerConstantValue,
     setSignalPickerConstantValue,
-
     selectedSignalSlot,
   } = useCanvasContext();
   const dispatch = useDispatch();
@@ -79,18 +78,32 @@ const SignalPicker: React.FC = () => {
     if (!selectedElement) return;
     const signalSlot = selectedSignalSlot;
     if (!signalSlot) return;
+    const signalType = Object.keys(signalSlot)[0];
+    const signalId = Object.values(signalSlot)[0];
     const signalKey = signalPickerSelectedSignal;
     if (!signalKey) return;
     const signalValue = signalPickerConstantValue;
     if (!signalValue) return;
     const updatedElement = { ...selectedElement };
 
+    console.log(signalType, signalId, signalKey, signalValue);
+
     updatedElement.signals = {
       ...(selectedElement.signals || {}),
-      [signalSlot]: {
-        [signalKey]: signalValue,
+      [signalType]: {
+        ...((selectedElement.signals && selectedElement.signals[(signalType as "input") || "output"]) || {}),
+        [signalId]: {
+          [signalKey]: signalValue,
+        },
       },
     };
+
+    // updatedElement.signals = {
+    //   ...(selectedElement.signals || {}),
+    //   [signalSlot]: {
+    //     [signalKey]: signalValue,
+    //   },
+    // };
     setSelectedElement(updatedElement);
     dispatch(updateElementDetails({ id: updatedElement.id, details: updatedElement }));
   }, [selectedElement, selectedSignalSlot, signalPickerConstantValue, signalPickerSelectedSignal, setSelectedElement, dispatch]);
