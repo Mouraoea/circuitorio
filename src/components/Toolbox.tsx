@@ -22,8 +22,8 @@ const Toolbox: React.FC<ToolboxProps> = ({ closeLeftDrawer }) => {
       size: entity.gridSize.north,
     };
 
-    setElementToPlace(newElement); // Set the element to be placed on mouse click
-    setIsPlacing(true); // Set the placing flag to true
+    setElementToPlace(newElement);
+    setIsPlacing(true);
   };
 
   return (
