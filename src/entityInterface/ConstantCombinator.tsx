@@ -2,6 +2,7 @@ import React from "react";
 import { useCanvasContext } from "../context/CanvasContext";
 import "../App.css";
 import { EntityInterfaceProps } from "./EntityInterface";
+import { RenderSignalButton } from "../utils/RenderSignalButton";
 
 const ConstantCombinator: React.FC<EntityInterfaceProps> = ({ openSignalPicker }) => {
   const { selectedElement } = useCanvasContext();
@@ -9,9 +10,7 @@ const ConstantCombinator: React.FC<EntityInterfaceProps> = ({ openSignalPicker }
   if (!selectedElement || selectedElement.name !== "constant-combinator") return null;
 
   const renderButtons = (count: number, row: number) => {
-    return Array.from({ length: count }).map((_, index) => (
-      <input key={index} type="button" onClick={() => openSignalPicker(`output-${row}-${index}`, "output")} className="button-black button-output square40" id={`output-${row}-${index}`} value="" />
-    ));
+    return Array.from({ length: count }).map((_, index) => RenderSignalButton({ slot: `output-${row}-${index}`, type: "output", selectedElement, openSignalPicker }));
   };
 
   return (
