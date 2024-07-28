@@ -5,7 +5,6 @@ interface DrawerContentProps {
 }
 
 const DrawerContent: React.FC<DrawerContentProps> = ({ content }) => {
-  console.log("DrawerContent rendering:", content);
   return <div>{content}</div>;
 };
 

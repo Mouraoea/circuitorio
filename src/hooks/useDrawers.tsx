@@ -32,7 +32,6 @@ export const useDrawers = () => {
 
   const fetchContent = useCallback(
     (id: string) => {
-      console.log("Fetching content for id:", id);
       switch (id) {
         case "toolbox":
           return <Toolbox closeLeftDrawer={closeLeftDrawer} />;
@@ -51,7 +50,6 @@ export const useDrawers = () => {
 
   const toggleDrawer = useCallback(
     (side: "left" | "right", id: string) => {
-      console.log(`Toggling ${side} drawer with id:`, id, fetchContent(id));
       if (side === "left") {
         if (leftOpenDrawerId === id) {
           setIsLeftDrawerOpen(false);
@@ -85,7 +83,6 @@ export const useDrawers = () => {
           setIsRightDrawerOpen(true);
         }
       }
-      console.log("Left drawer", leftDrawerContent);
     },
     [
       isLeftDrawerOpen,
@@ -99,7 +96,6 @@ export const useDrawers = () => {
       leftOpenDrawerId,
       rightOpenDrawerId,
       fetchContent,
-      leftDrawerContent,
     ]
   );
 

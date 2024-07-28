@@ -5,6 +5,7 @@ export const useCanvasState = () => {
   const [disclaimerIsOpen, setDisclaimerIsOpen] = useState(false);
   const [appVersion, setAppVersion] = useState("0.0.0");
   const [scale, setScale] = useState(1);
+  const [startPanPosition, setStartPanPosition] = useState({ x: 0, y: 0 });
   const [panPosition, setPanPosition] = useState({ x: 0, y: 0 });
   const [panPercentage, setPanPercentage] = useState({ x: 0, y: 0 });
   const [transformOrigin, setTransformOrigin] = useState({ x: 0, y: 0 });
@@ -106,6 +107,7 @@ export const useCanvasState = () => {
   const [signalPickerSelectedGroup, setSignalPickerSelectedGroup] = useState("logistics");
   const [signalPickerConstantValue, setSignalPickerConstantValue] = useState(1);
   const [signalPickerSelectedSignal, setSignalPickerSelectedSignal] = useState("");
+  const [startMousePosition, setStartMousePosition] = useState({ x: 0, y: 0 });
 
   const updateKeyState = (value: Partial<KeyStateKeys>) => {
     setKeyState((prevKeyState) => ({ ...prevKeyState, ...value }));
@@ -118,6 +120,8 @@ export const useCanvasState = () => {
     setAppVersion,
     scale,
     setScale,
+    startPanPosition,
+    setStartPanPosition,
     panPosition,
     setPanPosition,
     panPercentage,
@@ -180,6 +184,8 @@ export const useCanvasState = () => {
     setSignalPickerConstantValue,
     signalPickerSelectedSignal,
     setSignalPickerSelectedSignal,
+    startMousePosition,
+    setStartMousePosition,
   };
 };
 

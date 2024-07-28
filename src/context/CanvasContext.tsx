@@ -2,7 +2,7 @@ import React, { createContext, useContext, ReactNode } from "react";
 import { KeyStateKeys, useCanvasState } from "../hooks/useCanvasState";
 import { CircuitElementProps } from "../store/circuitSlice";
 
-interface CanvasContextProps {
+export interface CanvasContextProps {
   disclaimerIsOpen: boolean;
   setDisclaimerIsOpen: (value: boolean) => void;
   appVersion: string;
@@ -20,6 +20,8 @@ interface CanvasContextProps {
   gridWidth: number;
   isPanning: boolean;
   setIsPanning: (value: boolean) => void;
+  startPanPosition: { x: number; y: number };
+  setStartPanPosition: (value: { x: number; y: number }) => void;
   boardRef: React.RefObject<HTMLDivElement>;
   keyState: KeyStateKeys;
   setKeyState: (value: Partial<KeyStateKeys>) => void;
@@ -47,6 +49,8 @@ interface CanvasContextProps {
   setSelectedElement: (value: CircuitElementProps | null) => void;
   isDebugMode: boolean;
   setIsDebugMode: (value: boolean) => void;
+  startMousePosition: { x: number; y: number };
+  setStartMousePosition: (value: { x: number; y: number }) => void;
   isEntityPanelOpen: boolean;
   setIsEntityPanelOpen: (value: boolean) => void;
   isEntityPanelDragging: boolean;
