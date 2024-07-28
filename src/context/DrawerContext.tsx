@@ -1,12 +1,6 @@
 import { createContext, useContext } from "react";
 import { useDrawerState } from "../hooks/useDrawerState";
 
-// interface DrawerContextProps {
-//   toggleDrawer: (side: "left" | "right", id: string) => void;
-//   closeLeftDrawer: () => void;
-//   closeRightDrawer: () => void;
-// }
-
 interface DrawerContextProps {
   isLeftDrawerOpen: boolean;
   setIsLeftDrawerOpen: (value: boolean) => void;
