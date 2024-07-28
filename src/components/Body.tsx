@@ -514,7 +514,7 @@ const Body: React.FC = () => {
         </Modal>
       </div>
       <Drawers />
-      <div style={{ position: "fixed", left: 0, top: 0 }}>
+      <div className="fixed-left-top">
         <CircuitBoard />
       </div>
       <PlacingElement isPlacing={isPlacing} elementToPlace={elementToPlace} scale={scale} />
