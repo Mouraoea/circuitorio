@@ -23,10 +23,6 @@ interface CanvasContextProps {
   boardRef: React.RefObject<HTMLDivElement>;
   keyState: KeyStateKeys;
   setKeyState: (value: Partial<KeyStateKeys>) => void;
-  isLeftDrawerOpen: boolean;
-  setIsLeftDrawerOpen: (value: boolean) => void;
-  isRightDrawerOpen: boolean;
-  setIsRightDrawerOpen: (value: boolean) => void;
   cursorPosition: { x: number; y: number };
   setCursorPosition: (value: { x: number; y: number }) => void;
   cursorGridPosition: { x: number; y: number };

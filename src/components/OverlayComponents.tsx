@@ -4,7 +4,7 @@ import DrawerContent from "./DrawerContent";
 import { CircuitElementProps } from "../store/circuitSlice";
 import { getElementSprite } from "../utils/getElementSprite";
 import { useDrawers } from "../hooks/useDrawers";
-import { useCanvasContext } from "../context/CanvasContext";
+import { useDrawerContext } from "../context/DrawerContext";
 
 export const PlacingElement: React.FC<{ isPlacing: boolean; elementToPlace: CircuitElementProps | null; scale: number }> = ({ isPlacing, elementToPlace, scale }) => {
   if (!isPlacing || !elementToPlace) return null;
@@ -40,7 +40,7 @@ export const Loader: React.FC<{ cursorPosition: { x: number; y: number } }> = ({
 
 export const Drawers: React.FC = () => {
   const { isLeftDrawerOpen, isRightDrawerOpen, leftDrawerContent, rightDrawerContent } = useDrawers();
-  const { setIsRightDrawerOpen, setIsLeftDrawerOpen } = useCanvasContext();
+  const { setIsRightDrawerOpen, setIsLeftDrawerOpen } = useDrawerContext();
 
   return (
     <>

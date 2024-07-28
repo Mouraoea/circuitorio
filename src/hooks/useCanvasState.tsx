@@ -82,9 +82,6 @@ export const useCanvasState = () => {
     F11: false,
     F12: false,
   });
-  const [isLeftDrawerOpen, setIsLeftDrawerOpen] = useState(false);
-  const [isRightDrawerOpen, setIsRightDrawerOpen] = useState(false);
-  const [drawerFrom, setDrawerFrom] = useState<"left" | "right">("left");
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
   const [cursorGridPosition, setCursorGridPosition] = useState({ x: 0, y: 0 });
   const [cursorGridCoordinates, setCursorGridCoordinates] = useState({ x: 0, y: 0 });
@@ -135,12 +132,6 @@ export const useCanvasState = () => {
     boardRef,
     keyState,
     setKeyState: updateKeyState,
-    isLeftDrawerOpen,
-    setIsLeftDrawerOpen,
-    isRightDrawerOpen,
-    setIsRightDrawerOpen,
-    drawerFrom,
-    setDrawerFrom,
     cursorPosition,
     setCursorPosition,
     cursorGridPosition,

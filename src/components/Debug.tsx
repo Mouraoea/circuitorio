@@ -2,6 +2,7 @@ import React from "react";
 import { useCanvasContext } from "../context/CanvasContext";
 import "../App.css";
 import { KeyStateKeys } from "../hooks/useCanvasState";
+import { useDrawerContext } from "../context/DrawerContext";
 
 const Debug: React.FC = () => {
   const {
@@ -15,7 +16,6 @@ const Debug: React.FC = () => {
     placingPosition,
     keyState,
     cursorGridPosition,
-    isLeftDrawerOpen,
     ghostElementPosition,
     selectedElement,
     hoveredElement,
@@ -25,6 +25,8 @@ const Debug: React.FC = () => {
     signalPickerSelectedSignal,
     signalPickerConstantValue,
   } = useCanvasContext();
+
+  const { isLeftDrawerOpen } = useDrawerContext();
 
   const toggleDebugMode = () => {
     setIsDebugMode(!isDebugMode);
