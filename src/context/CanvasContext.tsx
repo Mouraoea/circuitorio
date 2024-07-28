@@ -27,8 +27,6 @@ interface CanvasContextProps {
   setIsLeftDrawerOpen: (value: boolean) => void;
   isRightDrawerOpen: boolean;
   setIsRightDrawerOpen: (value: boolean) => void;
-  drawerFrom: "left" | "right";
-  setDrawerFrom: (value: "left" | "right") => void;
   cursorPosition: { x: number; y: number };
   setCursorPosition: (value: { x: number; y: number }) => void;
   cursorGridPosition: { x: number; y: number };

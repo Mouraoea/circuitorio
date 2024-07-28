@@ -1,12 +1,11 @@
 import React from "react";
-import { useDrawer } from "./Body";
-import Help from "./Help";
+import { useDrawers } from "../hooks/useDrawers";
 
 const TopOverlay: React.FC = () => {
-  const { toggleDrawer } = useDrawer();
+  const { toggleDrawer } = useDrawers();
 
   const handleHelpButtonClick = () => {
-    toggleDrawer("right", <Help />, "help");
+    toggleDrawer("right", "help");
   };
   return (
     <div style={{ zIndex: 9800 }}>

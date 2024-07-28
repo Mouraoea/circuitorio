@@ -3,6 +3,8 @@ import Drawer from "./Drawer";
 import DrawerContent from "./DrawerContent";
 import { CircuitElementProps } from "../store/circuitSlice";
 import { getElementSprite } from "../utils/getElementSprite";
+import { useDrawers } from "../hooks/useDrawers";
+import { useCanvasContext } from "../context/CanvasContext";
 
 export const PlacingElement: React.FC<{ isPlacing: boolean; elementToPlace: CircuitElementProps | null; scale: number }> = ({ isPlacing, elementToPlace, scale }) => {
   if (!isPlacing || !elementToPlace) return null;
@@ -36,20 +38,18 @@ export const Loader: React.FC<{ cursorPosition: { x: number; y: number } }> = ({
   ></div>
 );
 
-export const Drawers: React.FC<{
-  isLeftDrawerOpen: boolean;
-  isRightDrawerOpen: boolean;
-  leftDrawerContent: React.ReactNode;
-  rightDrawerContent: React.ReactNode;
-  setIsLeftDrawerOpen: (isOpen: boolean) => void;
-  setIsRightDrawerOpen: (isOpen: boolean) => void;
-}> = ({ isLeftDrawerOpen, isRightDrawerOpen, leftDrawerContent, rightDrawerContent, setIsLeftDrawerOpen, setIsRightDrawerOpen }) => (
-  <>
-    <Drawer isopen={isLeftDrawerOpen} onClose={() => setIsLeftDrawerOpen(false)} side="left">
-      <DrawerContent content={leftDrawerContent} />
-    </Drawer>
-    <Drawer isopen={isRightDrawerOpen} onClose={() => setIsRightDrawerOpen(false)} side="right">
-      <DrawerContent content={rightDrawerContent} />
-    </Drawer>
-  </>
-);
+export const Drawers: React.FC = () => {
+  const { isLeftDrawerOpen, isRightDrawerOpen, leftDrawerContent, rightDrawerContent } = useDrawers();
+  const { setIsRightDrawerOpen, setIsLeftDrawerOpen } = useCanvasContext();
+
+  return (
+    <>
+      <Drawer isOpen={isLeftDrawerOpen} onClose={() => setIsLeftDrawerOpen(false)} side="left">
+        <DrawerContent content={leftDrawerContent} />
+      </Drawer>
+      <Drawer isOpen={isRightDrawerOpen} onClose={() => setIsRightDrawerOpen(false)} side="right">
+        <DrawerContent content={rightDrawerContent} />
+      </Drawer>
+    </>
+  );
+};

@@ -1,26 +1,70 @@
-import { useState, useCallback } from "react";
+import { useCallback } from "react";
+import { useDrawerContext } from "../context/DrawerContext";
+import { Debug, Help, Settings, Toolbox } from "../components/componentsIndex";
 
 export const useDrawers = () => {
-  const [leftDrawerContent, setLeftDrawerContent] = useState<React.ReactNode>(null);
-  const [rightDrawerContent, setRightDrawerContent] = useState<React.ReactNode>(null);
-  const [leftOpenDrawerId, setLeftOpenDrawerId] = useState<string | null>(null);
-  const [rightOpenDrawerId, setRightOpenDrawerId] = useState<string | null>(null);
-  const [isLeftDrawerOpen, setIsLeftDrawerOpen] = useState(false);
-  const [isRightDrawerOpen, setIsRightDrawerOpen] = useState(false);
+  const {
+    isLeftDrawerOpen,
+    setIsLeftDrawerOpen,
+    leftOpenDrawerId,
+    setLeftOpenDrawerId,
+    leftDrawerContent,
+    setLeftDrawerContent,
+    isRightDrawerOpen,
+    setIsRightDrawerOpen,
+    rightOpenDrawerId,
+    setRightOpenDrawerId,
+    rightDrawerContent,
+    setRightDrawerContent,
+  } = useDrawerContext();
+
+  const closeLeftDrawer = useCallback(() => {
+    setIsLeftDrawerOpen(false);
+    setLeftDrawerContent(null);
+    setLeftOpenDrawerId(null);
+  }, [setLeftDrawerContent, setIsLeftDrawerOpen, setLeftOpenDrawerId]);
+
+  const closeRightDrawer = useCallback(() => {
+    setIsRightDrawerOpen(false);
+    setRightDrawerContent(null);
+    setRightOpenDrawerId(null);
+  }, [setRightDrawerContent, setIsRightDrawerOpen, setRightOpenDrawerId]);
+
+  const fetchContent = useCallback(
+    (id: string) => {
+      console.log("Fetching content for id:", id);
+      switch (id) {
+        case "toolbox":
+          return <Toolbox closeLeftDrawer={closeLeftDrawer} />;
+        case "settings":
+          return <Settings />;
+        case "debug":
+          return <Debug />;
+        case "help":
+          return <Help />;
+        default:
+          return null;
+      }
+    },
+    [closeLeftDrawer]
+  );
 
   const toggleDrawer = useCallback(
-    (side: "left" | "right", content: React.ReactNode, id: string) => {
-      console.log("Open entity panel");
-      console.log(isRightDrawerOpen);
+    (side: "left" | "right", id: string) => {
+      console.log(`Toggling ${side} drawer with id:`, id, fetchContent(id));
       if (side === "left") {
         if (leftOpenDrawerId === id) {
           setIsLeftDrawerOpen(false);
           setLeftOpenDrawerId(null);
         } else if (isLeftDrawerOpen && leftOpenDrawerId !== id) {
-          setLeftDrawerContent(content);
+          setLeftDrawerContent(fetchContent(id));
           setLeftOpenDrawerId(id);
+        } else if (isLeftDrawerOpen) {
+          setIsLeftDrawerOpen(false);
+          setLeftDrawerContent(null);
+          setLeftOpenDrawerId(null);
         } else {
-          setLeftDrawerContent(content);
+          setLeftDrawerContent(fetchContent(id));
           setLeftOpenDrawerId(id);
           setIsLeftDrawerOpen(true);
         }
@@ -29,29 +73,35 @@ export const useDrawers = () => {
           setIsRightDrawerOpen(false);
           setRightOpenDrawerId(null);
         } else if (isRightDrawerOpen && rightOpenDrawerId !== id) {
-          setRightDrawerContent(content);
+          setRightDrawerContent(fetchContent(id));
           setRightOpenDrawerId(id);
+        } else if (isRightDrawerOpen) {
+          setIsRightDrawerOpen(false);
+          setRightDrawerContent(null);
+          setRightOpenDrawerId(null);
         } else {
-          setRightDrawerContent(content);
+          setRightDrawerContent(fetchContent(id));
           setRightOpenDrawerId(id);
           setIsRightDrawerOpen(true);
         }
       }
+      console.log("Left drawer", leftDrawerContent);
     },
-    [isLeftDrawerOpen, isRightDrawerOpen, leftOpenDrawerId, rightOpenDrawerId]
+    [
+      isLeftDrawerOpen,
+      isRightDrawerOpen,
+      setIsLeftDrawerOpen,
+      setIsRightDrawerOpen,
+      setLeftDrawerContent,
+      setRightDrawerContent,
+      setLeftOpenDrawerId,
+      setRightOpenDrawerId,
+      leftOpenDrawerId,
+      rightOpenDrawerId,
+      fetchContent,
+      leftDrawerContent,
+    ]
   );
-
-  const closeLeftDrawer = useCallback(() => {
-    setIsLeftDrawerOpen(false);
-    setLeftDrawerContent(null);
-    setLeftOpenDrawerId(null);
-  }, []);
-
-  const closeRightDrawer = useCallback(() => {
-    setIsRightDrawerOpen(false);
-    setRightDrawerContent(null);
-    setRightOpenDrawerId(null);
-  }, []);
 
   return {
     leftDrawerContent,

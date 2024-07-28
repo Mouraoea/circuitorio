@@ -1,12 +1,8 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useDispatch } from "react-redux";
 import "../App.css";
 import CircuitBoard from "./CircuitBoard";
 import { useCanvasContext } from "../context/CanvasContext";
-import Toolbox from "./Toolbox";
-import Debug from "./Debug";
-import Settings from "./Settings";
-import Help from "./Help";
 import TopOverlay from "./TopOverlay";
 import { v4 as uuidv4 } from "uuid";
 import { addElement, Orientation, rotateElement, removeElement, selectElementById } from "../store/circuitSlice";
@@ -19,6 +15,7 @@ import SignalPicker from "./SignalPicker";
 import { KeyStateKeys } from "../hooks/useCanvasState";
 import Disclaimer from "./Disclaimer";
 import { PlacingElement, Loader, Drawers } from "./OverlayComponents";
+import { useDrawers } from "../hooks/useDrawers";
 
 const environment = process.env.NODE_ENV;
 const rootPath = environment === "development" ? "/circuitorio" : "";
@@ -30,12 +27,6 @@ interface ChangeLogEntry {
 
 Modal.setAppElement("#root");
 
-interface DrawerContextProps {
-  toggleDrawer: (side: "left" | "right", content: React.ReactNode, id: string) => void;
-}
-
-const DrawerContext = createContext<DrawerContextProps | undefined>(undefined);
-
 const Body: React.FC = () => {
   const dispatch = useDispatch();
   const {
@@ -43,10 +34,6 @@ const Body: React.FC = () => {
     setDisclaimerIsOpen,
     appVersion,
     setAppVersion,
-    isLeftDrawerOpen,
-    setIsLeftDrawerOpen,
-    isRightDrawerOpen,
-    setIsRightDrawerOpen,
     cursorPosition,
     setCursorPosition,
     elementToPlace,
@@ -82,10 +69,6 @@ const Body: React.FC = () => {
     setIsSignalPickerOpen,
   } = useCanvasContext();
 
-  const [leftDrawerContent, setLeftDrawerContent] = useState<React.ReactNode>(null);
-  const [rightDrawerContent, setRightDrawerContent] = useState<React.ReactNode>(null);
-  const [leftOpenDrawerId, setLeftOpenDrawerId] = useState<string | null>(null);
-  const [rightOpenDrawerId, setRightOpenDrawerId] = useState<string | null>(null);
   const [startMousePosition, setStartMousePosition] = useState({ x: 0, y: 0 });
   const [startPanPosition, setStartPanPosition] = useState({ x: 0, y: 0 });
   const [disclaimer, setDisclaimer] = useState("");
@@ -93,59 +76,7 @@ const Body: React.FC = () => {
   const [roadmap, setRoadmap] = useState<string[]>([]);
   const [removeTimeout, setRemoveTimeout] = useState<NodeJS.Timeout | null>(null);
 
-  const toggleDrawer = useCallback(
-    (side: "left" | "right", content: React.ReactNode, id: string) => {
-      if (side === "left") {
-        if (leftOpenDrawerId === id) {
-          setIsLeftDrawerOpen(false);
-          setLeftOpenDrawerId(null);
-          return;
-        } else if (isLeftDrawerOpen && leftOpenDrawerId !== id) {
-          setLeftDrawerContent(content);
-          setLeftOpenDrawerId(id);
-          return;
-        } else if (isLeftDrawerOpen) {
-          setIsLeftDrawerOpen(false);
-          setLeftDrawerContent(null);
-          setLeftOpenDrawerId(null);
-        } else {
-          setLeftDrawerContent(content);
-          setLeftOpenDrawerId(id);
-          setIsLeftDrawerOpen(true);
-        }
-      } else {
-        if (rightOpenDrawerId === id) {
-          setIsRightDrawerOpen(false);
-          setRightOpenDrawerId(null);
-          return;
-        } else if (isRightDrawerOpen && rightOpenDrawerId !== id) {
-          setRightDrawerContent(content);
-          setRightOpenDrawerId(id);
-          return;
-        } else if (isRightDrawerOpen) {
-          setIsRightDrawerOpen(false);
-          setRightDrawerContent(null);
-          setRightOpenDrawerId(null);
-        } else {
-          setRightDrawerContent(content);
-          setRightOpenDrawerId(id);
-          setIsRightDrawerOpen(true);
-        }
-      }
-    },
-    [
-      isLeftDrawerOpen,
-      isRightDrawerOpen,
-      setIsLeftDrawerOpen,
-      setIsRightDrawerOpen,
-      setLeftDrawerContent,
-      setRightDrawerContent,
-      setLeftOpenDrawerId,
-      setRightOpenDrawerId,
-      leftOpenDrawerId,
-      rightOpenDrawerId,
-    ]
-  );
+  const { toggleDrawer, closeLeftDrawer, closeRightDrawer } = useDrawers();
 
   const dispatchMouseEvent = useCallback(() => {
     const event = new MouseEvent("mousemove", {
@@ -154,18 +85,6 @@ const Body: React.FC = () => {
     });
     window.dispatchEvent(event);
   }, [cursorPosition]);
-
-  const closeLeftDrawer = useCallback(() => {
-    setIsLeftDrawerOpen(false);
-    setLeftDrawerContent(null);
-    setLeftOpenDrawerId(null);
-  }, [setIsLeftDrawerOpen]);
-
-  const closeRightDrawer = useCallback(() => {
-    setIsRightDrawerOpen(false);
-    setRightDrawerContent(null);
-    setRightOpenDrawerId(null);
-  }, [setIsRightDrawerOpen]);
 
   const movePan = useCallback(
     (position: { x: number; y: number }) => {
@@ -412,22 +331,22 @@ const Body: React.FC = () => {
       }
       if (["o"].includes(event.key)) {
         event.preventDefault();
-        toggleDrawer("right", <Debug />, "debug");
+        toggleDrawer("right", "debug");
         return;
       }
       if (["e"].includes(event.key)) {
         event.preventDefault();
-        toggleDrawer("left", <Toolbox closeLeftDrawer={closeLeftDrawer} />, "toolbox");
+        toggleDrawer("left", "toolbox");
         return;
       }
       if (["F1", "h"].includes(event.key)) {
         event.preventDefault();
-        toggleDrawer("right", <Help />, "help");
+        toggleDrawer("right", "help");
         return;
       }
       if (["F2"].includes(event.key)) {
         event.preventDefault();
-        toggleDrawer("left", <Settings />, "settings");
+        toggleDrawer("left", "settings");
         return;
       }
       if (["Escape"].includes(event.key)) {
@@ -580,45 +499,31 @@ const Body: React.FC = () => {
   };
 
   return (
-    <DrawerContext.Provider value={{ toggleDrawer }}>
-      <div ref={boardRef}>
-        <TopOverlay />
-        <div style={{ margin: "20px" }}>
-          <Modal
-            isOpen={disclaimerIsOpen}
-            className="panel"
-            style={{ content: { margin: "50px", padding: "20px 20px 20px 20px", overflowY: "scroll", height: "90%", zIndex: 10000 }, overlay: { backgroundColor: "rgba(0,0,0,0.75)", zIndex: 9999 } }}
-            onRequestClose={closeModal}
-            contentLabel="Welcome"
-          >
-            <Disclaimer disclaimer={disclaimer} changeLog={changeLog} roadmap={roadmap} closeModal={closeModal} />
-          </Modal>
-        </div>
-        <Drawers
-          isLeftDrawerOpen={isLeftDrawerOpen}
-          isRightDrawerOpen={isRightDrawerOpen}
-          leftDrawerContent={leftDrawerContent}
-          rightDrawerContent={rightDrawerContent}
-          setIsLeftDrawerOpen={setIsLeftDrawerOpen}
-          setIsRightDrawerOpen={setIsRightDrawerOpen}
-        />
-        <div style={{ position: "fixed", left: 0, top: 0 }}>
-          <CircuitBoard />
-        </div>
-        <PlacingElement isPlacing={isPlacing} elementToPlace={elementToPlace} scale={scale} />
-        {removeTimeout && <Loader cursorPosition={cursorPosition} />}
+    //
+    <div ref={boardRef}>
+      <TopOverlay />
+      <div style={{ margin: "20px" }}>
+        <Modal
+          isOpen={disclaimerIsOpen}
+          className="panel"
+          style={{ content: { margin: "50px", padding: "20px 20px 20px 20px", overflowY: "scroll", height: "90%", zIndex: 10000 }, overlay: { backgroundColor: "rgba(0,0,0,0.75)", zIndex: 9999 } }}
+          onRequestClose={closeModal}
+          contentLabel="Welcome"
+        >
+          <Disclaimer disclaimer={disclaimer} changeLog={changeLog} roadmap={roadmap} closeModal={closeModal} />
+        </Modal>
       </div>
+      <Drawers />
+      <div style={{ position: "fixed", left: 0, top: 0 }}>
+        <CircuitBoard />
+      </div>
+      <PlacingElement isPlacing={isPlacing} elementToPlace={elementToPlace} scale={scale} />
+      {removeTimeout && <Loader cursorPosition={cursorPosition} />}
       <EntityPanel />
       <SignalPicker />
-    </DrawerContext.Provider>
+    </div>
+    //
   );
 };
 
 export default Body;
-export const useDrawer = (): DrawerContextProps => {
-  const context = useContext(DrawerContext);
-  if (!context) {
-    throw new Error("useDrawer must be used within a DrawerProvider");
-  }
-  return context;
-};
