@@ -13,27 +13,16 @@ import store from "../store/store";
 import EntityPanel from "./EntityPanel";
 import SignalPicker from "./SignalPicker";
 import { KeyStateKeys } from "../hooks/useCanvasState";
-import Disclaimer from "./Disclaimer";
 import { PlacingElement, Loader, Drawers } from "./OverlayComponents";
 import { useDrawers } from "../hooks/useDrawers";
-
-const environment = process.env.NODE_ENV;
-const rootPath = environment === "development" ? "/circuitorio" : "";
-
-interface ChangeLogEntry {
-  version: string;
-  content: string;
-}
+import { DisclaimerModal } from "./DisclaimerModal";
 
 Modal.setAppElement("#root");
 
 const Body: React.FC = () => {
   const dispatch = useDispatch();
   const {
-    disclaimerIsOpen,
     setDisclaimerIsOpen,
-    appVersion,
-    setAppVersion,
     cursorPosition,
     setCursorPosition,
     elementToPlace,
@@ -71,9 +60,6 @@ const Body: React.FC = () => {
 
   const [startMousePosition, setStartMousePosition] = useState({ x: 0, y: 0 });
   const [startPanPosition, setStartPanPosition] = useState({ x: 0, y: 0 });
-  const [disclaimer, setDisclaimer] = useState("");
-  const [changeLog, setChangeLog] = useState<ChangeLogEntry[]>([]);
-  const [roadmap, setRoadmap] = useState<string[]>([]);
   const [removeTimeout, setRemoveTimeout] = useState<NodeJS.Timeout | null>(null);
 
   const { toggleDrawer, closeLeftDrawer, closeRightDrawer } = useDrawers();
@@ -468,51 +454,12 @@ const Body: React.FC = () => {
     setSelectedElement,
   ]);
 
-  useEffect(() => {
-    if (!disclaimer) {
-      fetch(`.${rootPath}/changelog.json`)
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error("Network response was not ok");
-          }
-          return response.json();
-        })
-        .then((data) => {
-          setDisclaimer(data.disclaimer);
-          setChangeLog(data.changeLog);
-          setRoadmap(data.roadmap);
-          setAppVersion(data.changeLog[0].version);
-          const lastSeenVersion = localStorage.getItem("appVersion");
-          if (lastSeenVersion !== data.changeLog[0].version) {
-            setDisclaimerIsOpen(true);
-          }
-        })
-        .catch((error) => {
-          console.error("Error fetching the data:", error);
-        });
-    }
-  }, [setDisclaimerIsOpen, appVersion, setAppVersion, changeLog, disclaimer]);
-
-  const closeModal = () => {
-    localStorage.setItem("appVersion", appVersion);
-    setDisclaimerIsOpen(false);
-  };
-
   return (
     //
     <div ref={boardRef}>
       <TopOverlay />
-      <div style={{ margin: "20px" }}>
-        <Modal
-          isOpen={disclaimerIsOpen}
-          className="panel"
-          style={{ content: { margin: "50px", padding: "20px 20px 20px 20px", overflowY: "scroll", height: "90%", zIndex: 10000 }, overlay: { backgroundColor: "rgba(0,0,0,0.75)", zIndex: 9999 } }}
-          onRequestClose={closeModal}
-          contentLabel="Welcome"
-        >
-          <Disclaimer disclaimer={disclaimer} changeLog={changeLog} roadmap={roadmap} closeModal={closeModal} />
-        </Modal>
-      </div>
+      <DisclaimerModal />
+
       <Drawers />
       <div className="fixed-left-top">
         <CircuitBoard />
