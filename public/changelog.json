@@ -18,8 +18,6 @@
     { "version": "alpha-0.1.0", "content": "Initial release of the application. This version includes basic functionality for adding and moving combinators, camera control, and drawer panels" }
   ],
   "roadmap": [
-    "Add support for selecting multiple entities",
-    "Add support for moving entities",
     "Add support for connecting combinators with wires",
     "Add support for editing combinator settings",
     "Add support for saving and loading blueprints",
@@ -37,6 +35,8 @@
     "Add support for editing circuit network train signals",
     "Add support for editing circuit network train rail signals",
     "Add support for editing circuit network train chain signals",
+    "Add support for selecting multiple entities",
+    "Add support for moving entities",
     "Add tutorial scenarios",
     "Add belt inventory",
     "Add drawing canvas"
