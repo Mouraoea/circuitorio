@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 import { addElement, removeElement } from "../store/circuitSlice";
 import { clamp } from "../utils/clamp";
 import { useInputContext } from "../context/InputContext";
+import { useUIContext } from "../context/UIContext";
 
 const MouseInput: React.FC = () => {
   const dispatch = useDispatch();
@@ -24,20 +25,16 @@ const MouseInput: React.FC = () => {
     setElementToPlace,
     placingElementRotation,
     boardRef,
-    hoveredElement,
-    setHoveredElement,
-    selectedElement,
-    setSelectedElement,
-    setIsEntityPanelOpen,
     panPosition,
     setPanPosition,
     setPanPercentage,
     gridHeight,
     gridWidth,
-    setIsSignalPickerOpen,
     startPanPosition,
     setStartPanPosition,
   } = useCanvasContext();
+
+  const { hoveredElement, setHoveredElement, selectedElement, setSelectedElement, setIsEntityPanelOpen, setIsSignalPickerOpen } = useUIContext();
 
   const { cursorPosition, setCursorPosition, keyState, cursorGridPosition, setCursorGridPosition, setCursorGridCoordinates, startCursorPosition, setStartCursorPosition } = useInputContext();
 

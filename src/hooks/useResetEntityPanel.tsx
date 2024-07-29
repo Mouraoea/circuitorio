@@ -1,9 +1,9 @@
 import { useCallback } from "react";
-import { useCanvasContext } from "../context/CanvasContext";
 import { useResetSignalPicker } from "./useResetSignalPicker";
+import { useUIContext } from "../context/UIContext";
 
 export const useResetEntityPanel = () => {
-  const { isSignalPickerOpen, setIsEntityPanelOpen, setIsEntityPanelDragging, setEntityPanelPosition, setEntityPanelContent } = useCanvasContext();
+  const { isSignalPickerOpen, setIsEntityPanelOpen, setIsEntityPanelDragging, setEntityPanelPosition, setEntityPanelContent } = useUIContext();
 
   const resetSignalPicker = useResetSignalPicker();
 

@@ -3,8 +3,6 @@ import { useCanvasState } from "../hooks/useCanvasState";
 import { CircuitElementProps } from "../store/circuitSlice";
 
 export interface CanvasContextProps {
-  disclaimerIsOpen: boolean;
-  setDisclaimerIsOpen: (value: boolean) => void;
   appVersion: string;
   setAppVersion: (value: string) => void;
   scale: number;
@@ -33,38 +31,6 @@ export interface CanvasContextProps {
   setIsPlacing: (value: boolean) => void;
   placingElementRotation: number;
   setPlacingElementRotation: (value: number) => void;
-  zoomCenter: { x: number; y: number };
-  setZoomCenter: (value: { x: number; y: number }) => void;
-  hoveredElement: CircuitElementProps | null;
-  setHoveredElement: (value: CircuitElementProps | null) => void;
-  selectedElement: CircuitElementProps | null;
-  setSelectedElement: (value: CircuitElementProps | null) => void;
-  isDebugMode: boolean;
-  setIsDebugMode: (value: boolean) => void;
-  isEntityPanelOpen: boolean;
-  setIsEntityPanelOpen: (value: boolean) => void;
-  isEntityPanelDragging: boolean;
-  setIsEntityPanelDragging: (value: boolean) => void;
-  entityPanelPosition: { x: number; y: number };
-  setEntityPanelPosition: (value: { x: number; y: number }) => void;
-  entityPanelContent: ReactNode;
-  setEntityPanelContent: (value: ReactNode) => void;
-  isSignalPickerOpen: boolean;
-  setIsSignalPickerOpen: (value: boolean) => void;
-  isSignalPickerDragging: boolean;
-  setIsSignalPickerDragging: (value: boolean) => void;
-  SignalPickerPosition: { x: number; y: number };
-  setSignalPickerPosition: (value: { x: number; y: number }) => void;
-  SignalPickerContent: ReactNode;
-  setSignalPickerContent: (value: ReactNode) => void;
-  selectedSignalSlot: { [key: string]: string } | null;
-  setSelectedSignalSlot: (value: { [key: string]: string } | null) => void;
-  signalPickerSelectedGroup: string;
-  setSignalPickerSelectedGroup: (value: string) => void;
-  signalPickerConstantValue: number;
-  setSignalPickerConstantValue: (value: number) => void;
-  signalPickerSelectedSignal: string;
-  setSignalPickerSelectedSignal: (value: string) => void;
 }
 
 const CanvasContext = createContext<CanvasContextProps | undefined>(undefined);

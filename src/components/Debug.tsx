@@ -4,24 +4,12 @@ import "../App.css";
 import { KeyStateKeys } from "../hooks/useInputState";
 import { useDrawerContext } from "../context/DrawerContext";
 import { useInputContext } from "../context/InputContext";
+import { useUIContext } from "../context/UIContext";
 
 const Debug: React.FC = () => {
-  const {
-    appVersion,
-    scale,
-    panPosition,
-    panPercentage,
-    isPlacing,
-    placingPosition,
-    ghostElementPosition,
-    selectedElement,
-    hoveredElement,
-    isDebugMode,
-    setIsDebugMode,
-    selectedSignalSlot,
-    signalPickerSelectedSignal,
-    signalPickerConstantValue,
-  } = useCanvasContext();
+  const { appVersion, scale, panPosition, panPercentage, isPlacing, placingPosition, ghostElementPosition } = useCanvasContext();
+
+  const { selectedElement, hoveredElement, isDebugMode, setIsDebugMode, selectedSignalSlot, signalPickerSelectedSignal, signalPickerConstantValue } = useUIContext();
 
   const { cursorPosition, cursorGridCoordinates, keyState, cursorGridPosition } = useInputContext();
 

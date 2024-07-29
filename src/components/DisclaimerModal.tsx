@@ -2,6 +2,7 @@ import Modal from "react-modal";
 import { useCanvasContext } from "../context/CanvasContext";
 import Disclaimer from "./Disclaimer";
 import { useEffect, useState } from "react";
+import { useUIContext } from "../context/UIContext";
 
 const environment = process.env.NODE_ENV;
 const rootPath = environment === "development" ? "/circuitorio" : "";
@@ -14,7 +15,8 @@ interface ChangeLogEntry {
 Modal.setAppElement("#root");
 
 export const DisclaimerModal: React.FC = () => {
-  const { disclaimerIsOpen, setDisclaimerIsOpen, appVersion, setAppVersion } = useCanvasContext();
+  const { appVersion, setAppVersion } = useCanvasContext();
+  const { disclaimerIsOpen, setDisclaimerIsOpen } = useUIContext();
 
   const [disclaimer, setDisclaimer] = useState("");
   const [changeLog, setChangeLog] = useState<ChangeLogEntry[]>([]);

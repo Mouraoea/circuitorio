@@ -1,11 +1,11 @@
 import React from "react";
-import { useCanvasContext } from "../context/CanvasContext";
 import "../App.css";
 import { EntityInterfaceProps } from "./EntityInterface";
 import { RenderSignalButton } from "../utils/RenderSignalButton";
+import { useUIContext } from "../context/UIContext";
 
 const ArithmeticCombinator: React.FC<EntityInterfaceProps> = ({ openSignalPicker }) => {
-  const { selectedElement } = useCanvasContext();
+  const { selectedElement } = useUIContext();
 
   if (!selectedElement || selectedElement.name !== "arithmetic-combinator") return null;
 

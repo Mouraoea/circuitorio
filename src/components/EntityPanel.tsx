@@ -1,8 +1,8 @@
 import React from "react";
 import Draggable, { DraggableData, DraggableEvent } from "react-draggable";
-import { useCanvasContext } from "../context/CanvasContext";
 import { DeciderCombinator, ArithmeticCombinator, ConstantCombinator } from "../entityInterface/EntityInterface";
 import { useResetEntityPanel } from "../hooks/useResetEntityPanel";
+import { useUIContext } from "../context/UIContext";
 
 const EntityPanel: React.FC = () => {
   const {
@@ -15,7 +15,7 @@ const EntityPanel: React.FC = () => {
     setIsSignalPickerOpen,
     setSignalPickerPosition,
     setSelectedSignalSlot,
-  } = useCanvasContext();
+  } = useUIContext();
 
   const resetEntityPanel = useResetEntityPanel();
 

@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { useCanvasContext } from "../context/CanvasContext";
+import { useUIContext } from "../context/UIContext";
 
 export const useResetSignalPicker = () => {
   const {
@@ -11,7 +11,7 @@ export const useResetSignalPicker = () => {
     setSignalPickerSelectedGroup,
     setSignalPickerConstantValue,
     setSignalPickerSelectedSignal,
-  } = useCanvasContext();
+  } = useUIContext();
 
   return useCallback(() => {
     setIsSignalPickerOpen(false);

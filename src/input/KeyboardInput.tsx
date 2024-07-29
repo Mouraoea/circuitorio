@@ -6,24 +6,13 @@ import { SpriteProvider, EntitySprite } from "../spritesheets/SpriteProvider";
 import store from "../store/store";
 import { useDrawers } from "../hooks/useDrawers";
 import { useInputContext } from "../context/InputContext";
+import { useUIContext } from "../context/UIContext";
 
 const KeyboardInput: React.FC = () => {
   const dispatch = useDispatch();
-  const {
-    elementToPlace,
-    isPlacing,
-    setIsPlacing,
-    setPlacingElementRotation,
-    setElementToPlace,
-    placingElementRotation,
-    boardRef,
-    hoveredElement,
-    setHoveredElement,
-    selectedElement,
-    setSelectedElement,
-    setPanPosition,
-    setScale,
-  } = useCanvasContext();
+  const { elementToPlace, isPlacing, setIsPlacing, setPlacingElementRotation, setElementToPlace, placingElementRotation, boardRef, setPanPosition, setScale } = useCanvasContext();
+
+  const { hoveredElement, setHoveredElement, selectedElement, setSelectedElement } = useUIContext();
 
   const { keyState, setKeyState } = useInputContext();
 

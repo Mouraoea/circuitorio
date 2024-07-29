@@ -4,11 +4,14 @@ import { RootState } from "../store/store";
 import { type CircuitElementProps } from "../store/circuitSlice";
 import { useCanvasContext } from "../context/CanvasContext";
 import { getElementSprite } from "../utils/getElementSprite";
+import { useUIContext } from "../context/UIContext";
 
 const CircuitElement: React.FC<CircuitElementProps> = ({ id }) => {
   const element = useSelector((state: RootState) => state.circuit.elements.find((el) => el.id === id)) || null;
   const position = element?.position || { x: 0, y: 0 };
-  const { setHoveredElement, hoveredElement, gridSize, isDebugMode } = useCanvasContext();
+  const { gridSize } = useCanvasContext();
+  const { setHoveredElement, hoveredElement, isDebugMode } = useUIContext();
+
   const [isHovered, setIsHovered] = useState(false);
   const hoveredElementRef = useRef<CircuitElementProps | null>(null);
 
