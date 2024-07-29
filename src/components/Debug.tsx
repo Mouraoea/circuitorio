@@ -1,8 +1,9 @@
 import React from "react";
 import { useCanvasContext } from "../context/CanvasContext";
 import "../App.css";
-import { KeyStateKeys } from "../hooks/useCanvasState";
+import { KeyStateKeys } from "../hooks/useInputState";
 import { useDrawerContext } from "../context/DrawerContext";
+import { useInputContext } from "../context/InputContext";
 
 const Debug: React.FC = () => {
   const {
@@ -10,12 +11,8 @@ const Debug: React.FC = () => {
     scale,
     panPosition,
     panPercentage,
-    cursorPosition,
-    cursorGridCoordinates,
     isPlacing,
     placingPosition,
-    keyState,
-    cursorGridPosition,
     ghostElementPosition,
     selectedElement,
     hoveredElement,
@@ -25,6 +22,8 @@ const Debug: React.FC = () => {
     signalPickerSelectedSignal,
     signalPickerConstantValue,
   } = useCanvasContext();
+
+  const { cursorPosition, cursorGridCoordinates, keyState, cursorGridPosition } = useInputContext();
 
   const { isLeftDrawerOpen } = useDrawerContext();
 

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, ReactNode } from "react";
-import { KeyStateKeys, useCanvasState } from "../hooks/useCanvasState";
+import { useCanvasState } from "../hooks/useCanvasState";
 import { CircuitElementProps } from "../store/circuitSlice";
 
 export interface CanvasContextProps {
@@ -23,14 +23,6 @@ export interface CanvasContextProps {
   startPanPosition: { x: number; y: number };
   setStartPanPosition: (value: { x: number; y: number }) => void;
   boardRef: React.RefObject<HTMLDivElement>;
-  keyState: KeyStateKeys;
-  setKeyState: (value: Partial<KeyStateKeys>) => void;
-  cursorPosition: { x: number; y: number };
-  setCursorPosition: (value: { x: number; y: number }) => void;
-  cursorGridPosition: { x: number; y: number };
-  setCursorGridPosition: (value: { x: number; y: number }) => void;
-  cursorGridCoordinates: { x: number; y: number };
-  setCursorGridCoordinates: (value: { x: number; y: number }) => void;
   placingPosition: { x: number; y: number };
   setPlacingPosition: (value: { x: number; y: number }) => void;
   ghostElementPosition: { x: number; y: number };
@@ -49,8 +41,6 @@ export interface CanvasContextProps {
   setSelectedElement: (value: CircuitElementProps | null) => void;
   isDebugMode: boolean;
   setIsDebugMode: (value: boolean) => void;
-  startMousePosition: { x: number; y: number };
-  setStartMousePosition: (value: { x: number; y: number }) => void;
   isEntityPanelOpen: boolean;
   setIsEntityPanelOpen: (value: boolean) => void;
   isEntityPanelDragging: boolean;

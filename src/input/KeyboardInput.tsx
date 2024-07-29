@@ -5,6 +5,7 @@ import { Orientation, rotateElement, selectElementById } from "../store/circuitS
 import { SpriteProvider, EntitySprite } from "../spritesheets/SpriteProvider";
 import store from "../store/store";
 import { useDrawers } from "../hooks/useDrawers";
+import { useInputContext } from "../context/InputContext";
 
 const KeyboardInput: React.FC = () => {
   const dispatch = useDispatch();
@@ -15,8 +16,6 @@ const KeyboardInput: React.FC = () => {
     setPlacingElementRotation,
     setElementToPlace,
     placingElementRotation,
-    keyState,
-    setKeyState,
     boardRef,
     hoveredElement,
     setHoveredElement,
@@ -25,6 +24,8 @@ const KeyboardInput: React.FC = () => {
     setPanPosition,
     setScale,
   } = useCanvasContext();
+
+  const { keyState, setKeyState } = useInputContext();
 
   const { toggleDrawer, closeLeftDrawer, closeRightDrawer } = useDrawers();
 

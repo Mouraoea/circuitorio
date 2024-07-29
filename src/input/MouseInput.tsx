@@ -4,12 +4,11 @@ import { useCanvasContext } from "../context/CanvasContext";
 import { v4 as uuidv4 } from "uuid";
 import { addElement, removeElement } from "../store/circuitSlice";
 import { clamp } from "../utils/clamp";
+import { useInputContext } from "../context/InputContext";
 
 const MouseInput: React.FC = () => {
   const dispatch = useDispatch();
   const {
-    cursorPosition,
-    setCursorPosition,
     elementToPlace,
     isPlacing,
     isPanning,
@@ -24,7 +23,6 @@ const MouseInput: React.FC = () => {
     setPlacingElementRotation,
     setElementToPlace,
     placingElementRotation,
-    keyState,
     boardRef,
     hoveredElement,
     setHoveredElement,
@@ -34,16 +32,15 @@ const MouseInput: React.FC = () => {
     panPosition,
     setPanPosition,
     setPanPercentage,
-    cursorGridPosition,
-    setCursorGridPosition,
-    setCursorGridCoordinates,
     gridHeight,
     gridWidth,
     setIsSignalPickerOpen,
+    startPanPosition,
+    setStartPanPosition,
   } = useCanvasContext();
 
-  const [startMousePosition, setStartMousePosition] = useState({ x: 0, y: 0 });
-  const [startPanPosition, setStartPanPosition] = useState({ x: 0, y: 0 });
+  const { cursorPosition, setCursorPosition, keyState, cursorGridPosition, setCursorGridPosition, setCursorGridCoordinates, startCursorPosition, setStartCursorPosition } = useInputContext();
+
   const [removeTimeout, setRemoveTimeout] = useState<NodeJS.Timeout | null>(null);
 
   const dispatchMouseEvent = useCallback(() => {
@@ -56,79 +53,71 @@ const MouseInput: React.FC = () => {
 
   const movePan = useCallback(
     (position: { x: number; y: number }) => {
-      const boardElement = boardRef.current;
-      if (boardElement) {
-        const rect = boardElement.getBoundingClientRect();
-        const viewPortSize = {
-          width: window.innerWidth - rect.left,
-          height: window.innerHeight - rect.top,
-        };
-        const panMinLimits = {
-          x: viewPortSize.width - gridWidth * gridSize * scale,
-          y: viewPortSize.height - gridHeight * gridSize * scale,
-        };
-        const panLimits = {
-          minX: panMinLimits.x,
-          maxX: 0,
-          minY: panMinLimits.y,
-          maxY: 0,
-        };
-        const newPanPosition = {
-          x: clamp(position.x, panLimits.minX, panLimits.maxX),
-          y: clamp(position.y, panLimits.minY, panLimits.maxY),
-        };
-        setPanPosition({
-          x: Math.round(newPanPosition.x * 100) / 100,
-          y: Math.round(newPanPosition.y * 100) / 100,
-        });
-        const panPercentage = {
-          x: (1 - (newPanPosition.x - panLimits.minX) / (panLimits.maxX - panLimits.minX)) * 100,
-          y: (1 - (newPanPosition.y - panLimits.minY) / (panLimits.maxY - panLimits.minY)) * 100,
-        };
-        setPanPercentage({
-          x: Math.round(panPercentage.x * 100) / 100,
-          y: Math.round(panPercentage.y * 100) / 100,
-        });
-      }
+      const viewPortSize = {
+        width: window.innerWidth,
+        height: window.innerHeight,
+      };
+      const panMinLimits = {
+        x: viewPortSize.width - gridWidth * gridSize * scale,
+        y: viewPortSize.height - gridHeight * gridSize * scale,
+      };
+      const panLimits = {
+        minX: panMinLimits.x,
+        maxX: 0,
+        minY: panMinLimits.y,
+        maxY: 0,
+      };
+      const newPanPosition = {
+        x: clamp(position.x, panLimits.minX, panLimits.maxX),
+        y: clamp(position.y, panLimits.minY, panLimits.maxY),
+      };
+      setPanPosition({
+        x: Math.round(newPanPosition.x * 100) / 100,
+        y: Math.round(newPanPosition.y * 100) / 100,
+      });
+      const panPercentage = {
+        x: (1 - (newPanPosition.x - panLimits.minX) / (panLimits.maxX - panLimits.minX)) * 100,
+        y: (1 - (newPanPosition.y - panLimits.minY) / (panLimits.maxY - panLimits.minY)) * 100,
+      };
+      setPanPercentage({
+        x: Math.round(panPercentage.x * 100) / 100,
+        y: Math.round(panPercentage.y * 100) / 100,
+      });
     },
-    [setPanPosition, gridSize, gridWidth, gridHeight, scale, boardRef, setPanPercentage]
+    [setPanPosition, gridSize, gridWidth, gridHeight, scale, setPanPercentage]
   );
 
   const handleZoom = useCallback(
     (delta: number, cursorX: number, cursorY: number) => {
-      const boardElement = boardRef.current;
-      if (boardElement) {
-        const newScale = clamp(scale + delta, 0.5, 5);
-        const deltaScale = newScale - scale;
+      console.log("handleZoom");
+      const newScale = clamp(scale + delta, 0.5, 5);
+      const deltaScale = newScale - scale;
 
-        const cursorOffset = {
-          x: cursorGridPosition.x + panPosition.x / scale,
-          y: cursorGridPosition.y + panPosition.y / scale,
-        };
+      const cursorOffset = {
+        x: cursorGridPosition.x + panPosition.x / scale,
+        y: cursorGridPosition.y + panPosition.y / scale,
+      };
 
-        const offsetByCursor = {
-          x: cursorOffset.x * deltaScale,
-          y: cursorOffset.y * deltaScale,
-        };
+      const offsetByCursor = {
+        x: cursorOffset.x * deltaScale,
+        y: cursorOffset.y * deltaScale,
+      };
 
-        const offsetByPan = {
-          x: (panPosition.x * deltaScale) / scale,
-          y: (panPosition.y * deltaScale) / scale,
-        };
+      const offsetByPan = {
+        x: (panPosition.x * deltaScale) / scale,
+        y: (panPosition.y * deltaScale) / scale,
+      };
 
-        const newPan = {
-          x: panPosition.x + offsetByPan.x - offsetByCursor.x,
-          y: panPosition.y + offsetByPan.y - offsetByCursor.y,
-        };
+      const newPan = {
+        x: panPosition.x + offsetByPan.x - offsetByCursor.x,
+        y: panPosition.y + offsetByPan.y - offsetByCursor.y,
+      };
 
-        // Update the pan position
-        movePan(newPan);
-        // Update the scale
-        setScale(newScale);
-        dispatchMouseEvent();
-      }
+      movePan(newPan);
+      setScale(newScale);
+      dispatchMouseEvent();
     },
-    [scale, panPosition, movePan, setScale, boardRef, cursorGridPosition, dispatchMouseEvent]
+    [scale, panPosition, movePan, setScale, cursorGridPosition, dispatchMouseEvent]
   );
 
   const handleWheel = useCallback(
@@ -154,7 +143,7 @@ const MouseInput: React.FC = () => {
         case 1:
           setIsPanning(true);
           setStartPanPosition(panPosition);
-          setStartMousePosition({ x: event.clientX, y: event.clientY });
+          setStartCursorPosition({ x: event.clientX, y: event.clientY });
           break;
         case 2:
           if (isPlacing && elementToPlace) {
@@ -188,6 +177,8 @@ const MouseInput: React.FC = () => {
       setIsEntityPanelOpen,
       setRemoveTimeout,
       setIsSignalPickerOpen,
+      setStartCursorPosition,
+      setStartPanPosition,
     ]
   );
 
@@ -258,8 +249,8 @@ const MouseInput: React.FC = () => {
       }
       if (isPanning) {
         const currentScale = scale;
-        const deltaX = (event.clientX - startMousePosition.x) * currentScale;
-        const deltaY = (event.clientY - startMousePosition.y) * currentScale;
+        const deltaX = (event.clientX - startCursorPosition.x) * currentScale;
+        const deltaY = (event.clientY - startCursorPosition.y) * currentScale;
         const newPan = {
           x: startPanPosition.x + deltaX,
           y: startPanPosition.y + deltaY,
@@ -268,14 +259,13 @@ const MouseInput: React.FC = () => {
       }
     };
 
-    const boardElement = boardRef.current;
-    boardElement?.addEventListener("wheel", handleWheel, { passive: false });
+    window.addEventListener("wheel", handleWheel, { passive: false });
     window.addEventListener("mouseup", handleMouseUp);
     window.addEventListener("mousedown", handleMouseDown);
     window.addEventListener("mousemove", handleMouseMove);
 
     return () => {
-      boardElement?.removeEventListener("wheel", handleWheel);
+      window.removeEventListener("wheel", handleWheel);
       window.removeEventListener("mouseup", handleMouseUp);
       window.removeEventListener("mousedown", handleMouseDown);
       window.removeEventListener("mousemove", handleMouseMove);
@@ -298,7 +288,7 @@ const MouseInput: React.FC = () => {
     setCursorGridPosition,
     movePan,
     isPanning,
-    startMousePosition,
+    startCursorPosition,
     startPanPosition,
     cursorPosition,
     placingPosition,

@@ -7,9 +7,11 @@ import SignalPicker from "./SignalPicker";
 import { PlacingElement, Loader, Drawers } from "./OverlayComponents";
 import { DisclaimerModal } from "./DisclaimerModal";
 import Input from "../input/Input";
+import { useInputContext } from "../context/InputContext";
 
 const Body: React.FC = () => {
-  const { isPlacing, elementToPlace, scale, cursorPosition } = useCanvasContext();
+  const { isPlacing, elementToPlace, scale } = useCanvasContext();
+  const { cursorPosition } = useInputContext();
   const [removeTimeout] = useState<NodeJS.Timeout | null>(null);
 
   return (
@@ -17,9 +19,10 @@ const Body: React.FC = () => {
       <div className="fixed-left-top">
         <CircuitBoard />
       </div>
+      <Input />
       <PlacingElement isPlacing={isPlacing} elementToPlace={elementToPlace} scale={scale} />
       {removeTimeout && <Loader cursorPosition={cursorPosition} />}
-      <Input />
+
       <DisclaimerModal />
       <TopOverlay />
       <Drawers />
