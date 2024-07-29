@@ -11,6 +11,8 @@ interface ChangeLogEntry {
   content: string;
 }
 
+Modal.setAppElement("#root");
+
 export const DisclaimerModal: React.FC = () => {
   const { disclaimerIsOpen, setDisclaimerIsOpen, appVersion, setAppVersion } = useCanvasContext();
 

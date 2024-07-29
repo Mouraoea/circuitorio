@@ -1,16 +1,12 @@
 import React, { useState } from "react";
-import "../App.css";
+import { useCanvasContext } from "../context/CanvasContext";
 import CircuitBoard from "./CircuitBoard";
 import TopOverlay from "./TopOverlay";
-import Modal from "react-modal";
 import EntityPanel from "./EntityPanel";
 import SignalPicker from "./SignalPicker";
 import { PlacingElement, Loader, Drawers } from "./OverlayComponents";
 import { DisclaimerModal } from "./DisclaimerModal";
 import Input from "../input/Input";
-import { useCanvasContext } from "../context/CanvasContext";
-
-Modal.setAppElement("#root");
 
 const Body: React.FC = () => {
   const { isPlacing, elementToPlace, scale, cursorPosition } = useCanvasContext();
