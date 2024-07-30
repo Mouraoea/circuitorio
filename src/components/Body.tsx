@@ -9,10 +9,8 @@ import Input from "../input/Input";
 
 const Body: React.FC = () => {
   return (
-    <div>
-      <div className="fixed-left-top">
-        <CircuitBoard />
-      </div>
+    <>
+      <CircuitBoard />
       <Input />
       <PlacingElement />
       <ElementRemovalSpinner />
@@ -21,7 +19,7 @@ const Body: React.FC = () => {
       <Drawers />
       <EntityPanel />
       <SignalPicker />
-    </div>
+    </>
   );
 };
 

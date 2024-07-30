@@ -11,7 +11,7 @@ const CircuitBoard: React.FC = () => {
 
   return (
     <div
-      className="circuit-board"
+      className="circuit-board fixed-left-top"
       style={{
         position: "fixed",
         width: `${gridSize * gridWidth}px`,
