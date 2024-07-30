@@ -1,12 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import Drawer from "./Drawer";
 import DrawerContent from "./DrawerContent";
-import { CircuitElementProps } from "../store/circuitSlice";
 import { getElementSprite } from "../utils/getElementSprite";
 import { useDrawers } from "../hooks/useDrawers";
 import { useDrawerContext } from "../context/DrawerContext";
+import { useCanvasContext } from "../context/CanvasContext";
+import { useInputContext } from "../context/InputContext";
 
-export const PlacingElement: React.FC<{ isPlacing: boolean; elementToPlace: CircuitElementProps | null; scale: number }> = ({ isPlacing, elementToPlace, scale }) => {
+export const PlacingElement: React.FC = () => {
+  const { isPlacing, elementToPlace, scale } = useCanvasContext();
   if (!isPlacing || !elementToPlace) return null;
 
   return (
@@ -23,20 +25,28 @@ export const PlacingElement: React.FC<{ isPlacing: boolean; elementToPlace: Circ
   );
 };
 
-export const Loader: React.FC<{ cursorPosition: { x: number; y: number } }> = ({ cursorPosition }) => (
-  <div
-    className="loader"
-    style={{
-      position: "fixed",
-      top: cursorPosition.y,
-      left: cursorPosition.x,
-      pointerEvents: "none",
-      zIndex: 1000,
-      width: "32px",
-      height: "32px",
-    }}
-  ></div>
-);
+export const ElementRemovalSpinner: React.FC = () => {
+  const { cursorPosition } = useInputContext();
+  const [removeTimeout] = useState<NodeJS.Timeout | null>(null);
+  return (
+    <>
+      {removeTimeout && (
+        <div
+          className="loader"
+          style={{
+            position: "fixed",
+            top: cursorPosition.y,
+            left: cursorPosition.x,
+            pointerEvents: "none",
+            zIndex: 1000,
+            width: "32px",
+            height: "32px",
+          }}
+        ></div>
+      )}
+    </>
+  );
+};
 
 export const Drawers: React.FC = () => {
   const { isLeftDrawerOpen, isRightDrawerOpen, leftDrawerContent, rightDrawerContent } = useDrawers();
