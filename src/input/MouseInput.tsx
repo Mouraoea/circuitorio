@@ -6,6 +6,7 @@ import { addElement, removeElement } from "../store/circuitSlice";
 import { clamp } from "../utils/clamp";
 import { useInputContext } from "../context/InputContext";
 import { useUIContext } from "../context/UIContext";
+import { useResetEntityPanel } from "../hooks/useResetEntityPanel";
 
 const MouseInput: React.FC = () => {
   const dispatch = useDispatch();
@@ -126,6 +127,8 @@ const MouseInput: React.FC = () => {
     [handleZoom, scale]
   );
 
+  const resetEntityPanel = useResetEntityPanel();
+
   const handleMouseDown = useCallback(
     (event: MouseEvent) => {
       event.preventDefault();
@@ -152,6 +155,7 @@ const MouseInput: React.FC = () => {
               setTimeout(() => {
                 dispatch(removeElement({ id: hoveredElement.id }));
                 setElementRemovalTimer(null);
+                resetEntityPanel();
               }, 500)
             );
           }
@@ -176,6 +180,7 @@ const MouseInput: React.FC = () => {
       setIsSignalPickerOpen,
       setStartCursorPosition,
       setStartPanPosition,
+      resetEntityPanel,
     ]
   );
 
