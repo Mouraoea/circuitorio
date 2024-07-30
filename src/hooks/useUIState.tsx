@@ -2,6 +2,7 @@ import { ReactNode, useState } from "react";
 import { CircuitElementProps } from "../store/circuitSlice";
 
 export const useUIState = () => {
+  const [elementRemovalTimer, setElementRemovalTimer] = useState<NodeJS.Timeout | null>(null);
   const [disclaimerIsOpen, setDisclaimerIsOpen] = useState(false);
   const [hoveredElement, setHoveredElement] = useState<CircuitElementProps | null>(null);
   const [selectedElement, setSelectedElement] = useState<CircuitElementProps | null>(null);
@@ -20,6 +21,8 @@ export const useUIState = () => {
   const [signalPickerSelectedSignal, setSignalPickerSelectedSignal] = useState("");
 
   return {
+    elementRemovalTimer,
+    setElementRemovalTimer,
     disclaimerIsOpen,
     setDisclaimerIsOpen,
     hoveredElement,

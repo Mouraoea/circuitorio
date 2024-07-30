@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import Drawer from "./Drawer";
 import DrawerContent from "./DrawerContent";
 import { getElementSprite } from "../utils/getElementSprite";
@@ -6,6 +6,7 @@ import { useDrawers } from "../hooks/useDrawers";
 import { useDrawerContext } from "../context/DrawerContext";
 import { useCanvasContext } from "../context/CanvasContext";
 import { useInputContext } from "../context/InputContext";
+import { useUIContext } from "../context/UIContext";
 
 export const PlacingElement: React.FC = () => {
   const { isPlacing, elementToPlace, scale } = useCanvasContext();
@@ -27,10 +28,11 @@ export const PlacingElement: React.FC = () => {
 
 export const ElementRemovalSpinner: React.FC = () => {
   const { cursorPosition } = useInputContext();
-  const [removeTimeout] = useState<NodeJS.Timeout | null>(null);
+  const { elementRemovalTimer } = useUIContext();
+
   return (
     <>
-      {removeTimeout && (
+      {elementRemovalTimer && (
         <div
           className="loader"
           style={{

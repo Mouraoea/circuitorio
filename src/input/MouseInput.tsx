@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useEffect, useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { useCanvasContext } from "../context/CanvasContext";
 import { v4 as uuidv4 } from "uuid";
@@ -38,7 +38,7 @@ const MouseInput: React.FC = () => {
 
   const { cursorPosition, setCursorPosition, keyState, cursorGridPosition, setCursorGridPosition, setCursorGridCoordinates, startCursorPosition, setStartCursorPosition } = useInputContext();
 
-  const [removeTimeout, setRemoveTimeout] = useState<NodeJS.Timeout | null>(null);
+  const { elementRemovalTimer, setElementRemovalTimer } = useUIContext();
 
   const dispatchMouseEvent = useCallback(() => {
     const event = new MouseEvent("mousemove", {
@@ -148,10 +148,10 @@ const MouseInput: React.FC = () => {
             setPlacingElementRotation(0);
             setElementToPlace(null);
           } else if (hoveredElement) {
-            setRemoveTimeout(
+            setElementRemovalTimer(
               setTimeout(() => {
                 dispatch(removeElement({ id: hoveredElement.id }));
-                setRemoveTimeout(null);
+                setElementRemovalTimer(null);
               }, 500)
             );
           }
@@ -172,7 +172,7 @@ const MouseInput: React.FC = () => {
       setElementToPlace,
       setSelectedElement,
       setIsEntityPanelOpen,
-      setRemoveTimeout,
+      setElementRemovalTimer,
       setIsSignalPickerOpen,
       setStartCursorPosition,
       setStartPanPosition,
@@ -202,16 +202,29 @@ const MouseInput: React.FC = () => {
         case 1:
           break;
         case 2:
-          if (removeTimeout) {
-            clearTimeout(removeTimeout);
-            setRemoveTimeout(null);
+          if (elementRemovalTimer) {
+            clearTimeout(elementRemovalTimer);
+            setElementRemovalTimer(null);
           }
           break;
         default:
           break;
       }
     },
-    [isPlacing, elementToPlace, dispatch, placingElementRotation, setElementToPlace, setIsPlacing, keyState, setPlacingElementRotation, setIsPanning, placingPosition, removeTimeout]
+    [
+      isPlacing,
+      elementToPlace,
+      dispatch,
+      placingElementRotation,
+      setElementToPlace,
+      setIsPlacing,
+      keyState,
+      setPlacingElementRotation,
+      setIsPanning,
+      placingPosition,
+      elementRemovalTimer,
+      setElementRemovalTimer,
+    ]
   );
 
   useEffect(() => {

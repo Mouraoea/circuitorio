@@ -3,6 +3,8 @@ import { useUIState } from "../hooks/useUIState";
 import { CircuitElementProps } from "../store/circuitSlice";
 
 export interface UIContextProps {
+  elementRemovalTimer: NodeJS.Timeout | null;
+  setElementRemovalTimer: (value: NodeJS.Timeout | null) => void;
   disclaimerIsOpen: boolean;
   setDisclaimerIsOpen: (value: boolean) => void;
   hoveredElement: CircuitElementProps | null;
