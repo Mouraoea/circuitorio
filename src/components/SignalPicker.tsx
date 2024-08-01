@@ -37,16 +37,21 @@ const SignalPicker: React.FC = () => {
   const iconGroups: SignalGroups = IconGroups as SignalGroups;
 
   const handleDragStop = (e: DraggableEvent, data: DraggableData) => {
-    e.stopPropagation();
     setSignalPickerPosition({ x: data.x, y: data.y });
     setIsSignalPickerDragging(false);
+  };
+
+  const handleDragStart = (e: DraggableEvent) => {
+    setIsSignalPickerDragging(true);
   };
 
   const handleConstantValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = Number(e.target.value);
     const clampedValue = clamp(value, -2147483648, 2147483647);
     setSignalPickerConstantValue(clampedValue);
-    if (value !== clampedValue) e.target.value = clampedValue.toString();
+    if (value !== clampedValue) {
+      e.target.value = clampedValue.toString();
+    }
   };
 
   const handleSaveChanges = useCallback(() => {
@@ -112,7 +117,7 @@ const SignalPicker: React.FC = () => {
   if (!isSignalPickerOpen) return null;
 
   return (
-    <Draggable handle=".entity-panel-header" position={SignalPickerPosition} onStart={() => setIsSignalPickerDragging(true)} onStop={handleDragStop}>
+    <Draggable handle=".entity-panel-header" position={SignalPickerPosition} onStart={handleDragStart} onStop={handleDragStop}>
       <div className="panel" style={{ width: "420px" }}>
         <div className="entity-panel-header" style={{ display: "flex", justifyContent: "space-between", cursor: isSignalPickerDragging ? "grabbing" : "grab" }}>
           <h3>Select a signal</h3>
@@ -120,7 +125,7 @@ const SignalPicker: React.FC = () => {
             X
           </button>
         </div>
-        <div className="flex-column ">
+        <div className="flex-column">
           <div className="panel-inset-lighter mt0 p0">
             <div className="panel-hole m0" style={{ height: "70px" }}>
               {renderGroupButtons()}
@@ -135,9 +140,13 @@ const SignalPicker: React.FC = () => {
               inputMode="numeric"
               min={-2147483648}
               max={2147483647}
-              defaultValue={1}
+              value={signalPickerConstantValue}
+              onMouseDown={(e) => e.stopPropagation()}
               onChange={handleConstantValueChange}
-              onKeyDown={(e) => !["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "-", "Backspace", "ArrowLeft", "ArrowRight", "Delete", "Enter"].includes(e.key) && e.preventDefault()}
+              onKeyDown={(e) => {
+                const allowedKeys = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "-", "Backspace", "ArrowLeft", "ArrowRight", "Delete", "Enter"];
+                if (!allowedKeys.includes(e.key)) e.preventDefault();
+              }}
             />
             <button className="button-green p0" onClick={handleSaveChanges} style={{ width: "40px" }}>
               <svg xmlns="http://www.w3.org/2000/svg" fill="#000000" width="40px" height="40px" viewBox="0 0 32 32">
