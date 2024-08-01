@@ -22,9 +22,6 @@ const KeyboardInput: React.FC = () => {
     (event: KeyboardEvent) => {
       const key = event.key as keyof typeof keyState;
       setKeyState({ [key]: true });
-      if (["a", "s", "d", "w", "ArrowLeft", "ArrowDown", "ArrowRight", "ArrowUp"].includes(event.key)) {
-        // updatePan();
-      }
       if (["o"].includes(event.key)) {
         event.preventDefault();
         toggleDrawer("right", "debug");
