@@ -13,9 +13,23 @@ const ArithmeticCombinator: React.FC<EntityInterfaceProps> = ({ openSignalPicker
     <div className="panel-inset-lighter mt0">
       <div>
         <h6>Input</h6>
-        <div className="flex-row" style={{ padding: "10px" }}>
+        <div className="flex-row condition-container" style={{ padding: "10px" }}>
           {RenderSignalButton({ slot: "input1", type: "input", selectedElement, openSignalPicker })}
-          <button type="button" className="button condition-button" id="condition"></button>
+          <div>
+            <select className="dropdown button condition-button" id="condition" defaultValue="+" onMouseDown={(e) => e.stopPropagation()}>
+              <option value="+">{"+"}</option>
+              <option value="-">{"−"}</option>
+              <option value="*">{"*"}</option>
+              <option value="/">{" / "}</option>
+              <option value="%">{"%"}</option>
+              <option value="^">{"^"}</option>
+              <option value="<<">{"<<"}</option>
+              <option value=">>">{">>"}</option>
+              <option value="&">{"&"}</option>
+              <option value="|">{"|"}</option>
+              <option value="^">{"^"}</option>
+            </select>
+          </div>
           {RenderSignalButton({ slot: "input2", type: "input", selectedElement, openSignalPicker })}
         </div>
       </div>
