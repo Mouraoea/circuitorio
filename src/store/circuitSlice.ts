@@ -59,13 +59,20 @@ const circuitSlice = createSlice({
     rotateElement: (state, action: PayloadAction<{ id: string }>) => {
       const element = state.elements.find((el) => el.id === action.payload.id);
       if (element) {
-        const newRotation = (element.rotation + 1) % 4;
-        const newOrientation = rotateOrientation(newRotation);
-        const newSize = element.gridSize[newOrientation];
-        const newElement = { ...element, rotation: newRotation, orientation: newOrientation, size: newSize };
-
+        let newRotation = (element.rotation + 1) % 4;
+        let newOrientation = rotateOrientation(newRotation);
+        let newSize = element.gridSize[newOrientation];
+        let newElement = { ...element, rotation: newRotation, orientation: newOrientation, size: newSize };
         if (!checkCollision(newElement, state.elements)) {
           Object.assign(element, newElement);
+        } else {
+          newRotation = (newRotation + 1) % 4;
+          newOrientation = rotateOrientation(newRotation);
+          newSize = newElement.gridSize[newOrientation];
+          newElement = { ...newElement, rotation: newRotation, orientation: newOrientation, size: newSize };
+          if (!checkCollision(newElement, state.elements)) {
+            Object.assign(element, newElement);
+          }
         }
       }
     },
