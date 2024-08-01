@@ -86,8 +86,7 @@ const MouseInput: React.FC = () => {
   );
 
   const handleZoom = useCallback(
-    (delta: number, cursorX: number, cursorY: number) => {
-      console.log("handleZoom");
+    (delta: number) => {
       const newScale = clamp(scale + delta, 0.5, 5);
       const deltaScale = newScale - scale;
 
@@ -122,7 +121,7 @@ const MouseInput: React.FC = () => {
     (event: WheelEvent) => {
       event.preventDefault();
       const delta = event.deltaY > 0 ? -scale * 0.0909090909090909 : scale * 0.1;
-      handleZoom(delta, event.clientX, event.clientY);
+      handleZoom(delta);
     },
     [handleZoom, scale]
   );
