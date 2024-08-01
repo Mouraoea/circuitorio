@@ -71,7 +71,8 @@ const SignalPicker: React.FC = () => {
 
     setSelectedElement(updatedElement);
     dispatch(updateElementDetails({ id: updatedElement.id, details: updatedElement }));
-  }, [selectedElement, selectedSignalSlot, signalPickerConstantValue, signalPickerSelectedSignal, setSelectedElement, dispatch]);
+    resetSignalPicker();
+  }, [selectedElement, selectedSignalSlot, signalPickerConstantValue, signalPickerSelectedSignal, setSelectedElement, dispatch, resetSignalPicker]);
 
   const renderGroupButtons = () => {
     return groups.map((group) => {
