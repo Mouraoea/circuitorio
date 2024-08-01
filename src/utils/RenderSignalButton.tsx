@@ -11,7 +11,7 @@ export interface RenderButtonProps extends EntityInterfaceProps {
 }
 
 export const RenderSignalButton: React.FC<RenderButtonProps> = ({ slot, type, selectedElement, openSignalPicker }) => (
-  <div className="flex-column">
+  <div className="flex-column signal-button-container">
     <button type="button" onClick={() => openSignalPicker(slot, type)} style={{ padding: "1px" }} className="button-black square40 m0 p0" id={slot}>
       <div style={getIcon(slot, type, selectedElement)}></div>
     </button>

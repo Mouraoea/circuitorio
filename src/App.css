@@ -1185,9 +1185,6 @@ iframe.iframe-inset {
   margin-top: -6px;
 }
 
-.dropdown {
-}
-
 /* .dropdown:hover > .submenu,
 .dropdown.focus-within > .submenu,
 .dropdown .submenu:hover,
@@ -1943,10 +1940,6 @@ select.button {
   padding-left: 7px;
   background-position-x: calc(100%);
   background-position-y: 3px;
-}
-
-select.button::-ms-expand {
-  display: none;
 }
 
 input[type="submit"]::-moz-focus-inner,
