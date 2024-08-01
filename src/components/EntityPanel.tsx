@@ -15,6 +15,8 @@ const EntityPanel: React.FC = () => {
     setIsSignalPickerOpen,
     setSignalPickerPosition,
     setSelectedSignalSlot,
+    setSignalPickerSelectedSignal,
+    setSignalPickerConstantValue,
   } = useUIContext();
 
   const resetEntityPanel = useResetEntityPanel();
@@ -32,6 +34,11 @@ const EntityPanel: React.FC = () => {
     setIsSignalPickerOpen(true);
     setSignalPickerPosition({ x: 0, y: -250 });
     setSelectedSignalSlot({ [type]: slotId });
+    const signal = selectedElement?.signals?.[type]?.[slotId];
+    if (signal) {
+      setSignalPickerSelectedSignal(Object.keys(signal)[0]);
+      setSignalPickerConstantValue(Number(Object.values(signal)[0]));
+    }
   };
 
   if (!isEntityPanelOpen) return null;
