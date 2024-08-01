@@ -1185,23 +1185,16 @@ iframe.iframe-inset {
   margin-top: -6px;
 }
 
-.dropdown > .submenu {
-  position: absolute;
-  display: flex;
-  visibility: hidden;
-  flex-direction: column;
-  transition: all 0.1s ease;
-  opacity: 0;
-  z-index: 5;
+.dropdown {
 }
 
-.dropdown:hover > .submenu,
+/* .dropdown:hover > .submenu,
 .dropdown.focus-within > .submenu,
 .dropdown .submenu:hover,
 .dropdown .submenu:focus {
   visibility: visible;
   opacity: 1;
-}
+} */
 
 .panel-hole-inner,
 dl.panel-hole > dt,
@@ -1591,7 +1584,17 @@ hr.mn {
 .condition-button {
   width: 50px;
   height: 30px;
+  margin: 0px;
   align-self: center;
+}
+
+.condition-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 55px;
+  width: 180px;
+  justify-content: space-between;
 }
 
 .button-black {
@@ -1932,14 +1935,18 @@ textarea {
 
 select.button {
   vertical-align: middle;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
   background-image: url("data:image/svg+xml;utf8,<svg fill='black' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
   background-repeat: no-repeat;
-  padding-right: 26px;
-  height: 5.5ex;
-  background-position-x: calc(100% - 5px);
-  background-position-y: 6px;
-  font-weight: normal;
-  font-family: "Titillium Web", sans-serif;
+  padding-left: 7px;
+  background-position-x: calc(100%);
+  background-position-y: 3px;
+}
+
+select.button::-ms-expand {
+  display: none;
 }
 
 input[type="submit"]::-moz-focus-inner,
