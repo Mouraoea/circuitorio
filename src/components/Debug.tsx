@@ -9,7 +9,7 @@ import { useUIContext } from "../context/UIContext";
 const Debug: React.FC = () => {
   const { appVersion, scale, panPosition, panPercentage, isPlacing, placingPosition, ghostElementPosition } = useCanvasContext();
 
-  const { selectedElement, hoveredElement, isDebugMode, setIsDebugMode, selectedSignalSlot, signalPickerSelectedSignal, signalPickerConstantValue } = useUIContext();
+  const { selectedElement, isDebugMode, setIsDebugMode, selectedSignalSlot, signalPickerSelectedSignal, signalPickerConstantValue } = useUIContext();
 
   const { cursorPosition, cursorGridCoordinates, keyState, cursorGridPosition } = useInputContext();
 
@@ -74,16 +74,6 @@ const Debug: React.FC = () => {
               x: {selectedElement.position.x}, y: {selectedElement.position.y}
             </li>
             <li>Signals: {JSON.stringify(selectedElement.signals)}</li>
-          </ul>
-        )}
-        <p>Hovered Element </p>
-        {hoveredElement && (
-          <ul>
-            <li>Name: {hoveredElement.displayName}</li>
-            <li>Orientation: {hoveredElement.orientation}</li>
-            <li>
-              x: {hoveredElement.position.x}, y: {hoveredElement.position.y}
-            </li>
           </ul>
         )}
         <p>Signal Picker:</p>
