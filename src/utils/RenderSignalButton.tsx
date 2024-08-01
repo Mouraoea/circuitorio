@@ -1,7 +1,7 @@
 import { CircuitElementProps } from "../store/circuitSlice";
 import { formatSignalString } from "./formatSignalString";
 import { getIcon } from "./getIcon";
-import { EntityInterfaceProps } from "../entityInterface/EntityInterface";
+import { EntityInterfaceProps } from "../entities/interface/EntityInterface";
 import React from "react";
 
 export interface RenderButtonProps extends EntityInterfaceProps {

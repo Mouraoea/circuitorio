@@ -1,8 +1,8 @@
 import React from "react";
-import "../App.css";
+import "../../App.css";
 import { EntityInterfaceProps } from "./EntityInterface";
-import { RenderSignalButton } from "../utils/RenderSignalButton";
-import { useUIContext } from "../context/UIContext";
+import { RenderSignalButton } from "../../utils/RenderSignalButton";
+import { useUIContext } from "../../context/UIContext";
 
 const ConstantCombinator: React.FC<EntityInterfaceProps> = ({ openSignalPicker }) => {
   const { selectedElement } = useUIContext();

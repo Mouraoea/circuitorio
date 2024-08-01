@@ -1,6 +1,6 @@
 import React from "react";
 import { useCanvasContext } from "../context/CanvasContext";
-import { SpriteProvider, EntitySprite } from "../spritesheets/SpriteProvider";
+import { SpriteProvider, EntitySprite } from "../entities/spritesheets/SpriteProvider";
 import { type Orientation } from "../store/circuitSlice";
 
 type ToolboxProps = {

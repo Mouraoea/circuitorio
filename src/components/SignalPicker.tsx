@@ -1,11 +1,11 @@
 import React, { useCallback } from "react";
 import Draggable, { DraggableData, DraggableEvent } from "react-draggable";
 import { useDispatch } from "react-redux";
-import { IconProvider } from "../spritesheets/SpriteProvider";
+import { IconProvider } from "../entities/spritesheets/SpriteProvider";
 import { clamp } from "../utils/clamp";
 import { updateElementDetails } from "../store/circuitSlice";
 import { useResetSignalPicker } from "../hooks/useResetSignalPicker";
-import IconGroups from "../spritesheets/IconGroups.json";
+import IconGroups from "../entities/spritesheets/IconGroups.json";
 import { useUIContext } from "../context/UIContext";
 
 const groups = ["logistics", "production", "intermediate-products", "military", "fluids", "signals"];

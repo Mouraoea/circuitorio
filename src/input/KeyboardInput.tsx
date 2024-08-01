@@ -2,7 +2,7 @@ import React, { useEffect, useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { useCanvasContext } from "../context/CanvasContext";
 import { Orientation, rotateElement, selectElementById } from "../store/circuitSlice";
-import { SpriteProvider, EntitySprite } from "../spritesheets/SpriteProvider";
+import { SpriteProvider, EntitySprite } from "../entities/spritesheets/SpriteProvider";
 import store from "../store/store";
 import { useDrawers } from "../hooks/useDrawers";
 import { useInputContext } from "../context/InputContext";

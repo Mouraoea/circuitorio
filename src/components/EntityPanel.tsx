@@ -1,6 +1,6 @@
 import React from "react";
 import Draggable, { DraggableData, DraggableEvent } from "react-draggable";
-import { DeciderCombinator, ArithmeticCombinator, ConstantCombinator } from "../entityInterface/EntityInterface";
+import { DeciderCombinator, ArithmeticCombinator, ConstantCombinator } from "../entities/interface/EntityInterface";
 import { useResetEntityPanel } from "../hooks/useResetEntityPanel";
 import { useUIContext } from "../context/UIContext";
 

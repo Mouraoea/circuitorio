@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { EntitySprite } from "../spritesheets/SpriteProvider";
+import { EntitySprite } from "../entities/spritesheets/SpriteProvider";
 import { RootState } from "./store";
 import { checkCollision } from "../utils/checkCollision";
 
@@ -17,7 +17,7 @@ interface CircuitElementProps extends EntitySprite {
 
 interface Signals {
   input?: { [key: string]: string };
-  operator?: { [key: string]: string };
+  operator?: string;
   output?: { [key: string]: string };
 }
 
