@@ -3,7 +3,7 @@ import { CircuitElementProps } from "../store/circuitSlice";
 
 export const useCanvasState = () => {
   const [appVersion, setAppVersion] = useState("0.0.0");
-  const [scale, setScale] = useState(1);
+  const [scale, setScale] = useState(3);
   const [startPanPosition, setStartPanPosition] = useState({ x: 0, y: 0 });
   const [panPosition, setPanPosition] = useState({ x: 0, y: 0 });
   const [panPercentage, setPanPercentage] = useState({ x: 0, y: 0 });
