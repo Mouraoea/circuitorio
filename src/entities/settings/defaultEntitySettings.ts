@@ -24,7 +24,7 @@ const getDefaultSignals = (element: string): Signals => {
   switch (element) {
     case "decider-combinator":
       return {
-        operator: ">", // default operator
+        operator: ">",
       } as Signals;
     case "arithmetic-combinator":
       return {
