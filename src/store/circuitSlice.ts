@@ -91,5 +91,5 @@ export const selectElementById = (state: RootState, id: string) => state.circuit
 
 export const { addElement, updateElementPosition, rotateElement, setPreviewElement, checkForCollision, removeElement, updateElementDetails } = circuitSlice.actions;
 
-export type { CircuitElementProps };
+export type { CircuitElementProps, Signals };
 export default circuitSlice.reducer;
