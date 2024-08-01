@@ -1950,7 +1950,7 @@ const entities: { [key: string]: EntitySprite } = {
       south: { width: 1, height: 2 },
       west: { width: 2, height: 1 },
     },
-    origingOffset: { north: { x: -6, y: 9 }, east: { x: 12, y: -13 }, south: { x: -5, y: 11 }, west: { x: 13, y: -13 } },
+    origingOffset: { north: { x: -5, y: 17 }, east: { x: 9, y: -16 }, south: { x: -5, y: 17 }, west: { x: 15, y: -15 } },
     spriteOffset: {
       north: { x: -34, y: 0 },
       east: { x: -160, y: 0 },
@@ -1976,7 +1976,7 @@ const entities: { [key: string]: EntitySprite } = {
       south: { width: 1, height: 2 },
       west: { width: 2, height: 1 },
     },
-    origingOffset: { north: { x: -11, y: 9 }, east: { x: 5, y: -12 }, south: { x: -11, y: 11 }, west: { x: 12, y: -13 } },
+    origingOffset: { north: { x: -10, y: 18 }, east: { x: 3, y: -18 }, south: { x: -11, y: 23 }, west: { x: 16, y: -19 } },
     spriteOffset: {
       north: { x: -35, y: -5 },
       east: { x: -172, y: -2 },
@@ -2002,7 +2002,7 @@ const entities: { [key: string]: EntitySprite } = {
       south: { width: 1, height: 1 },
       west: { width: 1, height: 1 },
     },
-    origingOffset: { north: { x: -8, y: -2 }, east: { x: -11, y: -8 }, south: { x: -9, y: -4 }, west: { x: -8, y: -6 } },
+    origingOffset: { north: { x: -10, y: -5 }, east: { x: -12, y: -10 }, south: { x: -8, y: 2 }, west: { x: -8, y: -9 } },
     spriteOffset: {
       north: { x: -16, y: -4 },
       east: { x: -127, y: 0 },
