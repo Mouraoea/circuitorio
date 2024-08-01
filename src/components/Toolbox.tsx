@@ -1,7 +1,7 @@
 import React from "react";
 import { useCanvasContext } from "../context/CanvasContext";
-import { SpriteProvider, EntitySprite } from "../entities/spritesheets/SpriteProvider";
-import { type Orientation } from "../store/circuitSlice";
+import { CircuitElementProps } from "../store/circuitSlice";
+import defaultEntitySettings from "../entities/settings/defaultEntitySettings";
 
 type ToolboxProps = {
   closeLeftDrawer: () => void;
@@ -11,16 +11,7 @@ const Toolbox: React.FC<ToolboxProps> = ({ closeLeftDrawer }) => {
   const { setElementToPlace, setIsPlacing } = useCanvasContext();
 
   const handleAddElement = (element: string) => {
-    const entity: EntitySprite = SpriteProvider(element);
-
-    const newElement = {
-      ...entity,
-      id: "",
-      position: { x: 0, y: 0 },
-      rotation: 0,
-      orientation: "north" as Orientation,
-      size: entity.gridSize.north,
-    };
+    const newElement: CircuitElementProps = defaultEntitySettings(element);
 
     setElementToPlace(newElement);
     setIsPlacing(true);
