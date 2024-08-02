@@ -40,9 +40,9 @@ const ArithmeticCombinator: React.FC<EntityInterfaceProps> = ({ openSignalPicker
               <option value="^">{"^"}</option>
               <option value="<<">{"<<"}</option>
               <option value=">>">{">>"}</option>
-              <option value="&">{"&"}</option>
-              <option value="|">{"|"}</option>
-              <option value="^">{"^"}</option>
+              <option value="AND">{"AND"}</option>
+              <option value="OR">{"OR"}</option>
+              <option value="XOR">{"XOR"}</option>
             </select>
           </div>
           {RenderSignalButton({ slot: "input2", type: "input", selectedElement, openSignalPicker })}

@@ -43,6 +43,24 @@ export interface IconSprite {
   style?: React.CSSProperties;
 }
 
+export interface OperatorSprite {
+  name: string;
+  displayName: string;
+  type: string;
+  spriteSize: { width: number; height: number };
+  origingOffset: {
+    // Offset from the grid position to the 0,0 point of the sprite, in pixels
+    north: { x: number; y: number };
+    east: { x: number; y: number };
+    south: { x: number; y: number };
+    west: { x: number; y: number };
+  };
+  spriteScale: number; // Scale of the sprite
+  spritePath: string; // Path to the sprite
+  spriteOffset: { x: number; y: number };
+  style?: React.CSSProperties;
+}
+
 const getBasePath = () => {
   if (process.env.NODE_ENV === "production") {
     return "./img/";
@@ -52,6 +70,179 @@ const getBasePath = () => {
 };
 
 const basePath = getBasePath();
+
+const operators: { [key: string]: OperatorSprite } = {
+  ">": {
+    name: ">",
+    displayName: "Greater Than",
+    type: "decider-operator",
+    spriteSize: { width: 30, height: 22 },
+    origingOffset: { north: { x: 28, y: 25 }, east: { x: 47, y: 11 }, south: { x: 29, y: 21 }, west: { x: 33, y: 13 } },
+    spriteScale: 1,
+    spritePath: `${basePath}base/graphics/hr-combinator-displays.png`,
+    spriteOffset: { x: 0, y: -44 },
+  },
+  "<": {
+    name: "<",
+    displayName: "Less Than",
+    type: "decider-operator",
+    spriteSize: { width: 30, height: 22 },
+    origingOffset: { north: { x: 28, y: 25 }, east: { x: 47, y: 11 }, south: { x: 29, y: 21 }, west: { x: 33, y: 13 } },
+    spriteScale: 1,
+    spritePath: `${basePath}base/graphics/hr-combinator-displays.png`,
+    spriteOffset: { x: -30, y: -44 },
+  },
+  "=": {
+    name: "=",
+    displayName: "Equal",
+    type: "decider-operator",
+    spriteSize: { width: 30, height: 22 },
+    origingOffset: { north: { x: 28, y: 25 }, east: { x: 47, y: 11 }, south: { x: 29, y: 21 }, west: { x: 33, y: 13 } },
+    spriteScale: 1,
+    spritePath: `${basePath}base/graphics/hr-combinator-displays.png`,
+    spriteOffset: { x: -60, y: -44 },
+  },
+  ">=": {
+    name: ">=",
+    displayName: "Greater Than or Equal",
+    type: "decider-operator",
+    spriteSize: { width: 30, height: 22 },
+    origingOffset: { north: { x: 28, y: 25 }, east: { x: 47, y: 11 }, south: { x: 29, y: 21 }, west: { x: 33, y: 13 } },
+    spriteScale: 1,
+    spritePath: `${basePath}base/graphics/hr-combinator-displays.png`,
+    spriteOffset: { x: -150, y: -44 },
+  },
+  "<=": {
+    name: "<=",
+    displayName: "Less Than or Equal",
+    type: "decider-operator",
+    spriteSize: { width: 30, height: 22 },
+    origingOffset: { north: { x: 28, y: 25 }, east: { x: 47, y: 11 }, south: { x: 29, y: 21 }, west: { x: 33, y: 13 } },
+    spriteScale: 1,
+    spritePath: `${basePath}base/graphics/hr-combinator-displays.png`,
+    spriteOffset: { x: -120, y: -44 },
+  },
+  "!=": {
+    name: "!=",
+    displayName: "Not Equal",
+    type: "decider-operator",
+    spriteSize: { width: 30, height: 22 },
+    origingOffset: { north: { x: 28, y: 25 }, east: { x: 47, y: 11 }, south: { x: 29, y: 21 }, west: { x: 33, y: 13 } },
+    spriteScale: 1,
+    spritePath: `${basePath}base/graphics/hr-combinator-displays.png`,
+    spriteOffset: { x: -90, y: -44 },
+  },
+  "+": {
+    name: "+",
+    displayName: "Add",
+    type: "arithmetic-operator",
+    spriteSize: { width: 30, height: 22 },
+    origingOffset: { north: { x: 22, y: 28 }, east: { x: 40, y: 14 }, south: { x: 23, y: 27 }, west: { x: 34, y: 15 } },
+    spriteScale: 1,
+    spritePath: `${basePath}base/graphics/hr-combinator-displays.png`,
+    spriteOffset: { x: -30, y: 0 },
+  },
+  "-": {
+    name: "-",
+    displayName: "Subtract",
+    type: "arithmetic-operator",
+    spriteSize: { width: 30, height: 22 },
+    origingOffset: { north: { x: 22, y: 28 }, east: { x: 40, y: 14 }, south: { x: 23, y: 27 }, west: { x: 34, y: 15 } },
+    spriteScale: 1,
+    spritePath: `${basePath}base/graphics/hr-combinator-displays.png`,
+    spriteOffset: { x: -60, y: 0 },
+  },
+  "*": {
+    name: "*",
+    displayName: "Multiply",
+    type: "arithmetic-operator",
+    spriteSize: { width: 30, height: 22 },
+    origingOffset: { north: { x: 22, y: 28 }, east: { x: 40, y: 14 }, south: { x: 23, y: 27 }, west: { x: 34, y: 15 } },
+    spriteScale: 1,
+    spritePath: `${basePath}base/graphics/hr-combinator-displays.png`,
+    spriteOffset: { x: -90, y: 0 },
+  },
+  "/": {
+    name: "/",
+    displayName: "Divide",
+    type: "arithmetic-operator",
+    spriteSize: { width: 30, height: 22 },
+    origingOffset: { north: { x: 22, y: 28 }, east: { x: 40, y: 14 }, south: { x: 23, y: 27 }, west: { x: 34, y: 15 } },
+    spriteScale: 1,
+    spritePath: `${basePath}base/graphics/hr-combinator-displays.png`,
+    spriteOffset: { x: -120, y: 0 },
+  },
+  "%": {
+    name: "%",
+    displayName: "Modulo",
+    type: "arithmetic-operator",
+    spriteSize: { width: 30, height: 22 },
+    origingOffset: { north: { x: 22, y: 28 }, east: { x: 40, y: 14 }, south: { x: 23, y: 27 }, west: { x: 34, y: 15 } },
+    spriteScale: 1,
+    spritePath: `${basePath}base/graphics/hr-combinator-displays.png`,
+    spriteOffset: { x: -150, y: 0 },
+  },
+  "^": {
+    name: "^",
+    displayName: "Power",
+    type: "arithmetic-operator",
+    spriteSize: { width: 30, height: 22 },
+    origingOffset: { north: { x: 22, y: 28 }, east: { x: 40, y: 14 }, south: { x: 23, y: 27 }, west: { x: 34, y: 15 } },
+    spriteScale: 1,
+    spritePath: `${basePath}base/graphics/hr-combinator-displays.png`,
+    spriteOffset: { x: 0, y: -22 },
+  },
+  AND: {
+    name: "AND",
+    displayName: "AND Logical Gate",
+    type: "arithmetic-operator",
+    spriteSize: { width: 30, height: 22 },
+    origingOffset: { north: { x: 22, y: 28 }, east: { x: 40, y: 14 }, south: { x: 23, y: 27 }, west: { x: 34, y: 15 } },
+    spriteScale: 1,
+    spritePath: `${basePath}base/graphics/hr-combinator-displays.png`,
+    spriteOffset: { x: -90, y: -22 },
+  },
+  OR: {
+    name: "OR",
+    displayName: "OR Logical Gate",
+    type: "arithmetic-operator",
+    spriteSize: { width: 30, height: 22 },
+    origingOffset: { north: { x: 22, y: 28 }, east: { x: 40, y: 14 }, south: { x: 23, y: 27 }, west: { x: 34, y: 15 } },
+    spriteScale: 1,
+    spritePath: `${basePath}base/graphics/hr-combinator-displays.png`,
+    spriteOffset: { x: -120, y: -22 },
+  },
+  XOR: {
+    name: "XOR",
+    displayName: "XOR Logical Gate",
+    type: "arithmetic-operator",
+    spriteSize: { width: 30, height: 22 },
+    origingOffset: { north: { x: 22, y: 28 }, east: { x: 40, y: 14 }, south: { x: 23, y: 27 }, west: { x: 34, y: 15 } },
+    spriteScale: 1,
+    spritePath: `${basePath}base/graphics/hr-combinator-displays.png`,
+    spriteOffset: { x: -150, y: -22 },
+  },
+  "<<": {
+    name: "<<",
+    displayName: "Left Shift",
+    type: "arithmetic-operator",
+    spriteSize: { width: 30, height: 22 },
+    origingOffset: { north: { x: 22, y: 28 }, east: { x: 40, y: 14 }, south: { x: 23, y: 27 }, west: { x: 34, y: 15 } },
+    spriteScale: 1,
+    spritePath: `${basePath}base/graphics/hr-combinator-displays.png`,
+    spriteOffset: { x: -30, y: -22 },
+  },
+  ">>": {
+    name: ">>",
+    displayName: "Right Shift",
+    type: "arithmetic-operator",
+    spriteSize: { width: 30, height: 22 },
+    origingOffset: { north: { x: 22, y: 28 }, east: { x: 40, y: 14 }, south: { x: 23, y: 27 }, west: { x: 34, y: 15 } },
+    spriteScale: 1,
+    spritePath: `${basePath}base/graphics/hr-combinator-displays.png`,
+    spriteOffset: { x: -60, y: -22 },
+  },
+};
 
 const entities: { [key: string]: EntitySprite } = {
   "arithmetic-combinator": {
@@ -2018,6 +2209,11 @@ const icons: { [key: string]: IconSprite } = {
     spritePath: `${basePath}base/graphics/icons/wooden-chest.png`,
     spriteSize: { width: 32, height: 32 },
   },
+};
+
+export const OperatorSpriteProvider = (operatorId: string): OperatorSprite => {
+  const operatorSprite = operators[operatorId];
+  return operatorSprite;
 };
 
 export const SpriteProvider = (entityId: string): EntitySprite => {

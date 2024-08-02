@@ -1,3 +1,6 @@
+import { OperatorSpriteProvider } from "../entities/spritesheets/SpriteProvider";
+import { Orientation } from "../store/circuitSlice";
+
 interface Element {
   position: Position;
   spritePath: string;
@@ -25,5 +28,20 @@ export const getElementSprite = (element: Element | undefined) => {
     height: `${element.spriteSize[element.orientation].height}px`,
     left: position.x + element.origingOffset[element.orientation].x * element.spriteScale,
     top: position.y + element.origingOffset[element.orientation].y * element.spriteScale,
+  };
+};
+
+export const getOperatorSpriteStyle = (element: Element, operator: string): React.CSSProperties => {
+  const operatorSprite = OperatorSpriteProvider(operator);
+  const orientation = element.orientation as Orientation;
+  return {
+    position: "absolute",
+    backgroundImage: `url("${operatorSprite.spritePath}")`,
+    backgroundPosition: `${operatorSprite.spriteOffset.x}px ${operatorSprite.spriteOffset.y}px`,
+    width: `${operatorSprite.spriteSize.width}px`,
+    height: `${operatorSprite.spriteSize.height}px`,
+    left: operatorSprite.origingOffset[orientation].x,
+    top: operatorSprite.origingOffset[orientation].y,
+    maskRepeat: "no-repeat",
   };
 };

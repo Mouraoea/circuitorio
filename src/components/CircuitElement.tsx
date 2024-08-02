@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import { type CircuitElementProps } from "../store/circuitSlice";
 import { useCanvasContext } from "../context/CanvasContext";
-import { getElementSprite } from "../utils/getElementSprite";
+import { getElementSprite, getOperatorSpriteStyle } from "../utils/getElementSprite";
 import { useUIContext } from "../context/UIContext";
 
 const CircuitElement: React.FC<CircuitElementProps> = ({ id }) => {
@@ -44,6 +44,14 @@ const CircuitElement: React.FC<CircuitElementProps> = ({ id }) => {
     border: isDebugMode ? "1px solid green" : "none",
   });
 
+  const operator = element.signals?.operator;
+  let operatorStyle = {};
+  if (operator) {
+    operatorStyle = {
+      ...getOperatorSpriteStyle(element, operator),
+    };
+  }
+
   return (
     <div
       className="circuit-element"
@@ -59,6 +67,11 @@ const CircuitElement: React.FC<CircuitElementProps> = ({ id }) => {
       onMouseEnter={() => handleMouseEnter(element)}
       onMouseLeave={handleMouseLeave}
     >
+      {operator && (
+        <>
+          <div style={operatorStyle}></div>
+        </>
+      )}
       {isHovered && hoveredElement && (
         <div
           className="circuit-element-hover"
