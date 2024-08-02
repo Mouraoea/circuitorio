@@ -10,7 +10,7 @@ import { useUIContext } from "../context/UIContext";
 
 const KeyboardInput: React.FC = () => {
   const dispatch = useDispatch();
-  const { elementToPlace, isPlacing, setIsPlacing, setPlacingElementRotation, setElementToPlace, placingElementRotation, boardRef, setPanPosition, setScale } = useCanvasContext();
+  const { elementToPlace, isPlacing, setIsPlacing, setPlacingElementRotation, setElementToPlace, boardRef, setPanPosition, setScale } = useCanvasContext();
 
   const { hoveredElement, setHoveredElement, selectedElement, setSelectedElement } = useUIContext();
 
@@ -75,7 +75,7 @@ const KeyboardInput: React.FC = () => {
       }
       if (["r"].includes(event.key)) {
         if (isPlacing && elementToPlace) {
-          const newRotation = (placingElementRotation + 1) % 4;
+          const newRotation = (elementToPlace.rotation + 1) % 4;
           const newOrientation = ["north", "east", "south", "west"][newRotation] as Orientation;
           const newSize = {
             width: elementToPlace.gridSize[newOrientation].width,
@@ -115,7 +115,6 @@ const KeyboardInput: React.FC = () => {
       dispatch,
       isPlacing,
       elementToPlace,
-      placingElementRotation,
       hoveredElement,
       selectedElement,
       setHoveredElement,
