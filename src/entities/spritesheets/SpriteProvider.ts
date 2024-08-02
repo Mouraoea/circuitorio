@@ -34,7 +34,7 @@ export interface EntitySprite {
   };
 }
 
-export interface iconSprite {
+export interface IconSprite {
   name: string;
   displayName: string;
   type: string;
@@ -53,7 +53,88 @@ const getBasePath = () => {
 
 const basePath = getBasePath();
 
-const icons: { [key: string]: iconSprite } = {
+const entities: { [key: string]: EntitySprite } = {
+  "arithmetic-combinator": {
+    name: "arithmetic-combinator",
+    displayName: "Arithmetic Combinator",
+    type: "entity",
+    gridSize: {
+      north: { width: 1, height: 2 },
+      east: { width: 2, height: 1 },
+      south: { width: 1, height: 2 },
+      west: { width: 2, height: 1 },
+    },
+    origingOffset: { north: { x: -5, y: 17 }, east: { x: 9, y: -16 }, south: { x: -5, y: 17 }, west: { x: 15, y: -15 } },
+    spriteOffset: {
+      north: { x: -34, y: 0 },
+      east: { x: -160, y: 0 },
+      south: { x: -322, y: 0 },
+      west: { x: -454, y: 0 },
+    },
+    spritePath: `${basePath}base/graphics/hr-arithmetic-combinator.png`,
+    spriteScale: 0.5,
+    spriteSize: {
+      north: { width: 77, height: 109 },
+      east: { width: 105, height: 89 },
+      south: { width: 79, height: 102 },
+      west: { width: 107, height: 91 },
+    },
+  },
+  "decider-combinator": {
+    name: "decider-combinator",
+    displayName: "Decider Combinator",
+    type: "entity",
+    gridSize: {
+      north: { width: 1, height: 2 },
+      east: { width: 2, height: 1 },
+      south: { width: 1, height: 2 },
+      west: { width: 2, height: 1 },
+    },
+    origingOffset: { north: { x: -10, y: 18 }, east: { x: 3, y: -18 }, south: { x: -11, y: 23 }, west: { x: 16, y: -19 } },
+    spriteOffset: {
+      north: { x: -35, y: -5 },
+      east: { x: -172, y: -2 },
+      south: { x: -346, y: -10 },
+      west: { x: -497, y: 0 },
+    },
+    spritePath: `${basePath}base/graphics/hr-decider-combinator.png`,
+    spriteScale: 0.5,
+    spriteSize: {
+      north: { width: 86, height: 111 },
+      east: { width: 118, height: 91 },
+      south: { width: 87, height: 103 },
+      west: { width: 117, height: 94 },
+    },
+  },
+  "constant-combinator": {
+    name: "constant-combinator",
+    displayName: "Constant Combinator",
+    type: "entity",
+    gridSize: {
+      north: { width: 1, height: 1 },
+      east: { width: 1, height: 1 },
+      south: { width: 1, height: 1 },
+      west: { width: 1, height: 1 },
+    },
+    origingOffset: { north: { x: -10, y: -5 }, east: { x: -12, y: -10 }, south: { x: -8, y: 2 }, west: { x: -8, y: -9 } },
+    spriteOffset: {
+      north: { x: -16, y: -4 },
+      east: { x: -127, y: 0 },
+      south: { x: -245, y: -11 },
+      west: { x: -359, y: 0 },
+    },
+    spritePath: `${basePath}base/graphics/hr-constant-combinator.png`,
+    spriteScale: 0.5,
+    spriteSize: {
+      north: { width: 82, height: 75 },
+      east: { width: 90, height: 85 },
+      south: { width: 82, height: 74 },
+      west: { width: 82, height: 83 },
+    },
+  },
+};
+
+const icons: { [key: string]: IconSprite } = {
   effects: {
     name: "effects",
     displayName: "Effects",
@@ -1939,93 +2020,12 @@ const icons: { [key: string]: iconSprite } = {
   },
 };
 
-const entities: { [key: string]: EntitySprite } = {
-  "arithmetic-combinator": {
-    name: "arithmetic-combinator",
-    displayName: "Arithmetic Combinator",
-    type: "entity",
-    gridSize: {
-      north: { width: 1, height: 2 },
-      east: { width: 2, height: 1 },
-      south: { width: 1, height: 2 },
-      west: { width: 2, height: 1 },
-    },
-    origingOffset: { north: { x: -5, y: 17 }, east: { x: 9, y: -16 }, south: { x: -5, y: 17 }, west: { x: 15, y: -15 } },
-    spriteOffset: {
-      north: { x: -34, y: 0 },
-      east: { x: -160, y: 0 },
-      south: { x: -322, y: 0 },
-      west: { x: -454, y: 0 },
-    },
-    spritePath: `${basePath}base/graphics/hr-arithmetic-combinator.png`,
-    spriteScale: 0.5,
-    spriteSize: {
-      north: { width: 77, height: 109 },
-      east: { width: 105, height: 89 },
-      south: { width: 79, height: 102 },
-      west: { width: 107, height: 91 },
-    },
-  },
-  "decider-combinator": {
-    name: "decider-combinator",
-    displayName: "Decider Combinator",
-    type: "entity",
-    gridSize: {
-      north: { width: 1, height: 2 },
-      east: { width: 2, height: 1 },
-      south: { width: 1, height: 2 },
-      west: { width: 2, height: 1 },
-    },
-    origingOffset: { north: { x: -10, y: 18 }, east: { x: 3, y: -18 }, south: { x: -11, y: 23 }, west: { x: 16, y: -19 } },
-    spriteOffset: {
-      north: { x: -35, y: -5 },
-      east: { x: -172, y: -2 },
-      south: { x: -346, y: -10 },
-      west: { x: -497, y: 0 },
-    },
-    spritePath: `${basePath}base/graphics/hr-decider-combinator.png`,
-    spriteScale: 0.5,
-    spriteSize: {
-      north: { width: 86, height: 111 },
-      east: { width: 118, height: 91 },
-      south: { width: 87, height: 103 },
-      west: { width: 117, height: 94 },
-    },
-  },
-  "constant-combinator": {
-    name: "constant-combinator",
-    displayName: "Constant Combinator",
-    type: "entity",
-    gridSize: {
-      north: { width: 1, height: 1 },
-      east: { width: 1, height: 1 },
-      south: { width: 1, height: 1 },
-      west: { width: 1, height: 1 },
-    },
-    origingOffset: { north: { x: -10, y: -5 }, east: { x: -12, y: -10 }, south: { x: -8, y: 2 }, west: { x: -8, y: -9 } },
-    spriteOffset: {
-      north: { x: -16, y: -4 },
-      east: { x: -127, y: 0 },
-      south: { x: -245, y: -11 },
-      west: { x: -359, y: 0 },
-    },
-    spritePath: `${basePath}base/graphics/hr-constant-combinator.png`,
-    spriteScale: 0.5,
-    spriteSize: {
-      north: { width: 82, height: 75 },
-      east: { width: 90, height: 85 },
-      south: { width: 82, height: 74 },
-      west: { width: 82, height: 83 },
-    },
-  },
-};
-
 export const SpriteProvider = (entityId: string): EntitySprite => {
   const entity = entities[entityId];
   return entity;
 };
 
-export const IconProvider = (iconId: string): iconSprite => {
+export const IconProvider = (iconId: string): IconSprite => {
   const icon = icons[iconId];
   icon.style = {
     width: `${icon.spriteSize.width}px`,
