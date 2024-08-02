@@ -28,7 +28,7 @@ const getDefaultSignals = (element: string): Signals => {
       } as Signals;
     case "arithmetic-combinator":
       return {
-        operator: "+",
+        operator: "*",
       } as Signals;
     default:
       return {};
