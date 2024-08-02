@@ -7,9 +7,9 @@ import { useInputContext } from "../context/InputContext";
 import { useUIContext } from "../context/UIContext";
 
 const Debug: React.FC = () => {
-  const { appVersion, scale, panPosition, panPercentage, isPlacing, placingPosition, ghostElementPosition } = useCanvasContext();
+  const { appVersion, scale, panPosition, panPercentage, isPlacing, placingPosition, elementToPlace } = useCanvasContext();
 
-  const { selectedElement, isDebugMode, setIsDebugMode, selectedSignalSlot, signalPickerSelectedSignal, signalPickerConstantValue } = useUIContext();
+  const { selectedElement, isDebugMode, setIsDebugMode, selectedSignalSlot, signalPickerSelectedSignal, signalPickerConstantValue, hoveredElement } = useUIContext();
 
   const { cursorPosition, cursorGridCoordinates, keyState, cursorGridPosition } = useInputContext();
 
@@ -59,9 +59,29 @@ const Debug: React.FC = () => {
         <p>
           Cursor Coordinates: (x: {cursorGridCoordinates.x}, y: {cursorGridCoordinates.y})
         </p>
-        <p>
-          Ghost Element Position: (x: {isPlacing ? Math.round(ghostElementPosition.x * 100) / 100 : "-"}, y: {isPlacing ? Math.round(ghostElementPosition.y * 100) / 100 : "-"})
-        </p>
+        {hoveredElement && (
+          <ul>
+            <li>Name: {hoveredElement.displayName}</li>
+            <li>Orientation: {hoveredElement.orientation}</li>
+            <li>
+              x: {hoveredElement.position.x}, y: {hoveredElement.position.y}
+            </li>
+            <li>Rotation: {hoveredElement.rotation}</li>
+            <li>Signals: {JSON.stringify(hoveredElement.signals)}</li>
+          </ul>
+        )}
+        {isPlacing && (
+          <ul>
+            <li>Name: {elementToPlace?.displayName}</li>
+            <li>Orientation: {elementToPlace?.orientation}</li>
+            <li>
+              x: {elementToPlace?.position.x}, y: {elementToPlace?.position.y}
+            </li>
+            <li>Rotation: {elementToPlace?.rotation}</li>
+            <li>Signals: {JSON.stringify(elementToPlace?.signals)}</li>
+          </ul>
+        )}
+
         <p>
           Place Position: (x: {placingPosition.x}, y: {placingPosition.y})
         </p>
