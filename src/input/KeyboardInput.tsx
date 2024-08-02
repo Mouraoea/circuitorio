@@ -1,16 +1,16 @@
 import React, { useEffect, useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { useCanvasContext } from "../context/CanvasContext";
-import { Orientation, rotateElement, selectElementById } from "../store/circuitSlice";
-import { SpriteProvider, EntitySprite } from "../entities/spritesheets/SpriteProvider";
+import { CircuitElementProps, Orientation, rotateElement, selectElementById } from "../store/circuitSlice";
 import store from "../store/store";
 import { useDrawers } from "../hooks/useDrawers";
 import { useInputContext } from "../context/InputContext";
 import { useUIContext } from "../context/UIContext";
+import defaultEntitySettings from "../entities/settings/defaultEntitySettings";
 
 const KeyboardInput: React.FC = () => {
   const dispatch = useDispatch();
-  const { elementToPlace, isPlacing, setIsPlacing, setPlacingElementRotation, setElementToPlace, boardRef, setPanPosition, setScale } = useCanvasContext();
+  const { elementToPlace, isPlacing, setIsPlacing, setPlacingElementRotation, setElementToPlace, boardRef, setPanPosition, setScale, scale } = useCanvasContext();
 
   const { hoveredElement, setHoveredElement, selectedElement, setSelectedElement } = useUIContext();
 
@@ -60,14 +60,14 @@ const KeyboardInput: React.FC = () => {
         }
         if (hoveredElement) {
           const elementName = hoveredElement.name;
-          const entity: EntitySprite = SpriteProvider(elementName);
-          const newElement = {
-            ...entity,
-            id: "",
-            position: hoveredElement.position,
+          let newElement: CircuitElementProps = defaultEntitySettings(elementName);
+          newElement = {
+            ...newElement,
+            position: { x: hoveredElement.position.x * scale, y: hoveredElement.position.y * scale },
             rotation: hoveredElement.rotation,
             orientation: hoveredElement.orientation,
-            size: hoveredElement.gridSize[hoveredElement.orientation],
+            size: hoveredElement.size,
+            gridSize: hoveredElement.gridSize,
           };
           setElementToPlace(newElement);
           setIsPlacing(true);
@@ -103,6 +103,7 @@ const KeyboardInput: React.FC = () => {
       }
     },
     [
+      scale,
       toggleDrawer,
       setKeyState,
       closeLeftDrawer,
