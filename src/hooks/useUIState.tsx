@@ -17,7 +17,7 @@ export const useUIState = () => {
   const [SignalPickerContent, setSignalPickerContent] = useState<ReactNode>(null);
   const [selectedSignalSlot, setSelectedSignalSlot] = useState<{ [key: string]: string } | null>(null);
   const [signalPickerSelectedGroup, setSignalPickerSelectedGroup] = useState("logistics");
-  const [signalPickerConstantValue, setSignalPickerConstantValue] = useState(1);
+  const [signalPickerConstantValue, setSignalPickerConstantValue] = useState(0);
   const [signalPickerSelectedSignal, setSignalPickerSelectedSignal] = useState("");
 
   return {

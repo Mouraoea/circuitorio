@@ -20,7 +20,7 @@ export const useResetSignalPicker = () => {
     setSignalPickerContent(null);
     setSelectedSignalSlot(null);
     setSignalPickerSelectedGroup("logistics");
-    setSignalPickerConstantValue(1);
+    setSignalPickerConstantValue(0);
     setSignalPickerSelectedSignal("");
   }, [
     setIsSignalPickerOpen,
