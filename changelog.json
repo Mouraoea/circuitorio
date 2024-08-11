@@ -1,6 +1,8 @@
 {
   "disclaimer": "This application is a fan-made project designed to assist with debugging Factorio’s circuit network. It is created by fans for fans, with the sole purpose of enhancing the gaming experience. We do not own any of the images used in this application. All image properties and rights are owned by Wube Software, the developers of Factorio. If you enjoy Factorio and find this tool helpful, please consider supporting the developers by visiting https://factorio.com/. This is an open-source project, and you can find the source code at https://github.com/Mouraoea/circuitorio",
   "changeLog": [
+    { "version": "alpha-0.1.14", "content": "Minor bug fixes; Added UI scrollbar style" },
+    { "version": "alpha-0.1.13", "content": "Added blueprint compressor/decompressor" },
     { "version": "alpha-0.1.12", "content": "Added operator sprites to combinators, more code refacoring, bug fixes" },
     { "version": "alpha-0.1.11", "content": "Code refactor, minor bug fixes" },
     { "version": "alpha-0.1.10", "content": "Added save signals to store" },
