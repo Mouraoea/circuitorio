@@ -1185,14 +1185,6 @@ iframe.iframe-inset {
   margin-top: -6px;
 }
 
-/* .dropdown:hover > .submenu,
-.dropdown.focus-within > .submenu,
-.dropdown .submenu:hover,
-.dropdown .submenu:focus {
-  visibility: visible;
-  opacity: 1;
-} */
-
 .panel-hole-inner,
 dl.panel-hole > dt,
 dl.panel-hole > dd,
