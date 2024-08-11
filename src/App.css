@@ -163,6 +163,49 @@ pre {
   line-height: 1.2;
 }
 
+/* Main scrollbar styles */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #2b2b2b; /* Dark background to resemble Factorio's UI */
+  border-radius: 5px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background-color: #5f5f5f; /* Gray, similar to Factorio's UI colors */
+  border-radius: 5px;
+  border: 2px solid #2b2b2b; /* To give a bit of padding and depth */
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background-color: #8c8c8c; /* Lighter gray on hover for better visibility */
+}
+
+/* Horizontal scrollbar styles (optional) */
+::-webkit-scrollbar-horizontal {
+  height: 10px;
+}
+
+::-webkit-scrollbar-track-horizontal {
+  background: #2b2b2b;
+}
+
+::-webkit-scrollbar-thumb-horizontal {
+  background-color: #5f5f5f;
+  border-radius: 5px;
+  border: 2px solid #2b2b2b;
+}
+
+::-webkit-scrollbar-thumb-horizontal:hover {
+  background-color: #8c8c8c;
+}
+
 .top-bar {
   background-color: rgba(0, 0, 0, 0.5);
   width: 100%;

@@ -57,7 +57,7 @@ export const DisclaimerModal: React.FC = () => {
       <Modal
         isOpen={disclaimerIsOpen}
         className="panel disclaimer-modal"
-        style={{ content: { margin: "50px", padding: "20px 20px 20px 20px", overflowY: "scroll", height: "90%", zIndex: 10000 }, overlay: { backgroundColor: "rgba(0,0,0,0.75)", zIndex: 9999 } }}
+        style={{ content: { margin: "50px", padding: "20px 20px 20px 20px", height: "90%", zIndex: 10000 }, overlay: { backgroundColor: "rgba(0,0,0,0.75)", zIndex: 9999 } }}
         onRequestClose={closeModal}
         contentLabel="Welcome"
       >
