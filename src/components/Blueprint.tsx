@@ -20,7 +20,6 @@ const BlueprintOverlay = () => {
 
   const processInput = () => {
     if (isJsonString(inputString)) {
-      // The input is valid JSON, so compress it
       const compressed = compressBlueprint(JSON.parse(inputString));
       if (compressed) {
         setOutputString(compressed);
@@ -28,10 +27,9 @@ const BlueprintOverlay = () => {
         setOutputString("Compression failed. Please check the input.");
       }
     } else {
-      // The input is not JSON, so decompress it
       const decompressed = decompressBlueprint(inputString);
       if (decompressed) {
-        setOutputString(JSON.stringify(decompressed, null, 2)); // Format JSON for readability
+        setOutputString(JSON.stringify(decompressed, null, 2));
       } else {
         setOutputString("Decompression failed. Please check the input.");
       }
