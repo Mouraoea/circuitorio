@@ -50,19 +50,33 @@ const BlueprintOverlay = () => {
             e.stopPropagation();
             e.currentTarget.focus();
           }}
-          onKeyDown={(e) => e.stopPropagation()}
+          onKeyDown={(e) => {
+            e.stopPropagation();
+          }}
           onChange={handleInputChange}
           placeholder="Paste compressed or decompressed blueprint string here"
         ></textarea>
-        <button className="button" onClick={processInput}>
-          Process
-        </button>
+        <div className="p8">
+          <button className="button" onClick={processInput}>
+            Process
+          </button>
+        </div>
       </div>
       <div>
-        <textarea value={outputString} readOnly placeholder="Processed blueprint will appear here"></textarea>
-        <button className="button" onClick={copyContent}>
-          Copy to Clipboard
-        </button>
+        <textarea
+          value={outputString}
+          onClick={(e) => {
+            e.stopPropagation();
+            e.currentTarget.focus();
+          }}
+          readOnly
+          placeholder="Processed blueprint will appear here"
+        ></textarea>
+        <div className="p8">
+          <button className="button" onClick={copyContent}>
+            Copy to Clipboard
+          </button>
+        </div>
       </div>
     </div>
   );

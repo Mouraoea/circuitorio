@@ -2,6 +2,7 @@ import { useState } from "react";
 
 export const useInputState = () => {
   const [startCursorPosition, setStartCursorPosition] = useState({ x: 0, y: 0 });
+  const [isCanvasFocused, setIsCanvasFocused] = useState(false);
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
   const [cursorGridPosition, setCursorGridPosition] = useState({ x: 0, y: 0 });
   const [cursorGridCoordinates, setCursorGridCoordinates] = useState({ x: 0, y: 0 });
@@ -78,6 +79,8 @@ export const useInputState = () => {
     setKeyState((prevKeyState) => ({ ...prevKeyState, ...value }));
   };
   return {
+    isCanvasFocused,
+    setIsCanvasFocused,
     startCursorPosition,
     setStartCursorPosition,
     cursorPosition,

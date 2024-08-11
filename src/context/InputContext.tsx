@@ -4,7 +4,8 @@ import { KeyStateKeys, useInputState } from "../hooks/useInputState";
 export interface InputContextProps {
   keyState: KeyStateKeys;
   setKeyState: (value: Partial<KeyStateKeys>) => void;
-
+  isCanvasFocused: boolean;
+  setIsCanvasFocused: (value: boolean) => void;
   startCursorPosition: { x: number; y: number };
   setStartCursorPosition: (value: { x: number; y: number }) => void;
   cursorPosition: { x: number; y: number };

@@ -37,7 +37,8 @@ const MouseInput: React.FC = () => {
 
   const { hoveredElement, setHoveredElement, selectedElement, setSelectedElement, setIsEntityPanelOpen, setIsSignalPickerOpen } = useUIContext();
 
-  const { cursorPosition, setCursorPosition, keyState, cursorGridPosition, setCursorGridPosition, setCursorGridCoordinates, startCursorPosition, setStartCursorPosition } = useInputContext();
+  const { cursorPosition, setCursorPosition, keyState, cursorGridPosition, setCursorGridPosition, setCursorGridCoordinates, startCursorPosition, setStartCursorPosition, isCanvasFocused } =
+    useInputContext();
 
   const { elementRemovalTimer, setElementRemovalTimer } = useUIContext();
 
@@ -119,11 +120,13 @@ const MouseInput: React.FC = () => {
 
   const handleWheel = useCallback(
     (event: WheelEvent) => {
-      event.preventDefault();
-      const delta = event.deltaY > 0 ? -scale * 0.0909090909090909 : scale * 0.1;
-      handleZoom(delta);
+      if (isCanvasFocused) {
+        event.preventDefault();
+        const delta = event.deltaY > 0 ? -scale * 0.0909090909090909 : scale * 0.1;
+        handleZoom(delta);
+      }
     },
-    [handleZoom, scale]
+    [handleZoom, scale, isCanvasFocused]
   );
 
   const resetEntityPanel = useResetEntityPanel();
